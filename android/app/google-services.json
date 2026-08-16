@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "353251846505",
+    "project_id": "scoutx-ed075",
+    "storage_bucket": "scoutx-ed075.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353251846505:android:1a328f65e417aca64ef5f8",
+        "android_client_info": {
+          "package_name": "com.scoutx.scoutx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwPD9lhjdLFyOb483NnJHYZ3G2pjiSfrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
