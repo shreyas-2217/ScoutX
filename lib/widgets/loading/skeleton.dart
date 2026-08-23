@@ -39,10 +39,10 @@ class _ShimmerState extends State<_Shimmer> with SingleTickerProviderStateMixin 
             return LinearGradient(
               begin: Alignment(-1.0 + dx, 0),
               end: Alignment(0.0 + dx, 0),
-              colors: const [
-                DSColors.surfaceContainer,
-                DSColors.surfaceContainerHigh,
-                DSColors.surfaceContainer,
+              colors: [
+                Theme.of(context).colorScheme.surfaceContainer,
+                Theme.of(context).colorScheme.surfaceContainerHigh,
+                Theme.of(context).colorScheme.surfaceContainer,
               ],
               stops: const [0.0, 0.5, 1.0],
             ).createShader(bounds);
@@ -75,7 +75,7 @@ class SkeletonBox extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: DSColors.surfaceContainer,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: borderRadius ?? BorderRadius.circular(DSRadius.md),
         ),
       ),
@@ -94,7 +94,7 @@ class SkeletonCard extends StatelessWidget {
       child: Container(
         height: height ?? 200,
         decoration: BoxDecoration(
-          color: DSColors.surfaceContainer,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(DSRadius.card),
         ),
         child: Padding(
@@ -156,7 +156,7 @@ class SkeletonTrialCard extends StatelessWidget {
     return _Shimmer(
       child: Container(
         decoration: BoxDecoration(
-          color: DSColors.surfaceContainer,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(DSRadius.card),
         ),
         child: Padding(

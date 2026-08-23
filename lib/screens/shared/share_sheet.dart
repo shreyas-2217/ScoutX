@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -76,7 +76,7 @@ class _ShareSheetState extends State<ShareSheet>
               height: 4,
               margin: EdgeInsets.symmetric(vertical: DSSpacing.md),
               decoration: BoxDecoration(
-                color: DSColors.outlineVariant,
+                color: Theme.of(context).colorScheme.outlineVariant,
                 borderRadius: BorderRadius.circular(DSRadius.full),
               ),
             ),
@@ -94,12 +94,12 @@ class _ShareSheetState extends State<ShareSheet>
                   const Spacer(),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: Icon(DSIcons.x, color: DSColors.onSurfaceVariant),
+                    icon: Icon(DSIcons.x, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
             ),
-            Divider(height: 1, color: DSColors.outlineVariant),
+            Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
             // Share options
             Flexible(
               child: Column(
@@ -137,7 +137,7 @@ class _ShareSheetState extends State<ShareSheet>
                   ),
                   _ShareAction(
                     icon: DSIcons.share,
-                    label: 'Share…',
+                    label: 'Shareâ€¦',
                     onTap: () async {
                       Navigator.pop(context);
                       await SharePlus.instance.share(
@@ -170,7 +170,7 @@ class _ShareSheetState extends State<ShareSheet>
 
     final picked = await showModalBottomSheet<Conversation>(
       context: context,
-      backgroundColor: DSColors.surfaceContainer,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(DSRadius.sheet)),
       ),
@@ -184,7 +184,7 @@ class _ShareSheetState extends State<ShareSheet>
                 height: 4,
                 margin: EdgeInsets.symmetric(vertical: DSSpacing.md),
                 decoration: BoxDecoration(
-                  color: DSColors.outlineVariant,
+                  color: Theme.of(context).colorScheme.outlineVariant,
                   borderRadius: BorderRadius.circular(DSRadius.full),
                 ),
               ),
@@ -193,7 +193,7 @@ class _ShareSheetState extends State<ShareSheet>
                 child: Row(
                   children: [
                     Text(
-                      'Send to…',
+                      'Send toâ€¦',
                       style: Theme.of(ctx).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
@@ -201,12 +201,12 @@ class _ShareSheetState extends State<ShareSheet>
                     const Spacer(),
                     IconButton(
                       onPressed: () => Navigator.pop(ctx),
-                      icon: Icon(DSIcons.x, color: DSColors.onSurfaceVariant),
+                      icon: Icon(DSIcons.x, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),
               ),
-              Divider(height: 1, color: DSColors.outlineVariant),
+              Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
               if (conversations.isEmpty)
                 EmptyState(
                   icon: DSIcons.chatCircleDots,
@@ -223,7 +223,7 @@ class _ShareSheetState extends State<ShareSheet>
                       final c = conversations[index];
                       return ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: DSColors.surfaceContainerHigh,
+                          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                           child: InitialsAvatar(
                             name: c.otherParticipantName(user.uid) ?? 'User',
                             radius: 16,
@@ -251,7 +251,7 @@ class _ShareSheetState extends State<ShareSheet>
 
     if (picked == null || !context.mounted) return;
     final label =
-        '${widget.clip.title.isEmpty ? 'Highlight' : widget.clip.title} · ${widget.clip.playerName}';
+        '${widget.clip.title.isEmpty ? 'Highlight' : widget.clip.title} Â· ${widget.clip.playerName}';
     await db.sendMessage(
       picked.id,
       senderId: user.uid,
@@ -260,6 +260,7 @@ class _ShareSheetState extends State<ShareSheet>
       clipId: widget.clip.id,
       clipTitle: widget.clip.title,
       clipVideoUrl: widget.clip.videoUrl,
+      receiverId: picked.otherParticipantId(user.uid),
     );
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -295,10 +296,10 @@ class _ShareAction extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: DSColors.surfaceContainerHigh,
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
           borderRadius: BorderRadius.circular(DSRadius.md),
         ),
-        child: Icon(icon, color: DSColors.onSurface, size: DSIconSize.md),
+        child: Icon(icon, color: Theme.of(context).colorScheme.onSurface, size: DSIconSize.md),
       ),
       title: Text(
         label,
@@ -310,7 +311,7 @@ class _ShareAction extends StatelessWidget {
           ? Text(
               subtitle!,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: DSColors.onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               overflow: TextOverflow.ellipsis,
             )

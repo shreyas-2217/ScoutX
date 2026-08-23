@@ -83,8 +83,18 @@ class Database {
   // Clips
   // -------------------------------------------------------------------------
 
-  Future<String> uploadVideo(Clip clip, Uint8List bytes, String fileName) {
-    return _cloudinary.uploadVideo(clip.playerId, bytes, fileName);
+  Future<String> uploadVideo(
+    Clip clip,
+    Uint8List bytes,
+    String fileName, {
+    void Function(double progress)? onProgress,
+  }) {
+    return _cloudinary.uploadVideo(
+      clip.playerId,
+      bytes,
+      fileName,
+      onProgress: onProgress,
+    );
   }
 
   Future<String> addClip(Clip clip) async {
@@ -426,10 +436,30 @@ class Database {
   // Trial applications
   // -------------------------------------------------------------------------
 
-  Future<String> applyToTrial(TrialApplication application) async {
+  Future<String> applyToTrial(
+    TrialApplication application, {
+    String? coachId,
+    String? trialTitle,
+  }) async {
     final ref = await _db
         .collection(AppPaths.trialApplications)
         .add(application.toMap());
+    if (coachId != null &&
+        coachId.isNotEmpty &&
+        coachId != application.playerId) {
+      try {
+        await createNotification(
+          toUserId: coachId,
+          fromUserId: application.playerId,
+          fromUserName: application.playerName,
+          type: 'trial_application',
+          message: trialTitle,
+          trialId: application.trialId,
+        );
+      } catch (_) {
+        // A failed notification must never fail the application itself.
+      }
+    }
     return ref.id;
   }
 
@@ -474,9 +504,50 @@ class Database {
   }
 
   Future<void> updateApplicationStatus(String appId, String status) async {
+    final appSnap =
+        await _db.collection(AppPaths.trialApplications).doc(appId).get();
     await _db.collection(AppPaths.trialApplications).doc(appId).update({
       'status': status,
     });
+
+    // Notify the player that the coach made a decision.
+    final data = appSnap.data();
+    if (data == null) return;
+    final playerId = data['playerId'] as String?;
+    final trialId = data['trialId'] as String?;
+    if (playerId == null || playerId.isEmpty) return;
+
+    String? coachId;
+    String coachName = 'Coach';
+    String? title;
+    if (trialId != null && trialId.isNotEmpty) {
+      try {
+        final trialSnap = await _db.collection(AppPaths.trials).doc(trialId).get();
+        coachId = trialSnap.data()?['coachId'] as String?;
+        coachName = trialSnap.data()?['coachName'] as String? ?? coachName;
+        title = trialSnap.data()?['title'] as String?;
+      } catch (_) {}
+    }
+
+    final verdict = status.toLowerCase() == 'accepted'
+        ? 'accepted your application'
+        : status.toLowerCase() == 'rejected'
+            ? 'rejected your application'
+            : 'updated your application status';
+
+    try {
+      await createNotification(
+        toUserId: playerId,
+        fromUserId: coachId ?? '',
+        fromUserName: coachName,
+        type: 'application_status',
+        message:
+            '$verdict${title != null && title.isNotEmpty ? ' for "$title"' : ''}',
+        trialId: trialId,
+      );
+    } catch (_) {
+      // Best-effort only.
+    }
   }
 
   // -------------------------------------------------------------------------
@@ -781,6 +852,7 @@ class Database {
     required String type,
     String? message,
     String? conversationId,
+    String? trialId,
   }) async {
     await _db.collection('notifications').add({
       'toUserId': toUserId,
@@ -789,6 +861,7 @@ class Database {
       'type': type,
       'message': message,
       'conversationId': conversationId,
+      'trialId': trialId,
       'isRead': false,
       'createdAt': FieldValue.serverTimestamp(),
     });

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../design_system.dart';
 
@@ -124,11 +124,11 @@ class _SkillSelectorState extends State<SkillSelector> {
                 EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(DSRadius.input),
-              borderSide: BorderSide(color: DSColors.outlineVariant),
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(DSRadius.input),
-              borderSide: BorderSide(color: DSColors.outlineVariant),
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
             ),
           ),
         ),

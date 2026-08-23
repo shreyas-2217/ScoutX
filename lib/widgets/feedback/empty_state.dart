@@ -35,25 +35,25 @@ class EmptyState extends StatelessWidget {
               child: Icon(
                 icon,
                 size: 32,
-                color: DSColors.onSurface,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: DSSpacing.md),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: DSColors.onSurface,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: DSSpacing.sm),
             Text(
               subtitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: DSColors.onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -64,8 +64,8 @@ class EmptyState extends StatelessWidget {
                 builder: (context) => ElevatedButton(
                   onPressed: onAction,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: DSColors.onSurface,
-                    foregroundColor: DSColors.onBrand,
+                    backgroundColor: Theme.of(context).colorScheme.onSurface,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     padding: const EdgeInsets.symmetric(
                       horizontal: DSSpacing.lg,
                       vertical: DSSpacing.sm + 4,

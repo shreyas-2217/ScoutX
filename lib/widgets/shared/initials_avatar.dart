@@ -1,4 +1,4 @@
-import 'dart:math';
+﻿import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../design_system.dart';
 
@@ -55,13 +55,13 @@ class InitialsAvatar extends StatelessWidget {
     }
   }
 
-  Color get _backgroundColor {
+  Color _backgroundColor(BuildContext context) {
     final colors = [
       DSColors.volt,
       DSColors.voltLight,
-      DSColors.cyan,
-      DSColors.green,
-      DSColors.indigo,
+      Theme.of(context).colorScheme.onSurface,
+      Theme.of(context).colorScheme.onSurface,
+      Theme.of(context).colorScheme.onSurface,
     ];
     final index = name.hashCode.abs() % colors.length;
     return colors[index];
@@ -88,14 +88,14 @@ class InitialsAvatar extends StatelessWidget {
             width: _dimension,
             height: _dimension,
             decoration: BoxDecoration(
-              color: _backgroundColor,
+              color: _backgroundColor(context),
               shape: BoxShape.circle,
             ),
             alignment: Alignment.center,
             child: Text(
               _initials,
               style: TextStyle(
-                color: DSColors.onBrand,
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontSize: _fontSize,
                 fontWeight: FontWeight.w700,
                 height: 1,
@@ -110,10 +110,10 @@ class InitialsAvatar extends StatelessWidget {
                 width: _onlineIndicatorSize,
                 height: _onlineIndicatorSize,
                 decoration: BoxDecoration(
-                  color: DSColors.onSurface,
+                  color: Theme.of(context).colorScheme.onSurface,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: DSColors.surface,
+                    color: Theme.of(context).colorScheme.surface,
                     width: 2,
                   ),
                 ),

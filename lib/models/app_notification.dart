@@ -7,6 +7,7 @@ class AppNotification {
   final String fromUserName;
   final String? message;
   final String? conversationId;
+  final String? trialId;
   final bool isRead;
   final DateTime createdAt;
 
@@ -17,6 +18,7 @@ class AppNotification {
     required this.fromUserName,
     this.message,
     this.conversationId,
+    this.trialId,
     this.isRead = false,
     required this.createdAt,
   });
@@ -28,6 +30,7 @@ class AppNotification {
       'fromUserName': fromUserName,
       'message': message,
       'conversationId': conversationId,
+      'trialId': trialId,
       'isRead': isRead,
       'createdAt': createdAt,
     };
@@ -41,6 +44,7 @@ class AppNotification {
       fromUserName: map['fromUserName'] as String? ?? '',
       message: map['message'] as String?,
       conversationId: map['conversationId'] as String?,
+      trialId: map['trialId'] as String?,
       isRead: map['isRead'] as bool? ?? false,
       createdAt: _toDateTime(map['createdAt']) ?? DateTime.now(),
     );
@@ -53,6 +57,7 @@ class AppNotification {
     String? fromUserName,
     String? message,
     String? conversationId,
+    String? trialId,
     bool? isRead,
     DateTime? createdAt,
   }) {
@@ -63,6 +68,7 @@ class AppNotification {
       fromUserName: fromUserName ?? this.fromUserName,
       message: message ?? this.message,
       conversationId: conversationId ?? this.conversationId,
+      trialId: trialId ?? this.trialId,
       isRead: isRead ?? this.isRead,
       createdAt: createdAt ?? this.createdAt,
     );

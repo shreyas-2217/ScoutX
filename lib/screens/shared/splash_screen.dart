@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:scoutx/design_system.dart';
@@ -67,18 +67,18 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(color: DSColors.surface),
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
         child: Stack(
           children: [
             Positioned(
               top: -120,
               right: -100,
-              child: _glow(DSColors.onSurface.withValues(alpha: 0.05)),
+              child: _glow(Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
             ),
             Positioned(
               bottom: -140,
               left: -120,
-              child: _glow(DSColors.onSurface.withValues(alpha: 0.03)),
+              child: _glow(Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.03)),
             ),
             Center(
               child: AnimatedBuilder(
@@ -95,13 +95,13 @@ class _SplashScreenState extends State<SplashScreen>
                             width: 96,
                             height: 96,
                             decoration: BoxDecoration(
-                              color: DSColors.onSurface,
+                              color: Theme.of(context).colorScheme.onSurface,
                               borderRadius: BorderRadius.circular(24),
                               boxShadow: DSElevation.level1,
                             ),
                             child: Icon(
                               DSIcons.brand,
-                              color: DSColors.surface,
+                              color: Theme.of(context).colorScheme.surface,
                               size: 52,
                             ),
                           ),
@@ -118,7 +118,7 @@ class _SplashScreenState extends State<SplashScreen>
                               fontSize: 40,
                               fontWeight: FontWeight.w800,
                               letterSpacing: -1,
-                              color: DSColors.onSurface,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -133,7 +133,7 @@ class _SplashScreenState extends State<SplashScreen>
                             style: GoogleFonts.inter(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ),

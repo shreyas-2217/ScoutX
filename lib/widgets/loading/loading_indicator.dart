@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../design_system.dart';
 
 enum LoadingSize { small, medium, large }
@@ -54,7 +54,7 @@ class LoadingIndicator extends StatelessWidget {
             Text(
               message!,
               style: TextStyle(
-                color: DSColors.onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontSize: size == LoadingSize.small ? 12 : 14,
               ),
             ),
@@ -73,7 +73,7 @@ class FullScreenLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: DSColors.bg,
+      color: Theme.of(context).colorScheme.surface,
       child: LoadingIndicator(
         size: LoadingSize.large,
         message: message,

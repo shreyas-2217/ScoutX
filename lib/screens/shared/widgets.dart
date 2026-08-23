@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:scoutx/design_system.dart';
@@ -177,11 +177,11 @@ class _DSButtonState extends State<DSButton>
       fontSize: 14,
       fontWeight: FontWeight.w700,
       letterSpacing: 0.32,
-      color: DSColors.surface,
+      color: Theme.of(context).colorScheme.surface,
     );
     
     final isDisabled = widget.onPressed == null || widget.loading;
-    final color = widget.customColor ?? DSColors.onSurface;
+    final color = widget.customColor ?? Theme.of(context).colorScheme.onSurface;
     
     Widget content = Row(
       mainAxisSize: MainAxisSize.min,
@@ -194,7 +194,7 @@ class _DSButtonState extends State<DSButton>
             child: CircularProgressIndicator(
               strokeWidth: 2.5,
               color: widget.variant == DSButtonVariant.filled 
-                  ? DSColors.surface 
+                  ? Theme.of(context).colorScheme.surface 
                   : color,
             ),
           ),
@@ -351,8 +351,8 @@ class _FilledButton extends StatelessWidget {
         child: InkWell(
           onTap: loading ? null : onPressed,
           borderRadius: borderRadius,
-          splashColor: DSColors.onSurface.withValues(alpha: 0.08),
-          highlightColor: DSColors.onSurface.withValues(alpha: 0.04),
+          splashColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
+          highlightColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.04),
           child: Center(child: content),
         ),
       ),
@@ -390,10 +390,10 @@ class _OutlinedButton extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: borderRadius,
         border: Border.all(
-          color: DSColors.outline,
+          color: Theme.of(context).colorScheme.outline,
           width: 1.5,
         ),
-        color: pressed ? DSColors.onSurface.withValues(alpha: 0.04) : Colors.transparent,
+        color: pressed ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.04) : Colors.transparent,
       ),
       child: Material(
         color: Colors.transparent,
@@ -536,8 +536,8 @@ class _ElevatedButton extends StatelessWidget {
         child: InkWell(
           onTap: loading ? null : onPressed,
           borderRadius: borderRadius,
-          splashColor: DSColors.onSurface.withValues(alpha: 0.08),
-          highlightColor: DSColors.onSurface.withValues(alpha: 0.04),
+          splashColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
+          highlightColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.04),
           child: Center(child: content),
         ),
       ),
@@ -615,7 +615,7 @@ class _SectionHeaderState extends State<SectionHeader>
               width: 3,
               height: 20,
               decoration: BoxDecoration(
-                color: DSColors.onSurface,
+                color: Theme.of(context).colorScheme.onSurface,
                 borderRadius: BorderRadius.circular(DSRadius.xs),
               ),
             ),
@@ -627,7 +627,7 @@ class _SectionHeaderState extends State<SectionHeader>
               fontSize: 18,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.32,
-              color: DSColors.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],
@@ -817,13 +817,13 @@ class _EmptyStateState extends State<EmptyState>
                 width: 88,
                 height: 88,
                 decoration: BoxDecoration(
-                  color: DSColors.onSurface.withValues(alpha: 0.08),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   widget.icon, 
                   size: DSIconSize.emptyState, 
-                  color: DSColors.onSurface,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               SizedBox(height: DSSpacing.lg),
@@ -840,7 +840,7 @@ class _EmptyStateState extends State<EmptyState>
                   widget.subtitle!,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: DSColors.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -983,7 +983,7 @@ class VerifiedBadge extends StatelessWidget {
     Widget badge = Icon(
       DSIcons.sealCheck,
       size: size,
-      color: DSColors.onSurface,
+      color: Theme.of(context).colorScheme.onSurface,
     );
     
     if (animate) {
@@ -1171,7 +1171,10 @@ class _DSCardState extends State<DSCard>
 
   @override
   Widget build(BuildContext context) {
-    final cardColor = widget.color ?? DSColors.surface;
+    // Theme-aware so cards stay readable in dark mode (a hardcoded light
+    // surface made light-on-light text everywhere in dark theme).
+    final colorScheme = Theme.of(context).colorScheme;
+    final cardColor = widget.color ?? colorScheme.surface;
     final cardRadius = widget.borderRadius ?? 
         BorderRadius.circular(DSRadius.card);
     final cardShadows = widget.elevated 
@@ -1186,7 +1189,7 @@ class _DSCardState extends State<DSCard>
         borderRadius: cardRadius,
         boxShadow: cardShadows,
         border: Border.all(
-          color: DSColors.outlineVariant,
+          color: colorScheme.outlineVariant,
           width: 1,
         ),
       ),
@@ -1281,9 +1284,9 @@ class _ShimmerPlaceholderState extends State<ShimmerPlaceholder>
 
   @override
   Widget build(BuildContext context) {
-    final baseColor = widget.baseColor ?? DSColors.surfaceContainer;
+    final baseColor = widget.baseColor ?? Theme.of(context).colorScheme.surfaceContainer;
     final highlightColor = widget.highlightColor ?? 
-        DSColors.surfaceContainerHigh;
+        Theme.of(context).colorScheme.surfaceContainerHigh;
 
     return AnimatedBuilder(
       animation: _controller,
@@ -1498,7 +1501,7 @@ class DSHero extends StatelessWidget {
               width: size.width,
               height: size.height,
               decoration: BoxDecoration(
-                color: DSColors.surfaceContainer,
+                color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(DSRadius.md),
               ),
             );
@@ -1596,9 +1599,9 @@ class DSNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: DSColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         border: Border(
-          top: BorderSide(color: DSColors.outlineVariant, width: 1),
+          top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
         ),
       ),
       child: SafeArea(
@@ -1699,7 +1702,7 @@ class _NavBarItemState extends State<_NavBarItem>
               ),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? DSColors.onSurface.withValues(alpha: 0.08)
+                    ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(DSRadius.lg),
               ),
@@ -1708,7 +1711,7 @@ class _NavBarItemState extends State<_NavBarItem>
                 children: [
                   Icon(
                     isSelected ? widget.item.activeIcon : widget.item.icon,
-                    color: isSelected ? DSColors.onSurface : DSColors.onSurfaceVariant,
+                    color: isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant,
                     size: DSIconSize.bottomNav,
                   ),
                   const SizedBox(height: 4),
@@ -1721,8 +1724,8 @@ class _NavBarItemState extends State<_NavBarItem>
                               const TextStyle(fontSize: 12))
                           .copyWith(
                             color: isSelected
-                                ? DSColors.onSurface
-                                : DSColors.onSurfaceVariant,
+                                ? Theme.of(context).colorScheme.onSurface
+                                : Theme.of(context).colorScheme.onSurfaceVariant,
                             fontWeight:
                                 isSelected ? FontWeight.w700 : FontWeight.w500,
                           ),

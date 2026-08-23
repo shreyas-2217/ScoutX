@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../design_system.dart';
 
 enum SnackBarType { success, error, info }
@@ -102,9 +102,9 @@ class _SXSnackBarWidgetState extends State<_SXSnackBarWidget>
       case SnackBarType.success:
         return DSColors.volt;
       case SnackBarType.error:
-        return DSColors.red;
+        return Theme.of(context).colorScheme.error;
       case SnackBarType.info:
-        return DSColors.indigo;
+        return Theme.of(context).colorScheme.onSurface;
     }
   }
 

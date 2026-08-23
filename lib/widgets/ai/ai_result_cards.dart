@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
+﻿import 'package:flutter/material.dart';
 import '../shared/initials_avatar.dart';
 import '../../services/ai/ai_message.dart';
 import '../../models/trial.dart';
@@ -78,12 +77,12 @@ class _AthleteCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: DSColors.onSurface.withValues(alpha: 0.08),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text('${e.key}: ${e.value}',
                       style:
-                          const TextStyle(fontSize: 11, color: DSColors.onSurface)),
+                          TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurface)),
                 );
               }).toList(),
             ),
@@ -135,11 +134,11 @@ class _TrialCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: DSColors.onSurface.withValues(alpha: 0.15),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.emoji_events,
-                    color: DSColors.onSurface, size: 20),
+                child: Icon(Icons.emoji_events,
+                    color: Theme.of(context).colorScheme.onSurface, size: 20),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -239,12 +238,12 @@ class _HighlightCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: DSColors.onSurface.withValues(alpha: 0.15),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   Icons.play_circle_outline,
-                  color: DSColors.onSurface,
+                  color: Theme.of(context).colorScheme.onSurface,
                   size: 20,
                 ),
               ),
@@ -267,7 +266,7 @@ class _HighlightCard extends StatelessWidget {
                   Text(
                     card.metadata.entries
                         .map((e) => '${e.key}: ${e.value}')
-                        .join('  •  '),
+                        .join('  Ã¢â‚¬Â¢  '),
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 11),
@@ -313,19 +312,19 @@ class _ActionButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: DSColors.onSurface.withValues(alpha: 0.08),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 14, color: DSColors.onSurface),
+              Icon(icon, size: 14, color: Theme.of(context).colorScheme.onSurface),
               const SizedBox(width: 4),
               Text(label,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: DSColors.onSurface)),
+                      color: Theme.of(context).colorScheme.onSurface)),
             ],
           ),
         ),

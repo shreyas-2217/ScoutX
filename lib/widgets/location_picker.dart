@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:scoutx/design_system.dart';
 import '../services/location_service.dart';
 import '../providers/location_provider.dart';
 // ignore: avoid_web_libraries_in_flutter, deprecated_member_use
@@ -214,7 +213,7 @@ class _LocationPickerState extends State<LocationPicker> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: DSColors.surfaceContainerHighest,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -284,12 +283,12 @@ class _LocationPickerState extends State<LocationPicker> {
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: DSColors.outlineVariant),
+                border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
               ),
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: _searchResults.length,
-                separatorBuilder: (_, _) => Divider(height: 1, color: DSColors.outlineVariant.withValues(alpha: 0.5)),
+                separatorBuilder: (_, _) => Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5)),
                 itemBuilder: (context, index) {
                   final place = _searchResults[index];
                   final displayName = place.name.length > 40
@@ -297,9 +296,9 @@ class _LocationPickerState extends State<LocationPicker> {
                       : place.name;
                   return ListTile(
                     dense: true,
-                    leading: const Icon(Icons.location_on_outlined, size: 20, color: DSColors.onSurface),
+                    leading: Icon(Icons.location_on_outlined, size: 20, color: Theme.of(context).colorScheme.onSurface),
                     title: Text(displayName, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                    subtitle: Text(place.address, style: TextStyle(fontSize: 12, color: DSColors.onSurfaceVariant)),
+                    subtitle: Text(place.address, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                     onTap: () => _selectPlace(place),
                   );
                 },
@@ -313,13 +312,13 @@ class _LocationPickerState extends State<LocationPicker> {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: DSColors.onSurface.withValues(alpha: 0.08),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: DSColors.onSurface.withValues(alpha: 0.3)),
+                border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.check_circle, color: DSColors.onSurface, size: 20),
+                  Icon(Icons.check_circle, color: Theme.of(context).colorScheme.onSurface, size: 20),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -330,13 +329,13 @@ class _LocationPickerState extends State<LocationPicker> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: DSColors.onSurface,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         if (_selectedCoords != null)
                           Text(
-                            '${_selectedCoords!.latitude.toStringAsFixed(4)}°N, ${_selectedCoords!.longitude.toStringAsFixed(4)}°E',
-                            style: TextStyle(fontSize: 11, color: DSColors.onSurfaceVariant),
+                            '${_selectedCoords!.latitude.toStringAsFixed(4)}Ã‚Â°N, ${_selectedCoords!.longitude.toStringAsFixed(4)}Ã‚Â°E',
+                            style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant),
                           ),
                       ],
                     ),
@@ -382,9 +381,9 @@ class _LocationPickerState extends State<LocationPicker> {
                   onPressed: _selectedCoords != null ? _confirm : null,
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    backgroundColor: DSColors.onSurface,
+                    backgroundColor: Theme.of(context).colorScheme.onSurface,
                     foregroundColor: Colors.white,
-                    disabledBackgroundColor: DSColors.surfaceContainerHighest,
+                    disabledBackgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -431,16 +430,16 @@ class _LocationOption extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: DSColors.onSurface.withValues(alpha: 0.08),
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: DSColors.onSurface),
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Theme.of(context).colorScheme.onSurface),
                       )
-                    : Icon(icon, color: DSColors.onSurface, size: 20),
+                    : Icon(icon, color: Theme.of(context).colorScheme.onSurface, size: 20),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -457,12 +456,12 @@ class _LocationOption extends StatelessWidget {
                     ),
                     Text(
                       subtitle,
-                      style: TextStyle(fontSize: 12, color: DSColors.onSurfaceVariant),
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: DSColors.onSurfaceVariant),
+              Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ],
           ),
         ),

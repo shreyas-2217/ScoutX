@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import '../../design_system.dart';
+﻿import 'package:flutter/material.dart';
 import 'mobile_nav.dart';
 import 'desktop_nav_rail.dart';
 
@@ -66,7 +65,7 @@ class _DesktopLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: DSColors.bg,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Row(
         children: [
           DesktopNavRail(
@@ -104,7 +103,7 @@ class _MobileLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: DSColors.bg,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       bottomNavigationBar: MobileNav(
         currentIndex: currentIndex,
         onTap: onTap,

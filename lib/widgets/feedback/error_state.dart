@@ -30,28 +30,28 @@ class ErrorState extends StatelessWidget {
                 color: const Color(0xFFFFEBEE),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 DSIcons.warningCircle,
                 size: 32,
-                color: DSColors.red,
+                color: Theme.of(context).colorScheme.error,
               ),
             ),
             const SizedBox(height: DSSpacing.md),
             Text(
               title ?? 'Something went wrong',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: DSColors.onSurface,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: DSSpacing.sm),
             Text(
               description,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: DSColors.onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -62,8 +62,8 @@ class ErrorState extends StatelessWidget {
                 builder: (context) => ElevatedButton(
                   onPressed: onRetry,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: DSColors.onSurface,
-                    foregroundColor: DSColors.onBrand,
+                    backgroundColor: Theme.of(context).colorScheme.onSurface,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     padding: const EdgeInsets.symmetric(
                       horizontal: DSSpacing.lg,
                       vertical: DSSpacing.sm + 4,

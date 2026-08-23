@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
+﻿import 'package:flutter/material.dart';
 
 class DistanceFilter extends StatelessWidget {
   final double? selectedDistance;
@@ -51,16 +50,16 @@ class DistanceFilter extends StatelessWidget {
                   label: Text(d['label']),
                   selected: isSelected,
                   onSelected: (_) => onDistanceChanged(d['value']),
-                  selectedColor: DSColors.onSurface.withValues(alpha: 0.15),
-                  checkmarkColor: DSColors.onSurface,
-                  backgroundColor: DSColors.surfaceContainerHigh,
+                  selectedColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
+                  checkmarkColor: Theme.of(context).colorScheme.onSurface,
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                   labelStyle: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: isSelected ? DSColors.onSurface : null,
+                    color: isSelected ? Theme.of(context).colorScheme.onSurface : null,
                   ),
                   side: BorderSide(
-                    color: isSelected ? DSColors.onSurface : DSColors.outlineVariant,
+                    color: isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.outlineVariant,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -89,13 +88,13 @@ class DistanceFilter extends StatelessWidget {
                     labelStyle: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? DSColors.surface : DSColors.onSurface,
+                      color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface,
                     ),
-                    selectedColor: DSColors.onSurface,
-                    backgroundColor: DSColors.surfaceContainerHigh,
+                    selectedColor: Theme.of(context).colorScheme.onSurface,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                     side: BorderSide(
                       color:
-                          isSelected ? DSColors.onSurface : DSColors.outlineVariant,
+                          isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.outlineVariant,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),

@@ -21,7 +21,7 @@ class SectionHeader extends StatelessWidget {
             width: 3,
             height: 16,
             decoration: BoxDecoration(
-              color: DSColors.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
               borderRadius: BorderRadius.circular(DSRadius.xs),
             ),
           ),
@@ -29,10 +29,10 @@ class SectionHeader extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: DSColors.onSurface,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),

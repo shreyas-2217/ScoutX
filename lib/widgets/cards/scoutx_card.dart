@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../design_system.dart';
 
 class SXCard extends StatefulWidget {
@@ -41,10 +41,10 @@ class _SXCardState extends State<SXCard> {
           margin: widget.margin,
           padding: widget.padding ?? const EdgeInsets.all(DSSpacing.md),
           decoration: BoxDecoration(
-            color: widget.backgroundColor ?? DSColors.surface,
+            color: widget.backgroundColor ?? Theme.of(context).colorScheme.surface,
             borderRadius: widget.borderRadius ?? BorderRadius.circular(DSRadius.card),
             border: Border.all(
-              color: _isHovered ? DSColors.outline : DSColors.outlineVariant,
+              color: _isHovered ? Theme.of(context).colorScheme.outline : Theme.of(context).colorScheme.outlineVariant,
               width: 1,
             ),
             boxShadow: _isHovered ? DSElevation.level2 : DSElevation.level1,
@@ -66,10 +66,10 @@ class _SXCardState extends State<SXCard> {
         margin: widget.margin,
         padding: widget.padding ?? const EdgeInsets.all(DSSpacing.md),
         decoration: BoxDecoration(
-          color: widget.backgroundColor ?? DSColors.surface,
+          color: widget.backgroundColor ?? Theme.of(context).colorScheme.surface,
           borderRadius: widget.borderRadius ?? BorderRadius.circular(DSRadius.card),
           border: Border.all(
-            color: _isHovered ? DSColors.outline : DSColors.outlineVariant,
+            color: _isHovered ? Theme.of(context).colorScheme.outline : Theme.of(context).colorScheme.outlineVariant,
             width: 1,
           ),
           boxShadow: _isHovered ? DSElevation.level2 : DSElevation.level1,

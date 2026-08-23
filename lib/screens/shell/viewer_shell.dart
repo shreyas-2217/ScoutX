@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../design_system.dart';
 import '../../models/user_profile.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
@@ -10,6 +9,7 @@ import '../shared/my_profile_screen.dart';
 import '../shared/saved_clips_screen.dart';
 import '../shared/widgets.dart' show AnimatedShellContent;
 import '../messaging/responsive_messaging.dart';
+import '../messaging/notifications_screen.dart';
 import 'app_shell.dart';
 
 class ViewerShell extends StatefulWidget {
@@ -29,6 +29,7 @@ class _ViewerShellState extends State<ViewerShell> {
     final screens = [
       const ReelsScreen(),
       const SavedClipsScreen(),
+      const NotificationsScreen(),
       const ResponsiveMessaging(),
       MyProfileScreen(profile: widget.profile),
     ];
@@ -40,10 +41,20 @@ class _ViewerShellState extends State<ViewerShell> {
       const AppNavItem(icon: Icons.play_circle_outline, activeIcon: Icons.play_circle, label: 'Reels'),
       const AppNavItem(icon: Icons.bookmark_outline, activeIcon: Icons.bookmark, label: 'Saved'),
       AppNavItem(
+        icon: Icons.notifications_outlined,
+        activeIcon: Icons.notifications,
+        label: 'Alerts',
+        trailing: uid.isEmpty
+            ? null
+            : ShellCountBadge(stream: db.streamUnreadNotificationCount(uid)),
+      ),
+      AppNavItem(
         icon: Icons.chat_bubble_outline,
         activeIcon: Icons.chat_bubble,
         label: 'Messages',
-        trailing: _UnreadBadge(uid: uid, db: db),
+        trailing: uid.isEmpty
+            ? null
+            : ShellCountBadge(stream: db.streamTotalUnreadCount(uid)),
       ),
       const AppNavItem(icon: Icons.person_outline, activeIcon: Icons.person, label: 'Profile'),
     ];
@@ -56,40 +67,6 @@ class _ViewerShellState extends State<ViewerShell> {
         screens: screens,
         currentIndex: _index,
       ),
-    );
-  }
-}
-
-class _UnreadBadge extends StatelessWidget {
-  final String uid;
-  final Database db;
-  const _UnreadBadge({required this.uid, required this.db});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<int>(
-      stream: db.streamTotalUnreadCount(uid),
-      builder: (context, snapshot) {
-        final count = snapshot.data ?? 0;
-        if (count == 0) return const SizedBox.shrink();
-        return Container(
-          padding: const EdgeInsets.all(4),
-          constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
-          decoration: const BoxDecoration(
-            color: DSColors.red,
-            shape: BoxShape.circle,
-          ),
-          child: Text(
-            count > 99 ? '99+' : '$count',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        );
-      },
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/clip_comment.dart';
@@ -19,7 +19,7 @@ class CommentSheet extends StatefulWidget {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: DSColors.surfaceContainer,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(DSRadius.sheet)),
       ),
@@ -132,7 +132,7 @@ class _CommentSheetState extends State<CommentSheet>
                 height: 4,
                 margin: EdgeInsets.symmetric(vertical: DSSpacing.md),
                 decoration: BoxDecoration(
-                  color: DSColors.outlineVariant,
+                  color: Theme.of(context).colorScheme.outlineVariant,
                   borderRadius: BorderRadius.circular(DSRadius.full),
                 ),
               ),
@@ -150,12 +150,12 @@ class _CommentSheetState extends State<CommentSheet>
                     const Spacer(),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: Icon(DSIcons.x, color: DSColors.onSurfaceVariant),
+                      icon: Icon(DSIcons.x, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                   ],
                 ),
               ),
-              Divider(height: 1, color: DSColors.outlineVariant),
+              Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
               // Comments list
               Expanded(
                 child: StreamBuilder<List<ClipComment>>(
@@ -166,12 +166,12 @@ class _CommentSheetState extends State<CommentSheet>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            CircularProgressIndicator(color: DSColors.onSurface),
+                            CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                             SizedBox(height: DSSpacing.md),
                             Text(
                               'Loading comments...',
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: DSColors.onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -222,9 +222,9 @@ class _CommentSheetState extends State<CommentSheet>
                     DSSpacing.md + MediaQuery.of(context).padding.bottom,
                   ),
                   decoration: BoxDecoration(
-                    color: DSColors.surfaceContainer,
+                    color: Theme.of(context).colorScheme.surfaceContainer,
                     border: Border(
-                      top: BorderSide(color: DSColors.outlineVariant),
+                      top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                   ),
                   child: Row(
@@ -233,7 +233,7 @@ class _CommentSheetState extends State<CommentSheet>
                         child: TextField(
                           controller: _input,
                           decoration: InputDecoration(
-                            hintText: 'Add a comment…',
+                            hintText: 'Add a commentâ€¦',
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
                               horizontal: DSSpacing.md,
@@ -306,7 +306,7 @@ class _CommentTile extends StatelessWidget {
                     Text(
                       timeAgo(comment.createdAt),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: DSColors.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -325,7 +325,7 @@ class _CommentTile extends StatelessWidget {
               icon: Icon(
                 DSIcons.trash,
                 size: DSIconSize.sm,
-                color: DSColors.onSurfaceDisabled,
+                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
               ),
               tooltip: 'Delete comment',
               style: IconButton.styleFrom(

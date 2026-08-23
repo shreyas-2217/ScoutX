@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -94,12 +94,12 @@ class _ReelsFeedState extends State<ReelsFeed> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(color: DSColors.onSurface),
+                CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                 SizedBox(height: DSSpacing.md),
                 Text(
                   'Loading highlights...',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: DSColors.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -376,7 +376,7 @@ class _ReelItemState extends State<ReelItem>
     HapticFeedback.mediumImpact();
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: DSColors.surfaceContainer,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(DSRadius.sheet)),
       ),
@@ -389,7 +389,7 @@ class _ReelItemState extends State<ReelItem>
               height: 4,
               margin: EdgeInsets.symmetric(vertical: DSSpacing.md),
               decoration: BoxDecoration(
-                color: DSColors.outlineVariant,
+                color: Theme.of(context).colorScheme.outlineVariant,
                 borderRadius: BorderRadius.circular(DSRadius.full),
               ),
             ),
@@ -499,7 +499,7 @@ class _ReelItemState extends State<ReelItem>
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: DSColors.red),
+            style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
             child: Text('Delete'),
           ),
         ],
@@ -550,7 +550,7 @@ class _ReelItemState extends State<ReelItem>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(color: DSColors.onSurface),
+                  CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                   SizedBox(height: DSSpacing.md),
                   Text(
                     'Loading video...',
@@ -648,7 +648,7 @@ class _ReelItemState extends State<ReelItem>
                     color: Colors.white,
                     onTap: () => showModalBottomSheet<void>(
                       context: context,
-                      backgroundColor: DSColors.surfaceContainer,
+                      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(top: Radius.circular(DSRadius.sheet)),
                       ),
@@ -733,6 +733,25 @@ class _ReelItemState extends State<ReelItem>
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
+                if (widget.clip.tags.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 4,
+                    children: widget.clip.tags.take(6).map((t) {
+                      final tag = t.startsWith('#') ? t : '#$t';
+                      return Text(
+                        tag,
+                        style: const TextStyle(
+                          color: Color(0xFF90CAF9),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
                 SizedBox(height: DSSpacing.xs),
                 Row(
                   children: [
@@ -741,7 +760,7 @@ class _ReelItemState extends State<ReelItem>
                     TagChip(text: widget.clip.position, color: Colors.cyanAccent),
                     SizedBox(width: DSSpacing.sm),
                     Text(
-                      '${_compact(widget.clip.viewCount)} views · ${timeAgo(widget.clip.createdAt)}',
+                      '${_compact(widget.clip.viewCount)} views Â· ${timeAgo(widget.clip.createdAt)}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.white70,
                         shadows: [
@@ -760,7 +779,7 @@ class _ReelItemState extends State<ReelItem>
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: MarqueeText(
-                        text: '${widget.clip.sport} · ${widget.clip.position}',
+                        text: '${widget.clip.sport} Â· ${widget.clip.position}',
                         style: (Theme.of(context)
                                     .textTheme
                                     .labelMedium ??
@@ -1000,7 +1019,7 @@ class _SheetAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isDestructive ? DSColors.red : DSColors.onSurface;
+    final color = isDestructive ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurface;
     return ListTile(
       leading: Icon(icon, color: color, size: DSIconSize.md),
       title: Text(

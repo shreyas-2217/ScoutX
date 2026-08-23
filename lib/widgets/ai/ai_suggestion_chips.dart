@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
+﻿import 'package:flutter/material.dart';
 
 class AISuggestionChips extends StatelessWidget {
   final String role;
@@ -49,14 +48,14 @@ class AISuggestionChips extends StatelessWidget {
               color: theme.colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: DSColors.onSurface.withValues(alpha: 0.3),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
             child: Text(
               s,
               style: TextStyle(
-                color: DSColors.onSurface,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),

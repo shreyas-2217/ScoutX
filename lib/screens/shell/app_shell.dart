@@ -79,6 +79,41 @@ class AppNavItem {
   });
 }
 
+/// Red count bubble for nav items (unread messages / notifications).
+class ShellCountBadge extends StatelessWidget {
+  final Stream<int> stream;
+
+  const ShellCountBadge({super.key, required this.stream});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<int>(
+      stream: stream,
+      builder: (context, snapshot) {
+        final count = snapshot.data ?? 0;
+        if (count == 0) return const SizedBox.shrink();
+        return Container(
+          padding: const EdgeInsets.all(4),
+          constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+          decoration: const BoxDecoration(
+            color: Colors.red,
+            shape: BoxShape.circle,
+          ),
+          child: Text(
+            count > 99 ? '99+' : '$count',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
+    );
+  }
+}
+
 class _DesktopLayout extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onIndexChanged;
@@ -183,7 +218,7 @@ class _DesktopLayout extends StatelessWidget {
                         color: Colors.transparent,
                         child: Column(
                           children: [
-                            Text('v4.1 • 30 Jan', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5), letterSpacing: 0.5)),
+                            Text('v4.4 â€¢ 30 Jan', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5), letterSpacing: 0.5)),
                             const SizedBox(height: 8),
                             Divider(
                               color: Theme.of(context).dividerTheme.color ?? Theme.of(context).colorScheme.outline,
@@ -331,7 +366,7 @@ class _DesktopLayout extends StatelessWidget {
             ],
           ),
 
-          // ScoutX AI — above Upload FAB (which sits at 16), hidden on Highlights/Reels
+          // ScoutX AI â€” above Upload FAB (which sits at 16), hidden on Highlights/Reels
           Positioned(
             right: 20,
             bottom: 90,
@@ -376,8 +411,8 @@ class _BadgeIconButton extends StatelessWidget {
                 top: 4,
                 child: Container(
                   padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: DSColors.red,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.error,
                     shape: BoxShape.circle,
                   ),
                   constraints: const BoxConstraints(

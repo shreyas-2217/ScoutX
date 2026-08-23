@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../design_system.dart';
 
 enum SXChipVariant { defaultChip, sport, position, skillLevel }
@@ -20,7 +20,7 @@ class SXChip extends StatelessWidget {
     this.onTap,
   });
 
-  Color get _backgroundColor {
+  Color _backgroundColor(BuildContext context) {
     if (status != SXChipStatus.none) {
       switch (status) {
         case SXChipStatus.accepted:
@@ -30,12 +30,12 @@ class SXChip extends StatelessWidget {
         case SXChipStatus.rejected:
           return const Color(0xFFFFEBEE);
         case SXChipStatus.none:
-          return DSColors.surfaceContainer;
+          return Theme.of(context).colorScheme.surfaceContainer;
       }
     }
     switch (variant) {
       case SXChipVariant.defaultChip:
-        return DSColors.surfaceContainer;
+        return Theme.of(context).colorScheme.surfaceContainer;
       case SXChipVariant.sport:
         return DSColors.voltSurface;
       case SXChipVariant.position:
@@ -45,7 +45,7 @@ class SXChip extends StatelessWidget {
     }
   }
 
-  Color get _textColor {
+  Color _textColor(BuildContext context) {
     if (status != SXChipStatus.none) {
       switch (status) {
         case SXChipStatus.accepted:
@@ -53,14 +53,14 @@ class SXChip extends StatelessWidget {
         case SXChipStatus.pending:
           return DSColors.amber;
         case SXChipStatus.rejected:
-          return DSColors.red;
+          return Theme.of(context).colorScheme.error;
         case SXChipStatus.none:
-          return DSColors.onSurfaceVariant;
+          return Theme.of(context).colorScheme.onSurfaceVariant;
       }
     }
     switch (variant) {
       case SXChipVariant.defaultChip:
-        return DSColors.onSurfaceVariant;
+        return Theme.of(context).colorScheme.onSurfaceVariant;
       case SXChipVariant.sport:
         return DSColors.volt;
       case SXChipVariant.position:
@@ -77,13 +77,13 @@ class SXChip extends StatelessWidget {
           ? const EdgeInsets.symmetric(horizontal: 8, vertical: 4)
           : const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: _backgroundColor,
+        color: _backgroundColor(context),
         borderRadius: BorderRadius.circular(DSRadius.chip),
       ),
       child: Text(
         label,
         style: TextStyle(
-          color: _textColor,
+          color: _textColor(context),
           fontSize: compact ? 11 : 12,
           fontWeight: FontWeight.w600,
           height: 1.2,

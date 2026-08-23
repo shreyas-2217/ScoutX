@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/saved_clip.dart';
@@ -28,12 +28,12 @@ class SavedClipsScreen extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CircularProgressIndicator(color: DSColors.onSurface),
+                          CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                           SizedBox(height: DSSpacing.md),
                           Text(
                             'Loading saved clips...',
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -105,7 +105,7 @@ class _SavedTile extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Container(color: DSColors.surfaceContainer),
+                Container(color: Theme.of(context).colorScheme.surfaceContainer),
                 if (thumbnail != null)
                   Image.network(
                     thumbnail,
@@ -145,9 +145,9 @@ class _SavedTile extends StatelessWidget {
                 ),
                 SizedBox(height: DSSpacing.xs),
                 Text(
-                  '${saved.sport} · ${saved.position}',
+                  '${saved.sport} Â· ${saved.position}',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: DSColors.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 SizedBox(height: 2),
@@ -156,7 +156,7 @@ class _SavedTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: DSColors.onSurfaceDisabled,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                   ),
                 ),
               ],

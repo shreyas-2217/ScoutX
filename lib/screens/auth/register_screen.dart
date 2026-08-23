@@ -128,10 +128,10 @@ class _RegisterScreenState extends State<RegisterScreen>
       hintText: hint,
       hintStyle: GoogleFonts.inter(
         fontSize: 16,
-        color: DSColors.onSurfaceDisabled,
+        color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
       ),
       filled: true,
-      fillColor: DSColors.surfaceContainer,
+      fillColor: Theme.of(context).colorScheme.surfaceContainer,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: DSSpacing.md,
         vertical: DSSpacing.md,
@@ -139,15 +139,15 @@ class _RegisterScreenState extends State<RegisterScreen>
       suffixIcon: suffix,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(DSRadius.input),
-        borderSide: const BorderSide(color: DSColors.outlineVariant, width: 1),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(DSRadius.input),
-        borderSide: const BorderSide(color: DSColors.outlineVariant, width: 1),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(DSRadius.input),
-        borderSide: const BorderSide(color: DSColors.onSurface, width: 1),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 1),
       ),
     );
   }
@@ -157,9 +157,9 @@ class _RegisterScreenState extends State<RegisterScreen>
     final error = context.watch<AuthProvider>().error;
 
     return Scaffold(
-      backgroundColor: DSColors.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: DSColors.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -172,7 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             fontSize: 20,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.32,
-            color: DSColors.onSurface,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         actions: [
@@ -181,14 +181,14 @@ class _RegisterScreenState extends State<RegisterScreen>
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: DSColors.surfaceContainer,
+              color: Theme.of(context).colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(DSRadius.sm),
-              border: Border.all(color: DSColors.outlineVariant),
+              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
             ),
             child: Icon(
               DSIcons.user,
               size: 18,
-              color: DSColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -225,7 +225,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           fontSize: 34,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.32,
-                          color: DSColors.onSurface,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: DSSpacing.sm),
@@ -233,7 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                         'Join the scouting network',
                         style: GoogleFonts.inter(
                           fontSize: 14,
-                          color: DSColors.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: DSSpacing.xl),
@@ -245,14 +245,14 @@ class _RegisterScreenState extends State<RegisterScreen>
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.5,
-                          color: DSColors.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: DSSpacing.sm),
                       TextFormField(
                         controller: _name,
                         textCapitalization: TextCapitalization.words,
-                        style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                        style: GoogleFonts.inter(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
                         decoration: _inputDecoration('Enter your full name'),
                         validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter your name' : null,
                       ),
@@ -265,14 +265,14 @@ class _RegisterScreenState extends State<RegisterScreen>
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.5,
-                          color: DSColors.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: DSSpacing.sm),
                       TextFormField(
                         controller: _email,
                         keyboardType: TextInputType.emailAddress,
-                        style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                        style: GoogleFonts.inter(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
                         decoration: _inputDecoration('Enter your email address'),
                         validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
                       ),
@@ -288,7 +288,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                               letterSpacing: 0.5,
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                           GestureDetector(
@@ -299,7 +299,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                                 letterSpacing: 0.5,
-                                color: DSColors.onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ),
@@ -309,7 +309,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                       TextFormField(
                         controller: _password,
                         obscureText: _obscure,
-                        style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                        style: GoogleFonts.inter(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
                         decoration: _inputDecoration('Create a password'),
                         validator: (v) => (v == null || v.length < 6) ? 'Password must be 6+ characters' : null,
                         onFieldSubmitted: (_) => _submit(),
@@ -323,7 +323,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.5,
-                          color: DSColors.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: DSSpacing.sm),
@@ -373,14 +373,14 @@ class _RegisterScreenState extends State<RegisterScreen>
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             letterSpacing: 0.5,
-                            color: DSColors.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(height: DSSpacing.sm),
                         TextFormField(
                           controller: _teamName,
                           textCapitalization: TextCapitalization.words,
-                          style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                          style: GoogleFonts.inter(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
                           decoration: _inputDecoration('Enter team name (optional)'),
                         ),
                         const SizedBox(height: DSSpacing.md),
@@ -392,7 +392,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             letterSpacing: 0.5,
-                            color: DSColors.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(height: DSSpacing.sm),
@@ -400,13 +400,13 @@ class _RegisterScreenState extends State<RegisterScreen>
                           Container(
                             padding: const EdgeInsets.all(DSSpacing.md),
                             decoration: BoxDecoration(
-                              color: DSColors.surfaceContainer,
+                              color: Theme.of(context).colorScheme.surfaceContainer,
                               borderRadius: BorderRadius.circular(DSRadius.input),
-                              border: Border.all(color: DSColors.outlineVariant),
+                              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                             ),
                             child: Row(
                               children: [
-                                const Icon(DSIcons.mapPin, size: 18, color: DSColors.onSurfaceVariant),
+                                Icon(DSIcons.mapPin, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                 const SizedBox(width: DSSpacing.sm),
                                 Expanded(
                                   child: Text(
@@ -414,7 +414,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                     style: GoogleFonts.inter(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
-                                      color: DSColors.onSurface,
+                                      color: Theme.of(context).colorScheme.onSurface,
                                     ),
                                   ),
                                 ),
@@ -424,7 +424,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                     'Change',
                                     style: GoogleFonts.inter(
                                       fontSize: 14,
-                                      color: DSColors.onSurfaceVariant,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                                     ),
                                   ),
                                 ),
@@ -437,19 +437,19 @@ class _RegisterScreenState extends State<RegisterScreen>
                             child: Container(
                               padding: const EdgeInsets.all(DSSpacing.md),
                               decoration: BoxDecoration(
-                                color: DSColors.surfaceContainer,
+                                color: Theme.of(context).colorScheme.surfaceContainer,
                                 borderRadius: BorderRadius.circular(DSRadius.input),
-                                border: Border.all(color: DSColors.outlineVariant),
+                                border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(DSIcons.mapPin, size: 18, color: DSColors.onSurfaceVariant),
+                                  Icon(DSIcons.mapPin, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   const SizedBox(width: DSSpacing.sm),
                                   Text(
                                     'City, State or Zip Code',
                                     style: GoogleFonts.inter(
                                       fontSize: 16,
-                                      color: DSColors.onSurfaceDisabled,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                                     ),
                                   ),
                                 ],
@@ -463,7 +463,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                         Text(
                           error,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(fontSize: 14, color: DSColors.red),
+                          style: GoogleFonts.inter(fontSize: 14, color: Theme.of(context).colorScheme.error),
                         ),
                       ],
 
@@ -475,19 +475,19 @@ class _RegisterScreenState extends State<RegisterScreen>
                         child: FilledButton(
                           onPressed: _loading ? null : _submit,
                           style: FilledButton.styleFrom(
-                            backgroundColor: DSColors.onSurface,
-                            foregroundColor: DSColors.surface,
+                            backgroundColor: Theme.of(context).colorScheme.onSurface,
+                            foregroundColor: Theme.of(context).colorScheme.surface,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(DSRadius.button),
                             ),
                           ),
                           child: _loading
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 20,
                                   height: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: DSColors.surface,
+                                    color: Theme.of(context).colorScheme.surface,
                                   ),
                                 )
                               : Text(
@@ -510,7 +510,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                             'Already have an account? ',
                             style: GoogleFonts.inter(
                               fontSize: 14,
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                           GestureDetector(
@@ -520,7 +520,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                               style: GoogleFonts.inter(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: DSColors.onSurface,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ),
@@ -545,10 +545,10 @@ class _RegisterScreenState extends State<RegisterScreen>
         duration: DSMotion.fast,
         height: 48,
         decoration: BoxDecoration(
-          color: isSelected ? DSColors.onSurface : DSColors.surfaceContainer,
+          color: isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(DSRadius.button),
           border: Border.all(
-            color: isSelected ? DSColors.onSurface : DSColors.outlineVariant,
+            color: isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.outlineVariant,
             width: 1,
           ),
         ),
@@ -559,7 +559,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               fontSize: 14,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.32,
-              color: isSelected ? DSColors.surface : DSColors.onSurface,
+              color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -582,7 +582,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             fontSize: 12,
             fontWeight: FontWeight.w500,
             letterSpacing: 0.5,
-            color: DSColors.onSurfaceVariant,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         const SizedBox(height: DSSpacing.sm),
@@ -590,16 +590,16 @@ class _RegisterScreenState extends State<RegisterScreen>
           height: 48,
           padding: const EdgeInsets.symmetric(horizontal: DSSpacing.md),
           decoration: BoxDecoration(
-            color: DSColors.surfaceContainer,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(DSRadius.input),
-            border: Border.all(color: DSColors.outlineVariant, width: 1),
+            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
           ),
           child: DropdownButton<T>(
             value: value,
             isExpanded: true,
             underline: const SizedBox.shrink(),
-            dropdownColor: DSColors.surface,
-            style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+            dropdownColor: Theme.of(context).colorScheme.surface,
+            style: GoogleFonts.inter(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
             items: items
                 .map((i) => DropdownMenuItem(value: i, child: Text('$i')))
                 .toList(),

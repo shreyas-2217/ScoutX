@@ -112,16 +112,25 @@ class CloudinaryService {
 
   /// Uploads [bytes] (a video) and returns its delivered HTTPS URL
   /// (Cloudinary's `secure_url`).
+  ///
+  /// [onProgress] reports bytes-sent as a 0.0–1.0 fraction while the request
+  /// body is being written to the network.
   Future<String> uploadVideo(
     String playerId,
     Uint8List bytes,
-    String fileName,
-  ) async {
+    String fileName, {
+    void Function(double progress)? onProgress,
+  }) async {
     final request = http.MultipartRequest('POST', _videoUploadUri())
       ..fields['upload_preset'] = config.uploadPreset
       ..fields['public_id'] = _buildPublicId(playerId, fileName)
       ..files.add(
-        http.MultipartFile.fromBytes('file', bytes, filename: fileName),
+        http.MultipartFile(
+          'file',
+          _trackedChunks(bytes, onProgress),
+          bytes.length,
+          filename: fileName,
+        ),
       );
 
     final response = await request.send();
@@ -137,6 +146,23 @@ class CloudinaryService {
       throw Exception('Cloudinary response did not include a secure_url.');
     }
     return secureUrl;
+  }
+
+  /// Lazily yields [bytes] in fixed-size chunks so the http client pulls
+  /// (and writes) them one at a time — lets us report real upload progress.
+  Stream<Uint8List> _trackedChunks(
+    Uint8List bytes,
+    void Function(double progress)? onProgress,
+  ) async* {
+    const chunkSize = 512 * 1024;
+    var sent = 0;
+    while (sent < bytes.length) {
+      final end =
+          (sent + chunkSize < bytes.length) ? sent + chunkSize : bytes.length;
+      yield Uint8List.sublistView(bytes, sent, end);
+      sent = end;
+      onProgress?.call(sent / bytes.length);
+    }
   }
 
   /// Uploads [bytes] (an image) and returns its delivered HTTPS URL.

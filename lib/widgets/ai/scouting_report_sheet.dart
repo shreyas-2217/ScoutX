@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:scoutx/design_system.dart';
 
 import '../../models/scouting_report.dart';
 import '../../models/user_profile.dart';
@@ -135,11 +134,11 @@ class _ScoutingReportSheetState extends State<ScoutingReportSheet> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: DSColors.onSurface.withValues(alpha: 0.08),
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.psychology,
-                          size: 20, color: DSColors.onSurface),
+                      child: Icon(Icons.psychology,
+                          size: 20, color: Theme.of(context).colorScheme.onSurface),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -154,7 +153,7 @@ class _ScoutingReportSheetState extends State<ScoutingReportSheet> {
                                 ?.copyWith(fontWeight: FontWeight.w800),
                           ),
                           Text(
-                            '${widget.player.displayName} · ${widget.player.sport ?? 'Athlete'}',
+                            '${widget.player.displayName} Ã‚Â· ${widget.player.sport ?? 'Athlete'}',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
@@ -186,10 +185,10 @@ class _ScoutingReportSheetState extends State<ScoutingReportSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const CircularProgressIndicator(color: DSColors.onSurface),
+            CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
             const SizedBox(height: 16),
             Text(
-              'ScoutX AI is reviewing profile stats and highlight clips…',
+              'ScoutX AI is reviewing profile stats and highlight clipsÃ¢â‚¬Â¦',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -270,7 +269,7 @@ class _ScoutingReportSheetState extends State<ScoutingReportSheet> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: DSColors.onSurface.withValues(alpha: 0.05),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -282,7 +281,7 @@ class _ScoutingReportSheetState extends State<ScoutingReportSheet> {
               Expanded(
                 child: Text(
                   _fromCache
-                      ? 'Cached report · generated ${DateFormat('d MMM yyyy').format(r.generatedAt)}'
+                      ? 'Cached report Ã‚Â· generated ${DateFormat('d MMM yyyy').format(r.generatedAt)}'
                       : 'Generated just now by ScoutX AI from public profile and clip data only.',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -325,7 +324,7 @@ class _RatingBadge extends StatelessWidget {
       height: 84,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: DSColors.onSurface, width: 3),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface, width: 3),
       ),
       alignment: Alignment.center,
       child: Column(
@@ -355,9 +354,9 @@ class _VerdictBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: DSColors.cyan.withValues(alpha: 0.12),
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: DSColors.cyan.withValues(alpha: 0.35)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.35)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -366,7 +365,7 @@ class _VerdictBox extends StatelessWidget {
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0.5,
-                    color: DSColors.onSurface,
+                    color: Theme.of(context).colorScheme.onSurface,
                   )),
           const SizedBox(height: 4),
           Text(verdict,
@@ -393,7 +392,7 @@ class _SectionTitle extends StatelessWidget {
           width: 3,
           height: 14,
           decoration: BoxDecoration(
-            color: DSColors.onSurface,
+            color: Theme.of(context).colorScheme.onSurface,
             borderRadius: BorderRadius.circular(2),
           ),
         ),

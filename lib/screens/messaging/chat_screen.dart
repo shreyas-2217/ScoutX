@@ -158,8 +158,8 @@ class _ChatScreenState extends State<ChatScreen> {
               stream: db.streamMessages(widget.conversationId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(color: DSColors.onSurface),
+                  return Center(
+                    child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                   );
                 }
                 final messages = snapshot.data ?? [];
@@ -265,17 +265,17 @@ class _ChatScreenState extends State<ChatScreen> {
             child: IconButton(
               onPressed: _sending ? null : _send,
               icon: _sending
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: DSColors.onSurface,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     )
-                  : const Icon(DSIcons.send, color: DSColors.onSurface),
+                  : Icon(DSIcons.send, color: Theme.of(context).colorScheme.onSurface),
               style: IconButton.styleFrom(
-                backgroundColor: DSColors.onSurface.withValues(alpha: 0.08),
+                backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
               ),
             ),
           ),
@@ -345,7 +345,7 @@ class _ChatBubble extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: isMine
-                    ? DSColors.onSurface
+                    ? Theme.of(context).colorScheme.onSurface
                     : theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(DSRadius.lg),
@@ -363,7 +363,7 @@ class _ChatBubble extends StatelessWidget {
                     message.text,
                     style: TextStyle(
                       color: isMine
-                          ? DSColors.onBrand
+                          ? Theme.of(context).colorScheme.onPrimary
                           : theme.colorScheme.onSurface,
                       fontSize: 15,
                     ),
@@ -377,7 +377,7 @@ class _ChatBubble extends StatelessWidget {
                     _formatTime(message.createdAt),
                     style: TextStyle(
                       color: isMine
-                          ? DSColors.onBrand.withValues(alpha: 0.6)
+                          ? Theme.of(context).colorScheme.onPrimary.withValues(alpha: 0.6)
                           : theme.colorScheme.onSurfaceVariant,
                       fontSize: 11,
                     ),
@@ -426,7 +426,7 @@ class _ClipCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(DSSpacing.sm),
         decoration: BoxDecoration(
-          color: DSColors.onSurface.withValues(alpha: 0.12),
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(DSRadius.md),
         ),
         child: Row(
@@ -440,7 +440,7 @@ class _ClipCard extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Container(color: DSColors.onSurface.withValues(alpha: 0.2)),
+                    Container(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2)),
                     if (thumbnail != null)
                       Image.network(
                         thumbnail,
@@ -466,7 +466,7 @@ class _ClipCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: DSColors.onSurface,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
               ),
             ),

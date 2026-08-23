@@ -152,10 +152,10 @@ class MyProfileScreen extends StatelessWidget {
                             }
                           }
                         },
-                        icon: Icon(Icons.logout, size: 18, color: DSColors.red),
-                        label: Text('Sign Out', style: TextStyle(color: DSColors.red)),
+                        icon: Icon(Icons.logout, size: 18, color: Theme.of(context).colorScheme.error),
+                        label: Text('Sign Out', style: TextStyle(color: Theme.of(context).colorScheme.error)),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: DSColors.red),
+                          side: BorderSide(color: Theme.of(context).colorScheme.error),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -167,10 +167,10 @@ class MyProfileScreen extends StatelessWidget {
                       width: 180,
                       child: OutlinedButton.icon(
                         onPressed: () => _confirmDeleteAccount(context),
-                        icon: Icon(Icons.delete_forever_outlined, size: 18, color: DSColors.red),
-                        label: Text('Delete Account', style: TextStyle(color: DSColors.red)),
+                        icon: Icon(Icons.delete_forever_outlined, size: 18, color: Theme.of(context).colorScheme.error),
+                        label: Text('Delete Account', style: TextStyle(color: Theme.of(context).colorScheme.error)),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: DSColors.red),
+                          side: BorderSide(color: Theme.of(context).colorScheme.error),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -204,7 +204,7 @@ Future<void> _confirmDeleteAccount(BuildContext context) async {
         ),
         TextButton(
           onPressed: () => Navigator.pop(ctx, true),
-          child: Text('Delete', style: TextStyle(color: DSColors.red)),
+          child: Text('Delete', style: TextStyle(color: Theme.of(context).colorScheme.error)),
         ),
       ],
     ),
@@ -241,7 +241,10 @@ class _ProfileHeader extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [DSColors.onSurface, DSColors.cyan],
+                colors: [
+                  Theme.of(context).colorScheme.onSurface,
+                  Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                ],
               ),
             ),
             child: Container(
@@ -252,7 +255,7 @@ class _ProfileHeader extends StatelessWidget {
               ),
               child: CircleAvatar(
                 radius: 44,
-                backgroundColor: DSColors.surfaceContainerHighest,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 backgroundImage: (profile.profileImageUrl != null && profile.profileImageUrl!.isNotEmpty)
                     ? NetworkImage(profile.profileImageUrl!)
                     : null,
@@ -363,10 +366,10 @@ class _ProfileHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             decoration: BoxDecoration(
-              color: DSColors.onSurface.withValues(alpha: 0.08),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: DSColors.onSurface.withValues(alpha: 0.3),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
               ),
             ),
             child: Text(
@@ -374,7 +377,7 @@ class _ProfileHeader extends StatelessWidget {
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1,
-                color: DSColors.onSurface,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
@@ -407,19 +410,19 @@ class _StatsRow extends StatelessWidget {
           _StatItem(
             value: '${profile.clipCount < 0 ? 0 : profile.clipCount}',
             label: 'Clips',
-            color: DSColors.onSurface,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           Container(width: 1, height: 32, color: Theme.of(context).colorScheme.outlineVariant),
           _StatItem(
             value: _compact(profile.followerCount),
             label: 'Followers',
-            color: DSColors.cyan,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           Container(width: 1, height: 32, color: Theme.of(context).colorScheme.outlineVariant),
           _StatItem(
             value: '${profile.followingCount}',
             label: 'Following',
-            color: DSColors.green,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ],
       ),
@@ -489,7 +492,7 @@ class _SectionBlock extends StatelessWidget {
                 width: 3,
                 height: 16,
                 decoration: BoxDecoration(
-                  color: DSColors.onSurface,
+                  color: Theme.of(context).colorScheme.onSurface,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -558,7 +561,7 @@ class _InfoGrid extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(item.icon, size: 18, color: DSColors.onSurface),
+              Icon(item.icon, size: 18, color: Theme.of(context).colorScheme.onSurface),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -614,10 +617,10 @@ class _YourReelsGrid extends StatelessWidget {
       stream: db.streamClipsForPlayer(uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
+          return Center(
             child: Padding(
               padding: EdgeInsets.all(32),
-              child: CircularProgressIndicator(color: DSColors.onSurface),
+              child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
             ),
           );
         }
@@ -693,7 +696,7 @@ class _YourReelsGrid extends StatelessWidget {
               onLongPress: () {
                 showModalBottomSheet(
                   context: context,
-                  backgroundColor: DSColors.surfaceContainer,
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.vertical(top: Radius.circular(DSRadius.sheet)),
                   ),
@@ -706,13 +709,13 @@ class _YourReelsGrid extends StatelessWidget {
                           height: 4,
                           margin: EdgeInsets.symmetric(vertical: DSSpacing.md),
                           decoration: BoxDecoration(
-                            color: DSColors.outlineVariant,
+                            color: Theme.of(context).colorScheme.outlineVariant,
                             borderRadius: BorderRadius.circular(DSRadius.full),
                           ),
                         ),
                         ListTile(
-                          leading: Icon(Icons.delete_outline, color: DSColors.red),
-                          title: Text('Delete highlight', style: TextStyle(color: DSColors.red)),
+                          leading: Icon(Icons.delete_outline, color: Theme.of(context).colorScheme.error),
+                          title: Text('Delete highlight', style: TextStyle(color: Theme.of(context).colorScheme.error)),
                           onTap: () async {
                             Navigator.pop(ctx);
                             final confirmed = await showDialog<bool>(
@@ -724,7 +727,7 @@ class _YourReelsGrid extends StatelessWidget {
                                   TextButton(onPressed: () => Navigator.pop(dCtx, false), child: Text('Cancel')),
                                   TextButton(
                                     onPressed: () => Navigator.pop(dCtx, true),
-                                    style: TextButton.styleFrom(foregroundColor: DSColors.red),
+                                    style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
                                     child: Text('Delete'),
                                   ),
                                 ],

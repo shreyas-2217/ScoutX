@@ -115,25 +115,25 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
       hintText: hint,
       hintStyle: GoogleFonts.inter(
         fontSize: 16,
-        color: DSColors.onSurfaceDisabled,
+        color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
       ),
       filled: true,
-      fillColor: DSColors.surfaceContainer,
+      fillColor: Theme.of(context).colorScheme.surfaceContainer,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: DSSpacing.md,
         vertical: DSSpacing.md,
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(DSRadius.input),
-        borderSide: const BorderSide(color: DSColors.outlineVariant, width: 1),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(DSRadius.input),
-        borderSide: const BorderSide(color: DSColors.outlineVariant, width: 1),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(DSRadius.input),
-        borderSide: const BorderSide(color: DSColors.onSurface, width: 1),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 1),
       ),
     );
   }
@@ -141,9 +141,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: DSColors.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: DSColors.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
@@ -156,7 +156,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
             fontSize: 20,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.32,
-            color: DSColors.onSurface,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         actions: [
@@ -165,14 +165,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: DSColors.surfaceContainer,
+              color: Theme.of(context).colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(DSRadius.sm),
-              border: Border.all(color: DSColors.outlineVariant),
+              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
             ),
             child: Icon(
               DSIcons.user,
               size: 18,
-              color: DSColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -206,8 +206,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                       child: LinearProgressIndicator(
                         value: 0.6,
                         minHeight: 4,
-                        backgroundColor: DSColors.surfaceContainerHigh,
-                        valueColor: AlwaysStoppedAnimation<Color>(DSColors.onSurface),
+                        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.onSurface),
                       ),
                     ),
                     const SizedBox(height: DSSpacing.xl),
@@ -219,7 +219,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                         fontSize: 30,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.32,
-                        color: DSColors.onSurface,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: DSSpacing.sm),
@@ -227,7 +227,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                       'Set up your credentials to begin scouting or getting scouted',
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: DSColors.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: DSSpacing.xl),
@@ -240,14 +240,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                             width: 80,
                             height: 80,
                             decoration: BoxDecoration(
-                              color: DSColors.surfaceContainer,
+                              color: Theme.of(context).colorScheme.surfaceContainer,
                               shape: BoxShape.circle,
-                              border: Border.all(color: DSColors.outlineVariant),
+                              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                             ),
                             child: Icon(
                               DSIcons.user,
                               size: 36,
-                              color: DSColors.onSurfaceDisabled,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                             ),
                           ),
                           Positioned(
@@ -257,14 +257,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                               width: 28,
                               height: 28,
                               decoration: BoxDecoration(
-                                color: DSColors.onSurface,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 shape: BoxShape.circle,
-                                border: Border.all(color: DSColors.surface, width: 2),
+                                border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2),
                               ),
                               child: Icon(
                                 DSIcons.add,
                                 size: 14,
-                                color: DSColors.surface,
+                                color: Theme.of(context).colorScheme.surface,
                               ),
                             ),
                           ),
@@ -280,14 +280,14 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.5,
-                        color: DSColors.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: DSSpacing.sm),
                     TextFormField(
                       controller: _name,
                       textCapitalization: TextCapitalization.words,
-                      style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                      style: GoogleFonts.inter(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
                       decoration: _inputDecoration('e.g. John Doe'),
                     ),
                     const SizedBox(height: DSSpacing.xl),
@@ -299,7 +299,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.5,
-                        color: DSColors.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: DSSpacing.sm),
@@ -351,7 +351,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.5,
-                          color: DSColors.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: DSSpacing.sm),
@@ -359,13 +359,13 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                         Container(
                           padding: const EdgeInsets.all(DSSpacing.md),
                           decoration: BoxDecoration(
-                            color: DSColors.surfaceContainer,
+                            color: Theme.of(context).colorScheme.surfaceContainer,
                             borderRadius: BorderRadius.circular(DSRadius.input),
-                            border: Border.all(color: DSColors.outlineVariant),
+                            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                           ),
                           child: Row(
                             children: [
-                              const Icon(DSIcons.mapPin, size: 18, color: DSColors.onSurfaceVariant),
+                              Icon(DSIcons.mapPin, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
                               const SizedBox(width: DSSpacing.sm),
                               Expanded(
                                 child: Text(
@@ -373,7 +373,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                                   style: GoogleFonts.inter(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: DSColors.onSurface,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
@@ -383,7 +383,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                                   'Change',
                                   style: GoogleFonts.inter(
                                     fontSize: 14,
-                                    color: DSColors.onSurfaceVariant,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                               ),
@@ -396,19 +396,19 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                           child: Container(
                             padding: const EdgeInsets.all(DSSpacing.md),
                             decoration: BoxDecoration(
-                              color: DSColors.surfaceContainer,
+                              color: Theme.of(context).colorScheme.surfaceContainer,
                               borderRadius: BorderRadius.circular(DSRadius.input),
-                              border: Border.all(color: DSColors.outlineVariant),
+                              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                             ),
                             child: Row(
                               children: [
-                                const Icon(DSIcons.mapPin, size: 18, color: DSColors.onSurfaceVariant),
+                                Icon(DSIcons.mapPin, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                 const SizedBox(width: DSSpacing.sm),
                                 Text(
                                   'City, State, Country',
                                   style: GoogleFonts.inter(
                                     fontSize: 16,
-                                    color: DSColors.onSurfaceDisabled,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                                   ),
                                 ),
                               ],
@@ -425,19 +425,19 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
                       child: FilledButton(
                         onPressed: _loading ? null : _create,
                         style: FilledButton.styleFrom(
-                          backgroundColor: DSColors.onSurface,
-                          foregroundColor: DSColors.surface,
+                          backgroundColor: Theme.of(context).colorScheme.onSurface,
+                          foregroundColor: Theme.of(context).colorScheme.surface,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(DSRadius.button),
                           ),
                         ),
                         child: _loading
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 20,
                                 height: 20,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: DSColors.surface,
+                                  color: Theme.of(context).colorScheme.surface,
                                 ),
                               )
                             : Row(
@@ -475,10 +475,10 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
         duration: DSMotion.fast,
         height: 48,
         decoration: BoxDecoration(
-          color: isSelected ? DSColors.onSurface : DSColors.surfaceContainer,
+          color: isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(DSRadius.button),
           border: Border.all(
-            color: isSelected ? DSColors.onSurface : DSColors.outlineVariant,
+            color: isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.outlineVariant,
             width: 1,
           ),
         ),
@@ -489,7 +489,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
               fontSize: 14,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.32,
-              color: isSelected ? DSColors.surface : DSColors.onSurface,
+              color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -512,7 +512,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
             fontSize: 12,
             fontWeight: FontWeight.w500,
             letterSpacing: 0.5,
-            color: DSColors.onSurfaceVariant,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         const SizedBox(height: DSSpacing.sm),
@@ -520,16 +520,16 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
           height: 48,
           padding: const EdgeInsets.symmetric(horizontal: DSSpacing.md),
           decoration: BoxDecoration(
-            color: DSColors.surfaceContainer,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(DSRadius.input),
-            border: Border.all(color: DSColors.outlineVariant, width: 1),
+            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
           ),
           child: DropdownButton<T>(
             value: value,
             isExpanded: true,
             underline: const SizedBox.shrink(),
-            dropdownColor: DSColors.surface,
-            style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+            dropdownColor: Theme.of(context).colorScheme.surface,
+            style: GoogleFonts.inter(fontSize: 16, color: Theme.of(context).colorScheme.onSurface),
             items: items
                 .map((i) => DropdownMenuItem(value: i, child: Text('$i')))
                 .toList(),

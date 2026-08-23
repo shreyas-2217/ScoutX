@@ -17,10 +17,10 @@ class DesktopNavRail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 72,
-      decoration: const BoxDecoration(
-        color: DSColors.surface,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         border: Border(
-          right: BorderSide(color: DSColors.outlineVariant, width: 1),
+          right: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
         ),
       ),
       child: Column(
@@ -53,7 +53,7 @@ class DesktopNavRail extends StatelessWidget {
                           Icon(
                             isActive ? item.activeIcon : item.icon,
                             size: DSIconSize.md,
-                            color: isActive ? DSColors.onSurface : DSColors.onSurfaceVariant,
+                            color: isActive ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -61,7 +61,7 @@ class DesktopNavRail extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                              color: isActive ? DSColors.onSurface : DSColors.onSurfaceVariant,
+                              color: isActive ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

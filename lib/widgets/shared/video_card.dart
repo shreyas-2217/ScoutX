@@ -61,10 +61,10 @@ class _VideoCardState extends State<VideoCard> {
         child: AnimatedContainer(
           duration: DSMotion.fast,
           decoration: BoxDecoration(
-            color: DSColors.surface,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(DSRadius.card),
             border: Border.all(
-              color: _isHovered ? DSColors.outline : DSColors.outlineVariant,
+              color: _isHovered ? Theme.of(context).colorScheme.outline : Theme.of(context).colorScheme.outlineVariant,
               width: 1,
             ),
             boxShadow: _isHovered ? DSElevation.level2 : DSElevation.level1,
@@ -116,12 +116,12 @@ class _VideoCardState extends State<VideoCard> {
               width: _isHovered ? 52 : 48,
               height: _isHovered ? 52 : 48,
               decoration: BoxDecoration(
-                color: DSColors.onSurface.withValues(alpha: 0.9),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 DSIcons.play,
-                color: DSColors.onBrand,
+                color: Theme.of(context).colorScheme.onPrimary,
                 size: 28,
               ),
             ),
@@ -194,12 +194,12 @@ class _VideoCardState extends State<VideoCard> {
 
   Widget _buildPlaceholder() {
     return Container(
-      color: DSColors.surfaceContainer,
-      child: const Center(
+      color: Theme.of(context).colorScheme.surfaceContainer,
+      child: Center(
         child: Icon(
           DSIcons.videoCamera,
           size: 40,
-          color: DSColors.onSurfaceVariant,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
     );
@@ -213,10 +213,10 @@ class _VideoCardState extends State<VideoCard> {
         children: [
           Text(
             widget.title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: DSColors.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -232,10 +232,10 @@ class _VideoCardState extends State<VideoCard> {
                 ),
                 child: Text(
                   widget.playerPosition,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: DSColors.onSurface,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -264,7 +264,7 @@ class _VideoCardState extends State<VideoCard> {
                 Icon(
                   widget.isLiked ? DSIcons.like : DSIcons.likeOutline,
                   size: 16,
-                  color: widget.isLiked ? DSColors.red : DSColors.onSurfaceVariant,
+                  color: widget.isLiked ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(width: 4),
                 Text(
@@ -272,7 +272,7 @@ class _VideoCardState extends State<VideoCard> {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: widget.isLiked ? DSColors.red : DSColors.onSurfaceVariant,
+                    color: widget.isLiked ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -284,18 +284,18 @@ class _VideoCardState extends State<VideoCard> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                Icon(
                   DSIcons.comment,
                   size: 16,
-                  color: DSColors.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(width: 4),
                 Text(
                   _formatCount(widget.comments),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: DSColors.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -305,15 +305,15 @@ class _VideoCardState extends State<VideoCard> {
           Icon(
             DSIcons.eye,
             size: 14,
-            color: DSColors.onSurfaceVariant,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           const SizedBox(width: 4),
           Text(
             _formatCount(widget.views),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: DSColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],

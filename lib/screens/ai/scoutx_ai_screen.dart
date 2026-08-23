@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:scoutx/design_system.dart';
@@ -55,7 +55,7 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
       if (mounted) setState(() => _isListening = false);
       return;
     }
-    // need user gesture — re-init if not enabled
+    // need user gesture â€” re-init if not enabled
     if (!_speechEnabled) {
       try {
         _speechEnabled = await _speech.initialize();
@@ -144,7 +144,10 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
               height: 32,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [DSColors.onSurface, DSColors.volt],
+                  colors: [
+                    Theme.of(context).colorScheme.onSurface,
+                    Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.55),
+                  ],
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -221,7 +224,7 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
             height: 80,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [DSColors.onSurface.withValues(alpha: 0.8), DSColors.volt],
+                colors: [Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8), DSColors.volt],
               ),
               borderRadius: BorderRadius.circular(24),
             ),
@@ -274,7 +277,7 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
                         .animate(onPlay: (c) => c.repeat(reverse: true))
                         .scale(duration: 600.ms, begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2)),
                     const SizedBox(width: 8),
-                    Text('Listening… speak now', style: theme.textTheme.labelSmall?.copyWith(color: Colors.red, fontWeight: FontWeight.w600)),
+                    Text('Listeningâ€¦ speak now', style: theme.textTheme.labelSmall?.copyWith(color: Colors.red, fontWeight: FontWeight.w600)),
                     const SizedBox(width: 8),
                     Text('tap mic to stop', style: theme.textTheme.labelSmall?.copyWith(color: Colors.grey)),
                   ],
@@ -296,7 +299,7 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
                       onSubmitted: _send,
                       decoration: InputDecoration(
                         hintText: _isListening
-                            ? 'Listening…'
+                            ? 'Listeningâ€¦'
                             : ai.isRateLimited
                                 ? 'AI limit reached...'
                                 : 'Ask ScoutX AI...',
@@ -334,7 +337,7 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
                 const SizedBox(width: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: ai.isLoading || ai.isRateLimited ? Colors.grey : DSColors.onSurface,
+                    color: ai.isLoading || ai.isRateLimited ? Colors.grey : Theme.of(context).colorScheme.onSurface,
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(

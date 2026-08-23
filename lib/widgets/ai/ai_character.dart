@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:scoutx/design_system.dart';
 
 enum AICharacterState { idle, thinking, success, error, greeting }
@@ -20,14 +20,14 @@ class AICharacter extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [DSColors.onSurface, DSColors.onSurface.withValues(alpha: 0.7)],
+          colors: [Theme.of(context).colorScheme.onSurface, Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: DSColors.onSurface.withValues(alpha: 0.3),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
             blurRadius: 16,
             spreadRadius: 2,
           ),

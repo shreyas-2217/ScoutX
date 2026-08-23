@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
@@ -239,7 +239,7 @@ class _PostTrialScreenState extends State<PostTrialScreen>
 
                       // Location picker button
                       Material(
-                        color: DSColors.surfaceContainer,
+                        color: Theme.of(context).colorScheme.surfaceContainer,
                         borderRadius: BorderRadius.circular(12),
                         child: InkWell(
                           onTap: _pickLocation,
@@ -252,14 +252,14 @@ class _PostTrialScreenState extends State<PostTrialScreen>
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: DSColors.onSurface.withValues(alpha: 0.08),
+                                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Icon(
                                     _trialCoordinates != null
                                         ? Icons.check_circle
                                         : Icons.location_on_outlined,
-                                    color: DSColors.onSurface,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                     size: 20,
                                   ),
                                 ),
@@ -276,26 +276,26 @@ class _PostTrialScreenState extends State<PostTrialScreen>
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
                                           color: _trialCoordinates != null
-                                              ? DSColors.onSurface
+                                              ? Theme.of(context).colorScheme.onSurface
                                               : Theme.of(context).colorScheme.onSurface,
                                         ),
                                       ),
                                       if (_trialCoordinates != null && _trialAddress != null)
                                         Text(
                                           _trialAddress!,
-                                          style: TextStyle(fontSize: 12, color: DSColors.onSurfaceVariant),
+                                          style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         )
                                       else
                                         Text(
                                           'GPS, search, or enter coordinates',
-                                          style: TextStyle(fontSize: 12, color: DSColors.onSurfaceVariant),
+                                          style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                         ),
                                     ],
                                   ),
                                 ),
-                                Icon(Icons.chevron_right, color: DSColors.onSurfaceVariant),
+                                Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant),
                               ],
                             ),
                           ),
@@ -308,17 +308,17 @@ class _PostTrialScreenState extends State<PostTrialScreen>
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: DSColors.onSurface.withValues(alpha: 0.06),
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.06),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.location_on, size: 16, color: DSColors.onSurface),
+                              Icon(Icons.location_on, size: 16, color: Theme.of(context).colorScheme.onSurface),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  '${_trialCoordinates!.latitude.toStringAsFixed(4)}°N, ${_trialCoordinates!.longitude.toStringAsFixed(4)}°E',
-                                  style: TextStyle(fontSize: 12, color: DSColors.onSurface),
+                                  '${_trialCoordinates!.latitude.toStringAsFixed(4)}Â°N, ${_trialCoordinates!.longitude.toStringAsFixed(4)}Â°E',
+                                  style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface),
                                 ),
                               ),
                               TextButton(
@@ -356,7 +356,7 @@ class _PostTrialScreenState extends State<PostTrialScreen>
                         maxLines: 4,
                         decoration: InputDecoration(
                           labelText: 'Trial details',
-                          hintText: 'What you\'re looking for, trial format, contact…',
+                          hintText: 'What you\'re looking for, trial format, contactâ€¦',
                           alignLabelWithHint: true,
                         ),
                       ),
@@ -365,7 +365,7 @@ class _PostTrialScreenState extends State<PostTrialScreen>
                 ),
                 SizedBox(height: DSSpacing.xl),
                 DSButton(
-                  label: _loading ? 'Posting…' : 'Post Trial',
+                  label: _loading ? 'Postingâ€¦' : 'Post Trial',
                   leadingIcon: DSIcons.megaphone,
                   loading: _loading,
                   fullWidth: true,

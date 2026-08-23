@@ -104,10 +104,10 @@ class _LoginScreenState extends State<LoginScreen>
       barrierDismissible: !linking,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          backgroundColor: DSColors.surface,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(DSRadius.card),
-            side: const BorderSide(color: DSColors.outlineVariant),
+            side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
           ),
           title: Text(
             'Connect Google sign-in',
@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen>
               fontSize: 22,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.32,
-              color: DSColors.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           content: Column(
@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen>
                 'Enter it once to link Google sign-in to this account.',
                 style: GoogleFonts.inter(
                   fontSize: 14,
-                  color: DSColors.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   height: 1.4,
                 ),
               ),
@@ -136,30 +136,30 @@ class _LoginScreenState extends State<LoginScreen>
                 controller: passwordController,
                 obscureText: true,
                 autofocus: true,
-                style: GoogleFonts.inter(fontSize: 15, color: DSColors.onSurface),
+                style: GoogleFonts.inter(fontSize: 15, color: Theme.of(context).colorScheme.onSurface),
                 decoration: InputDecoration(
                   hintText: 'Your ScoutX password',
                   hintStyle: GoogleFonts.inter(
                     fontSize: 14,
-                    color: DSColors.onSurfaceDisabled,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                   ),
                   filled: true,
-                  fillColor: DSColors.surfaceContainer,
+                  fillColor: Theme.of(context).colorScheme.surfaceContainer,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: DSSpacing.md,
                     vertical: DSSpacing.md,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(DSRadius.input),
-                    borderSide: const BorderSide(color: DSColors.outlineVariant),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(DSRadius.input),
-                    borderSide: const BorderSide(color: DSColors.outlineVariant),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(DSRadius.input),
-                    borderSide: const BorderSide(color: DSColors.onSurface),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface),
                   ),
                 ),
               ),
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen>
                   dialogError!,
                   style: GoogleFonts.inter(
                     fontSize: 13,
-                    color: DSColors.red,
+                    color: Theme.of(context).colorScheme.error,
                   ),
                 ),
               ],
@@ -181,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen>
                   linking ? null : () => Navigator.of(dialogContext).pop(),
               child: Text(
                 'Cancel',
-                style: GoogleFonts.inter(color: DSColors.onSurfaceVariant),
+                style: GoogleFonts.inter(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
             FilledButton(
@@ -219,16 +219,16 @@ class _LoginScreenState extends State<LoginScreen>
                       }
                     },
               style: FilledButton.styleFrom(
-                backgroundColor: DSColors.onSurface,
-                foregroundColor: DSColors.surface,
+                backgroundColor: Theme.of(context).colorScheme.onSurface,
+                foregroundColor: Theme.of(context).colorScheme.surface,
               ),
               child: linking
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: DSColors.surface,
+                        color: Theme.of(context).colorScheme.surface,
                       ),
                     )
                   : Text(
@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen>
     final error = context.watch<AuthProvider>().error;
 
     return Scaffold(
-      backgroundColor: DSColors.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -284,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen>
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.32,
-                          color: DSColors.onSurface,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: DSSpacing.xl),
@@ -297,7 +297,7 @@ class _LoginScreenState extends State<LoginScreen>
                           fontSize: 40,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 0.32,
-                          color: DSColors.onSurface,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: DSSpacing.xxl),
@@ -309,7 +309,7 @@ class _LoginScreenState extends State<LoginScreen>
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.5,
-                          color: DSColors.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(height: DSSpacing.sm),
@@ -319,38 +319,38 @@ class _LoginScreenState extends State<LoginScreen>
                         autofillHints: const [AutofillHints.email],
                         style: GoogleFonts.inter(
                           fontSize: 16,
-                          color: DSColors.onSurface,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                         decoration: InputDecoration(
                           hintText: 'coach@scoutx.com',
                           hintStyle: GoogleFonts.inter(
                             fontSize: 16,
-                            color: DSColors.onSurfaceDisabled,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                           ),
                           filled: true,
-                          fillColor: DSColors.surfaceContainer,
+                          fillColor: Theme.of(context).colorScheme.surfaceContainer,
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: DSSpacing.md,
                             vertical: DSSpacing.md,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(DSRadius.input),
-                            borderSide: const BorderSide(
-                              color: DSColors.outlineVariant,
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.outlineVariant,
                               width: 1,
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(DSRadius.input),
-                            borderSide: const BorderSide(
-                              color: DSColors.outlineVariant,
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.outlineVariant,
                               width: 1,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(DSRadius.input),
-                            borderSide: const BorderSide(
-                              color: DSColors.onSurface,
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.onSurface,
                               width: 1,
                             ),
                           ),
@@ -371,7 +371,7 @@ class _LoginScreenState extends State<LoginScreen>
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
                               letterSpacing: 0.5,
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                           TextButton(
@@ -387,7 +387,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                                 letterSpacing: 0.5,
-                                color: DSColors.onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ),
@@ -399,45 +399,45 @@ class _LoginScreenState extends State<LoginScreen>
                         obscureText: _obscure,
                         style: GoogleFonts.inter(
                           fontSize: 16,
-                          color: DSColors.onSurface,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                         decoration: InputDecoration(
                           hintText: 'Enter your password',
                           hintStyle: GoogleFonts.inter(
                             fontSize: 16,
-                            color: DSColors.onSurfaceDisabled,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                           ),
                           filled: true,
-                          fillColor: DSColors.surfaceContainer,
+                          fillColor: Theme.of(context).colorScheme.surfaceContainer,
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: DSSpacing.md,
                             vertical: DSSpacing.md,
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(DSRadius.input),
-                            borderSide: const BorderSide(
-                              color: DSColors.outlineVariant,
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.outlineVariant,
                               width: 1,
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(DSRadius.input),
-                            borderSide: const BorderSide(
-                              color: DSColors.outlineVariant,
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.outlineVariant,
                               width: 1,
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(DSRadius.input),
-                            borderSide: const BorderSide(
-                              color: DSColors.onSurface,
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.onSurface,
                               width: 1,
                             ),
                           ),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscure ? DSIcons.eyeSlash : DSIcons.eye,
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                               size: 20,
                             ),
                             onPressed: () => setState(() => _obscure = !_obscure),
@@ -456,7 +456,7 @@ class _LoginScreenState extends State<LoginScreen>
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             fontSize: 14,
-                            color: DSColors.red,
+                            color: Theme.of(context).colorScheme.error,
                           ),
                         ),
                       ],
@@ -476,7 +476,7 @@ class _LoginScreenState extends State<LoginScreen>
                             'Forgot password?',
                             style: GoogleFonts.inter(
                               fontSize: 14,
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ),
@@ -489,19 +489,19 @@ class _LoginScreenState extends State<LoginScreen>
                         child: FilledButton(
                           onPressed: _loading ? null : _submit,
                           style: FilledButton.styleFrom(
-                            backgroundColor: DSColors.onSurface,
-                            foregroundColor: DSColors.surface,
+                            backgroundColor: Theme.of(context).colorScheme.onSurface,
+                            foregroundColor: Theme.of(context).colorScheme.surface,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(DSRadius.button),
                             ),
                           ),
                           child: _loading
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 20,
                                   height: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: DSColors.surface,
+                                    color: Theme.of(context).colorScheme.surface,
                                   ),
                                 )
                               : Text(
@@ -519,7 +519,7 @@ class _LoginScreenState extends State<LoginScreen>
                       // OR divider
                       Row(
                         children: [
-                          const Expanded(child: Divider(color: DSColors.outlineVariant)),
+                          Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: DSSpacing.md),
                             child: Text(
@@ -528,11 +528,11 @@ class _LoginScreenState extends State<LoginScreen>
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                                 letterSpacing: 0.5,
-                                color: DSColors.onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ),
-                          const Expanded(child: Divider(color: DSColors.outlineVariant)),
+                          Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                         ],
                       ),
                       const SizedBox(height: DSSpacing.xl),
@@ -544,10 +544,10 @@ class _LoginScreenState extends State<LoginScreen>
                           onPressed:
                               (_loading || _googleLoading) ? null : _signInWithGoogle,
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: DSColors.surface,
-                            foregroundColor: DSColors.onSurface,
-                            side: const BorderSide(
-                              color: DSColors.outlineVariant,
+                            backgroundColor: Theme.of(context).colorScheme.surface,
+                            foregroundColor: Theme.of(context).colorScheme.onSurface,
+                            side: BorderSide(
+                              color: Theme.of(context).colorScheme.outlineVariant,
                               width: 1,
                             ),
                             shape: RoundedRectangleBorder(
@@ -555,12 +555,12 @@ class _LoginScreenState extends State<LoginScreen>
                             ),
                           ),
                           child: _googleLoading
-                              ? const SizedBox(
+                              ? SizedBox(
                                   width: 20,
                                   height: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: DSColors.onSurface,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                   ),
                                 )
                               : Row(
@@ -573,7 +573,7 @@ class _LoginScreenState extends State<LoginScreen>
                                       style: GoogleFonts.inter(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
-                                        color: DSColors.onSurface,
+                                        color: Theme.of(context).colorScheme.onSurface,
                                       ),
                                     ),
                                   ],
@@ -590,7 +590,7 @@ class _LoginScreenState extends State<LoginScreen>
                             'New here? ',
                             style: GoogleFonts.inter(
                               fontSize: 14,
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                           GestureDetector(
@@ -606,7 +606,7 @@ class _LoginScreenState extends State<LoginScreen>
                               style: GoogleFonts.inter(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: DSColors.onSurface,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ),

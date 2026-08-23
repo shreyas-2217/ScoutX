@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:scoutx/design_system.dart';
 
 class ShimmerWidget extends StatefulWidget {
@@ -40,9 +40,9 @@ class _ShimmerWidgetState extends State<ShimmerWidget>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final baseColor = widget.baseColor ??
-        (isDark ? DSColors.darkSurfaceContainer : DSColors.surfaceContainer);
+        (isDark ? Theme.of(context).colorScheme.surfaceContainer : Theme.of(context).colorScheme.surfaceContainer);
     final highlightColor = widget.highlightColor ??
-        (isDark ? DSColors.darkSurfaceContainerHigh : DSColors.surfaceContainerHigh);
+        (isDark ? Theme.of(context).colorScheme.surfaceContainerHigh : Theme.of(context).colorScheme.surfaceContainerHigh);
 
     return AnimatedBuilder(
       animation: _controller,

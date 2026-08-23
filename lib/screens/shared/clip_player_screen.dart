@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import 'widgets.dart';
@@ -87,7 +87,7 @@ class _ClipPlayerScreenState extends State<ClipPlayerScreen>
                     color: Colors.black.withValues(alpha: 0.4),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(DSIcons.arrowLeft, color: DSColors.onSurface, size: DSIconSize.md),
+                  child: Icon(DSIcons.arrowLeft, color: Theme.of(context).colorScheme.onSurface, size: DSIconSize.md),
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
@@ -116,12 +116,12 @@ class _ClipPlayerScreenState extends State<ClipPlayerScreen>
                 ? Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(color: DSColors.onSurface),
+                      CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                       SizedBox(height: DSSpacing.md),
                       Text(
                         'Loading video...',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: DSColors.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -160,7 +160,7 @@ class _ClipPlayerScreenState extends State<ClipPlayerScreen>
                                       ? DSIcons.pauseCircle
                                       : DSIcons.playCircle,
                                   size: 80,
-                                  color: DSColors.onSurface,
+                                  color: Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                             );
@@ -231,10 +231,10 @@ class _ClipPlayerScreenState extends State<ClipPlayerScreen>
                                   horizontal: DSSpacing.md,
                                   vertical: DSSpacing.sm,
                                 ),
-                                colors: VideoProgressColors(
-                                  playedColor: DSColors.onSurface,
-                                  bufferedColor: DSColors.onSurface.withValues(alpha: 0.3),
-                                  backgroundColor: DSColors.onSurface.withValues(alpha: 0.2),
+                                colors: const VideoProgressColors(
+                                  playedColor: Colors.white,
+                                  bufferedColor: Color(0x40FFFFFF),
+                                  backgroundColor: Color(0x33FFFFFF),
                                 ),
                               ),
                             ),
@@ -265,13 +265,13 @@ class _ErrorState extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: DSColors.red.withValues(alpha: 0.12),
+                color: Theme.of(context).colorScheme.error.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 DSIcons.warningCircle,
                 size: DSIconSize.xxl,
-                color: DSColors.red,
+                color: Theme.of(context).colorScheme.error,
               ),
             ),
             SizedBox(height: DSSpacing.lg),
@@ -286,7 +286,7 @@ class _ErrorState extends StatelessWidget {
             Text(
               'The video may be unavailable or the format is not supported.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: DSColors.onSurfaceVariant,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),

@@ -6,6 +6,7 @@ import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
 import '../shared/player_profile_view_screen.dart';
 import '../shared/widgets.dart';
+import '../trials/trial_detail_screen.dart';
 import '../../widgets/skeletons.dart';
 import 'chat_screen.dart';
 
@@ -32,7 +33,7 @@ class NotificationsScreen extends StatelessWidget {
             onPressed: () => db.markAllNotificationsRead(uid),
             child: Text(
               'Mark all read',
-              style: TextStyle(color: DSColors.onSurface),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             ),
           ),
         ],
@@ -63,8 +64,8 @@ class NotificationsScreen extends StatelessWidget {
     );
   }
 
-  void _handleTap(
-      BuildContext context, AppNotification notif, String myUid, Database db) {
+  Future<void> _handleTap(
+      BuildContext context, AppNotification notif, String myUid, Database db) async {
     if (!notif.isRead) {
       db.markNotificationRead(notif.id);
     }
@@ -76,6 +77,17 @@ class NotificationsScreen extends StatelessWidget {
             otherId: notif.fromUserId,
             otherName: notif.fromUserName,
           ),
+        ),
+      );
+    } else if ((notif.type == 'trial_application' ||
+            notif.type == 'application_status') &&
+        notif.trialId != null &&
+        notif.trialId!.isNotEmpty) {
+      final trial = await db.getTrial(notif.trialId!);
+      if (!context.mounted || trial == null) return;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => TrialDetailScreen(trial: trial),
         ),
       );
     } else if (notif.type == 'follow' ||
@@ -172,7 +184,7 @@ class _NotificationTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           color: notif.isRead
               ? Colors.transparent
-              : DSColors.onSurface.withValues(alpha: 0.04),
+              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.04),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -187,13 +199,13 @@ class _NotificationTile extends StatelessWidget {
                         text: notif.fromUserName,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: DSColors.onSurface,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                         children: [
                           TextSpan(
                             text: _notificationText(notif),
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                               fontWeight: FontWeight.normal,
                             ),
                           ),
@@ -204,7 +216,7 @@ class _NotificationTile extends StatelessWidget {
                     Text(
                       timeAgo(notif.createdAt),
                       style: theme.textTheme.labelSmall?.copyWith(
-                        color: DSColors.onSurfaceDisabled,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                       ),
                     ),
                   ],
@@ -215,8 +227,8 @@ class _NotificationTile extends StatelessWidget {
                   width: 8,
                   height: 8,
                   margin: const EdgeInsets.only(top: 6),
-                  decoration: const BoxDecoration(
-                    color: DSColors.onSurface,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSurface,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -235,6 +247,14 @@ class _NotificationTile extends StatelessWidget {
         return notif.message != null && notif.message!.isNotEmpty
             ? ' sent you a message: "${notif.message}"'
             : ' sent you a message';
+      case 'trial_application':
+        return notif.message != null && notif.message!.isNotEmpty
+            ? ' applied for your trial "${notif.message}"'
+            : ' applied for your trial';
+      case 'application_status':
+        return notif.message != null && notif.message!.isNotEmpty
+            ? ' ${notif.message}'
+            : ' updated your trial application';
       case 'like':
         return ' liked your highlight';
       case 'comment':

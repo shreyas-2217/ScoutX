@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../design_system.dart';
 
 enum StatusType { accepted, pending, rejected }
@@ -24,14 +24,14 @@ class StatusBadge extends StatelessWidget {
     }
   }
 
-  Color get _textColor {
+  Color _textColor(BuildContext context) {
     switch (status) {
       case StatusType.accepted:
         return DSColors.volt;
       case StatusType.pending:
         return DSColors.amber;
       case StatusType.rejected:
-        return DSColors.red;
+        return Theme.of(context).colorScheme.error;
     }
   }
 
@@ -70,12 +70,12 @@ class StatusBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(_icon, size: compact ? 12 : 14, color: _textColor),
+          Icon(_icon, size: compact ? 12 : 14, color: _textColor(context)),
           SizedBox(width: compact ? 4 : 6),
           Text(
             _label,
             style: TextStyle(
-              color: _textColor,
+              color: _textColor(context),
               fontSize: compact ? 11 : 12,
               fontWeight: FontWeight.w600,
               height: 1.2,

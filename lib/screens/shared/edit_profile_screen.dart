@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+﻿import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -329,25 +329,25 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                         SizedBox(height: DSSpacing.sm),
                         Text(
                           'Required for players and coaches',
-                          style: TextStyle(fontSize: 12, color: DSColors.onSurfaceVariant),
+                          style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                         ),
                         SizedBox(height: DSSpacing.md),
                         if (_city != null && _city!.isNotEmpty) ...[
                           Container(
                             padding: EdgeInsets.all(DSSpacing.md),
                             decoration: BoxDecoration(
-                              color: DSColors.onSurface.withValues(alpha: 0.08),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(DSRadius.md),
-                              border: Border.all(color: DSColors.onSurface.withValues(alpha: 0.15)),
+                              border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15)),
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.location_on, color: DSColors.onSurface, size: 20),
+                                Icon(Icons.location_on, color: Theme.of(context).colorScheme.onSurface, size: 20),
                                 SizedBox(width: DSSpacing.sm),
                                 Expanded(
                                   child: Text(
                                     _city!,
-                                    style: TextStyle(fontWeight: FontWeight.w600, color: DSColors.onSurface),
+                                    style: TextStyle(fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
                                   ),
                                 ),
                                 TextButton(
@@ -488,14 +488,14 @@ class _EditProfileScreenState extends State<EditProfileScreen>
             onTap: _pickImage,
             child: CircleAvatar(
               radius: 56,
-              backgroundColor: DSColors.surfaceContainerHighest,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               backgroundImage: _pendingImageBytes != null
                   ? MemoryImage(_pendingImageBytes!)
                   : (_profileImageUrl != null && _profileImageUrl!.isNotEmpty
                       ? NetworkImage(_profileImageUrl!)
                       : null) as ImageProvider?,
               child: (_pendingImageBytes == null && (_profileImageUrl == null || _profileImageUrl!.isEmpty))
-                  ? Icon(SportIcons.getSportIcon(_sport), size: 40, color: DSColors.onSurfaceVariant)
+                  ? Icon(SportIcons.getSportIcon(_sport), size: 40, color: Theme.of(context).colorScheme.onSurfaceVariant)
                   : null,
             ),
           ),
@@ -507,7 +507,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
               child: Container(
                 padding: EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: DSColors.onSurface,
+                  color: Theme.of(context).colorScheme.onSurface,
                   shape: BoxShape.circle,
                   boxShadow: DSElevation.cardShadow,
                 ),
@@ -535,7 +535,7 @@ class _LocationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: DSColors.surfaceContainerHigh,
+      color: Theme.of(context).colorScheme.surfaceContainerHigh,
       borderRadius: BorderRadius.circular(DSRadius.md),
       child: InkWell(
         onTap: onTap,
@@ -544,11 +544,11 @@ class _LocationButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: DSSpacing.md, vertical: DSSpacing.md),
           child: Row(
             children: [
-              Icon(icon, size: 20, color: DSColors.onSurface),
+              Icon(icon, size: 20, color: Theme.of(context).colorScheme.onSurface),
               SizedBox(width: DSSpacing.sm),
               Text(label, style: TextStyle(fontWeight: FontWeight.w500)),
               Spacer(),
-              Icon(Icons.chevron_right, size: 20, color: DSColors.onSurfaceVariant),
+              Icon(Icons.chevron_right, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ],
           ),
         ),

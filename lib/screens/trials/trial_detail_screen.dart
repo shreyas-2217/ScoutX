@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/trial.dart';
@@ -74,15 +74,15 @@ class _InfoCard extends StatelessWidget {
               ),
               TagChip(
                 text: isOpen ? 'OPEN' : 'CLOSED',
-                color: isOpen ? DSColors.green : DSColors.onSurfaceDisabled,
+                color: isOpen ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
               ),
             ],
           ),
           SizedBox(height: DSSpacing.md),
           Text(
-            '${trial.teamName} · ${trial.coachName}',
+            '${trial.teamName} Â· ${trial.coachName}',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: DSColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           SizedBox(height: DSSpacing.md),
@@ -91,7 +91,7 @@ class _InfoCard extends StatelessWidget {
             runSpacing: DSSpacing.xs,
             children: [
               TagChip(text: trial.sport, color: Theme.of(context).colorScheme.primary),
-              TagChip(text: trial.position, color: DSColors.cyan),
+              TagChip(text: trial.position, color: Theme.of(context).colorScheme.onSurface),
               TagChip(text: trial.skillLevel, color: DSColors.amber),
             ],
           ),
@@ -113,7 +113,7 @@ class _InfoCard extends StatelessWidget {
             Text(
               trial.description,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: DSColors.onSurface.withValues(alpha: 0.85),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
                 height: 1.5,
               ),
             ),
@@ -135,12 +135,12 @@ class _IconText extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: DSIconSize.sm, color: DSColors.onSurfaceVariant),
+        Icon(icon, size: DSIconSize.sm, color: Theme.of(context).colorScheme.onSurfaceVariant),
         SizedBox(width: DSSpacing.xs),
         Text(
           text,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: DSColors.onSurfaceVariant,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
       ],
@@ -193,7 +193,7 @@ class _ApplicantsList extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-            child: CircularProgressIndicator(color: DSColors.onSurface),
+            child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
           );
         }
         final apps = snapshot.data ?? [];
@@ -230,8 +230,8 @@ class _ApplicantCardState extends State<_ApplicantCard> {
   Widget build(BuildContext context) {
     final inFinalList = widget.trial.selectedPlayerIds.contains(widget.app.playerId);
     final statusColor = switch (widget.app.status) {
-      'accepted' => DSColors.green,
-      'rejected' => DSColors.red,
+      'accepted' => Theme.of(context).colorScheme.onSurface,
+      'rejected' => Theme.of(context).colorScheme.error,
       _ => DSColors.amber,
     };
 
@@ -255,9 +255,9 @@ class _ApplicantCardState extends State<_ApplicantCard> {
                       ),
                     ),
                     Text(
-                      '${widget.app.sport} · ${widget.app.position}',
+                      '${widget.app.sport} Â· ${widget.app.position}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: DSColors.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -271,7 +271,7 @@ class _ApplicantCardState extends State<_ApplicantCard> {
             Text(
               widget.app.message,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: DSColors.onSurface.withValues(alpha: 0.8),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
               ),
             ),
           ],
@@ -299,14 +299,14 @@ class _ApplicantCardState extends State<_ApplicantCard> {
                   label: 'Accept',
                   leadingIcon: DSIcons.check,
                   variant: DSButtonVariant.filled,
-                  customColor: DSColors.green,
+                  customColor: Theme.of(context).colorScheme.onSurface,
                   onPressed: _processing ? null : () => _updateStatus('accepted'),
                 ),
                 DSButton(
                   label: 'Reject',
                   leadingIcon: DSIcons.x,
                   variant: DSButtonVariant.filled,
-                  customColor: DSColors.red,
+                  customColor: Theme.of(context).colorScheme.error,
                   onPressed: _processing ? null : () => _updateStatus('rejected'),
                 ),
               ],
@@ -381,7 +381,7 @@ class _FinalListSection extends StatelessWidget {
           'These are the players you\'ve finalized for the trial. '
           'Tap any entry to view that player\'s profile.',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: DSColors.onSurfaceVariant,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         SizedBox(height: DSSpacing.md),
@@ -462,7 +462,7 @@ class _FinalPlayerRow extends StatelessWidget {
                     Text(
                       'ID: $playerId',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: DSColors.onSurfaceDisabled,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                       ),
                     ),
                   ],
@@ -483,7 +483,7 @@ class _FinalPlayerRow extends StatelessWidget {
                     },
                   ),
                   IconButton(
-                    icon: Icon(DSIcons.circleMinus, size: DSIconSize.md, color: DSColors.red),
+                    icon: Icon(DSIcons.circleMinus, size: DSIconSize.md, color: Theme.of(context).colorScheme.error),
                     tooltip: 'Remove from final list',
                     onPressed: () async {
                       try {
@@ -581,7 +581,7 @@ class _PlayerPanel extends StatelessWidget {
               Text(
                 'Apply and the coach can verify you and add you to their final list.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: DSColors.onSurfaceVariant,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
               SizedBox(height: DSSpacing.xl),
@@ -611,7 +611,7 @@ class _PlayerPanel extends StatelessWidget {
             decoration: InputDecoration(
               labelText: 'Message to coach (optional)',
               alignLabelWithHint: true,
-              hintText: 'Tell the coach about yourself…',
+              hintText: 'Tell the coach about yourselfâ€¦',
             ),
           ),
           actions: [
@@ -641,7 +641,11 @@ class _PlayerPanel extends StatelessWidget {
         appliedAt: DateTime.now(),
       );
       if (!context.mounted) return;
-      await context.read<Database>().applyToTrial(app);
+      await context.read<Database>().applyToTrial(
+            app,
+            coachId: trial.coachId,
+            trialTitle: trial.title,
+          );
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -662,8 +666,8 @@ class _StatusCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = switch (app.status) {
-      'accepted' => DSColors.green,
-      'rejected' => DSColors.red,
+      'accepted' => Theme.of(context).colorScheme.onSurface,
+      'rejected' => Theme.of(context).colorScheme.error,
       _ => DSColors.amber,
     };
     final icon = switch (app.status) {

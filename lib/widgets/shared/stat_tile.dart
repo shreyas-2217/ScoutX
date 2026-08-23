@@ -19,15 +19,15 @@ class StatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = iconColor ?? DSColors.onSurface;
-    final bgColor = iconBackgroundColor ?? DSColors.surfaceContainer;
+    final color = iconColor ?? Theme.of(context).colorScheme.onSurface;
+    final bgColor = iconBackgroundColor ?? Theme.of(context).colorScheme.surfaceContainer;
 
     return Container(
       padding: const EdgeInsets.all(DSSpacing.sm + 4),
       decoration: BoxDecoration(
-        color: DSColors.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(DSRadius.md),
-        border: Border.all(color: DSColors.outlineVariant, width: 1),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,20 +45,20 @@ class StatTile extends StatelessWidget {
           const SizedBox(height: DSSpacing.sm),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: DSColors.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
               height: 1.1,
             ),
           ),
           const SizedBox(height: DSSpacing.xs),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: DSColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],

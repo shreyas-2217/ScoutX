@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:scoutx/design_system.dart';
@@ -23,14 +23,14 @@ class SetupScreen extends StatelessWidget {
                   height: 88,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [DSColors.onSurface.withValues(alpha: 0.08), DSColors.surfaceContainer],
+                      colors: [Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08), Theme.of(context).colorScheme.surfaceContainer],
                     ),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     DSIcons.cloudSlash,
                     size: DSIconSize.xxl,
-                    color: DSColors.onSurface,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 SizedBox(height: DSSpacing.lg),
@@ -51,7 +51,7 @@ class SetupScreen extends StatelessWidget {
                   'will start working. The step is free.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: DSColors.onSurfaceVariant,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     height: 1.6,
                   ),
                 ),
@@ -59,15 +59,15 @@ class SetupScreen extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(DSSpacing.md),
                   decoration: BoxDecoration(
-                    color: DSColors.surfaceContainerHigh,
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
                     borderRadius: BorderRadius.circular(DSRadius.md),
-                    border: Border.all(color: DSColors.outlineVariant),
+                    border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                   ),
                   child: SelectableText(
                     'flutterfire configure',
                     style: GoogleFonts.jetBrainsMono(
                       fontSize: 14,
-                      color: DSColors.green,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

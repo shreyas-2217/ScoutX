@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+﻿import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +18,6 @@ import 'screens/shared/splash_screen.dart';
 import 'screens/shell/role_shell.dart';
 import 'services/auth_service.dart';
 import 'services/database.dart';
-import 'design_system.dart' show DSColors;
 
 bool _firebaseReady = false;
 
@@ -124,7 +123,7 @@ class _HomeGateState extends State<HomeGate> {
     Widget child;
     final auth = context.watch<AuthProvider>();
     if (!_firebaseReady) {
-      // Firebase failed to initialize — show the diagnostic setup screen
+      // Firebase failed to initialize â€” show the diagnostic setup screen
       // instead of LoginScreen, where every auth call would fail opaquely.
       child = const SetupScreen();
     } else {
@@ -134,12 +133,12 @@ class _HomeGateState extends State<HomeGate> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(color: DSColors.onSurface),
+                CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                 const SizedBox(height: 16),
                 Text(
                   'Loading your profile...',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: DSColors.onSurfaceVariant,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                 ),
               ],

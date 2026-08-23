@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
+﻿import 'package:flutter/material.dart';
 import 'ai_character.dart';
 import 'ai_result_cards.dart';
 import '../../services/ai/ai_message.dart';
@@ -34,7 +33,7 @@ class _UserBubble extends StatelessWidget {
         margin: const EdgeInsets.only(left: 48, top: 4, bottom: 4),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: DSColors.onSurface,
+          color: Theme.of(context).colorScheme.onSurface,
           borderRadius: BorderRadius.circular(18).copyWith(bottomRight: const Radius.circular(4)),
         ),
         child: Text(
@@ -95,7 +94,7 @@ class _AIBubble extends StatelessWidget {
                               SizedBox(
                                 width: 14,
                                 height: 14,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: DSColors.onSurface),
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Theme.of(context).colorScheme.onSurface),
                               ),
                               const SizedBox(width: 8),
                               Text(
@@ -109,7 +108,7 @@ class _AIBubble extends StatelessWidget {
                             message.text,
                             TextStyle(
                               color: isError
-                                  ? DSColors.red
+                                  ? Theme.of(context).colorScheme.error
                                   : isRateLimited
                                       ? Colors.amber.shade800
                                       : theme.colorScheme.onSurface,

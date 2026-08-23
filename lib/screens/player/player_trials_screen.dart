@@ -53,9 +53,9 @@ class _PlayerTrialsScreenState extends State<PlayerTrialsScreen>
             Tab(text: 'Open Trials'),
             Tab(text: 'My Applications'),
           ],
-          labelColor: DSColors.onSurface,
-          unselectedLabelColor: DSColors.onSurfaceVariant,
-          indicatorColor: DSColors.onSurface,
+          labelColor: Theme.of(context).colorScheme.onSurface,
+          unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
+          indicatorColor: Theme.of(context).colorScheme.onSurface,
           indicatorWeight: 3,
           labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
             fontWeight: FontWeight.w700,
@@ -119,10 +119,10 @@ class _OpenTrialsTab extends StatelessWidget {
         if (locationProvider.hasLocation)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            color: DSColors.onSurface.withValues(alpha: 0.06),
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.06),
             child: Row(
               children: [
-                Icon(Icons.location_on, size: 16, color: DSColors.onSurface),
+                Icon(Icons.location_on, size: 16, color: Theme.of(context).colorScheme.onSurface),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -130,7 +130,7 @@ class _OpenTrialsTab extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: DSColors.onSurface,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -175,8 +175,8 @@ class _OpenTrialsTab extends StatelessWidget {
             stream: context.read<Database>().streamTrials(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(color: DSColors.onSurface),
+                return Center(
+                  child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                 );
               }
               var trials = snapshot.data ?? [];
@@ -313,10 +313,10 @@ class _OpenTrialsTab extends StatelessWidget {
                             onSportFilterChanged(selected ? s : null);
                             Navigator.pop(ctx);
                           },
-                          selectedColor: DSColors.onSurface.withValues(alpha: 0.08),
-                          checkmarkColor: DSColors.onSurface,
+                          selectedColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
+                          checkmarkColor: Theme.of(context).colorScheme.onSurface,
                           side: BorderSide(
-                            color: sportFilter == s ? DSColors.onSurface : Theme.of(context).colorScheme.outlineVariant,
+                            color: sportFilter == s ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.outlineVariant,
                           ),
                       ))
                     .toList(),
@@ -357,10 +357,10 @@ class _OpenTrialsTab extends StatelessWidget {
                             onSkillFilterChanged(selected ? s : null);
                             Navigator.pop(ctx);
                           },
-                          selectedColor: DSColors.onSurface.withValues(alpha: 0.08),
-                          checkmarkColor: DSColors.onSurface,
+                          selectedColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
+                          checkmarkColor: Theme.of(context).colorScheme.onSurface,
                           side: BorderSide(
-                            color: skillFilter == s ? DSColors.onSurface : Theme.of(context).colorScheme.outlineVariant,
+                            color: skillFilter == s ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.outlineVariant,
                           ),
                         ))
                     .toList(),
@@ -394,11 +394,11 @@ class _FilterChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? DSColors.onSurface.withValues(alpha: 0.08)
+              ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08)
               : Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? DSColors.onSurface : Theme.of(context).colorScheme.outlineVariant,
+            color: isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.outlineVariant,
           ),
         ),
         child: Row(
@@ -408,14 +408,14 @@ class _FilterChip extends StatelessWidget {
               label,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: isSelected ? DSColors.onSurface : null,
+                color: isSelected ? Theme.of(context).colorScheme.onSurface : null,
               ),
             ),
             if (onClear != null) ...[
               const SizedBox(width: 4),
               GestureDetector(
                 onTap: onClear,
-                child: Icon(Icons.close, size: 14, color: isSelected ? DSColors.onSurface : null),
+                child: Icon(Icons.close, size: 14, color: isSelected ? Theme.of(context).colorScheme.onSurface : null),
               ),
             ] else ...[
               const SizedBox(width: 4),
@@ -473,14 +473,14 @@ class _PremiumTrialCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: DSColors.onSurface.withValues(alpha: 0.08),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     trial.skillLevel,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: DSColors.onSurface,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -490,7 +490,7 @@ class _PremiumTrialCard extends StatelessWidget {
 
             // Coach info
             Text(
-              '${trial.teamName} · ${trial.coachName}',
+              '${trial.teamName} Â· ${trial.coachName}',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -502,8 +502,8 @@ class _PremiumTrialCard extends StatelessWidget {
               spacing: 8,
               runSpacing: 6,
               children: [
-                _Tag(text: trial.sport, color: DSColors.onSurface),
-                _Tag(text: trial.position, color: DSColors.cyan),
+                _Tag(text: trial.sport, color: Theme.of(context).colorScheme.onSurface),
+                _Tag(text: trial.position, color: Theme.of(context).colorScheme.onSurface),
               ],
             ),
             const SizedBox(height: 12),
@@ -537,7 +537,7 @@ class _PremiumTrialCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: DSColors.onSurface.withValues(alpha: 0.08),
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -545,7 +545,7 @@ class _PremiumTrialCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: DSColors.onSurface,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -565,8 +565,8 @@ class _PremiumTrialCard extends StatelessWidget {
                 },
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  backgroundColor: DSColors.onSurface,
-                  foregroundColor: Colors.white,
+                  backgroundColor: Theme.of(context).colorScheme.onSurface,
+                  foregroundColor: Theme.of(context).colorScheme.surface,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -617,8 +617,8 @@ class _MyApplicationsTab extends StatelessWidget {
       stream: context.read<Database>().streamApplicationsForPlayer(uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(color: DSColors.onSurface),
+          return Center(
+            child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
           );
         }
         final apps = snapshot.data ?? [];
@@ -650,8 +650,8 @@ class _ApplicationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = switch (application.status) {
-      'accepted' => DSColors.green,
-      'rejected' => DSColors.red,
+      'accepted' => Theme.of(context).colorScheme.onSurface,
+      'rejected' => Theme.of(context).colorScheme.error,
       _ => DSColors.amber,
     };
     final icon = switch (application.status) {

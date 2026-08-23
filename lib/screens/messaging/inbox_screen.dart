@@ -171,7 +171,7 @@ class _ConversationTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           color: hasUnread
-              ? DSColors.onSurface.withValues(alpha: 0.04)
+              ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.04)
               : Colors.transparent,
           child: Row(
             children: [
@@ -186,8 +186,8 @@ class _ConversationTile extends StatelessWidget {
                       child: Container(
                         width: 18,
                         height: 18,
-                        decoration: const BoxDecoration(
-                          color: DSColors.red,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.error,
                           shape: BoxShape.circle,
                         ),
                         alignment: Alignment.center,
@@ -226,8 +226,8 @@ class _ConversationTile extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: hasUnread
-                            ? DSColors.onSurface
-                            : DSColors.onSurfaceVariant,
+                            ? Theme.of(context).colorScheme.onSurface
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
                         fontWeight:
                             hasUnread ? FontWeight.w500 : FontWeight.normal,
                       ),
@@ -239,7 +239,7 @@ class _ConversationTile extends StatelessWidget {
               Text(
                 timeAgo(conversation.lastMessageAt),
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: DSColors.onSurfaceDisabled,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
                 ),
               ),
             ],
@@ -286,7 +286,7 @@ class _UserSearchSheetState extends State<_UserSearchSheet> {
               height: 4,
               margin: const EdgeInsets.only(top: 12),
               decoration: BoxDecoration(
-                color: DSColors.outlineVariant,
+                color: Theme.of(context).colorScheme.outlineVariant,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -297,8 +297,8 @@ class _UserSearchSheetState extends State<_UserSearchSheet> {
                 autofocus: true,
                 decoration: InputDecoration(
                   hintText: 'Search players, coaches...',
-                  prefixIcon: const Icon(DSIcons.magnifyingGlass,
-                      color: DSColors.onSurfaceVariant),
+                  prefixIcon: Icon(DSIcons.magnifyingGlass,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                   filled: true,
                   fillColor: theme.colorScheme.surfaceContainerHighest,
                   border: OutlineInputBorder(
@@ -317,7 +317,7 @@ class _UserSearchSheetState extends State<_UserSearchSheet> {
                       child: Text(
                         'Type to search for users',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: DSColors.onSurfaceVariant,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     )
@@ -326,9 +326,9 @@ class _UserSearchSheetState extends State<_UserSearchSheet> {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const Center(
+                          return Center(
                             child: CircularProgressIndicator(
-                                color: DSColors.onSurface),
+                                color: Theme.of(context).colorScheme.onSurface),
                           );
                         }
                         final users = (snapshot.data ?? [])
@@ -339,7 +339,7 @@ class _UserSearchSheetState extends State<_UserSearchSheet> {
                             child: Text(
                               'No users found',
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                color: DSColors.onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           );
@@ -363,9 +363,9 @@ class _UserSearchSheetState extends State<_UserSearchSheet> {
                                   user.role[0].toUpperCase() +
                                       user.role.substring(1),
                                   if (user.sport != null) user.sport!,
-                                ].join(' · '),
+                                ].join(' Â· '),
                                 style: theme.textTheme.bodySmall?.copyWith(
-                                  color: DSColors.onSurfaceVariant,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                               ),
                               onTap: () async {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/trial.dart';
@@ -103,12 +103,12 @@ class _CoachTrialsScreenState extends State<CoachTrialsScreen>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            CircularProgressIndicator(color: DSColors.onSurface),
+                            CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                             SizedBox(height: DSSpacing.md),
                             Text(
                               'Loading trials...',
                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: DSColors.onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -175,27 +175,27 @@ class _TrialCard extends StatelessWidget {
               ),
               TagChip(
                 text: isOpen ? 'OPEN' : 'CLOSED',
-                color: isOpen ? DSColors.green : DSColors.onSurfaceDisabled,
+                color: isOpen ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.45),
               ),
             ],
           ),
           SizedBox(height: DSSpacing.sm),
           Text(
-            '${trial.teamName} · ${trial.sport} · ${trial.position} · ${trial.skillLevel}',
+            '${trial.teamName} Â· ${trial.sport} Â· ${trial.position} Â· ${trial.skillLevel}',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: DSColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           SizedBox(height: DSSpacing.md),
           Row(
             children: [
-              Icon(DSIcons.users, size: DSIconSize.sm, color: DSColors.green),
+              Icon(DSIcons.users, size: DSIconSize.sm, color: Theme.of(context).colorScheme.onSurface),
               SizedBox(width: DSSpacing.xs),
               Text(
                 '${trial.selectedPlayerIds.length} players finalized',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: DSColors.green,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],

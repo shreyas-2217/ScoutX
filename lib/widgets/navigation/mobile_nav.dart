@@ -16,10 +16,10 @@ class MobileNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: DSColors.surface,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         border: Border(
-          top: BorderSide(color: DSColors.outlineVariant, width: 1),
+          top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant, width: 1),
         ),
       ),
       child: SafeArea(
@@ -56,7 +56,7 @@ class MobileNav extends StatelessWidget {
                       Icon(
                         isActive ? item.activeIcon : item.icon,
                         size: DSIconSize.bottomNav,
-                        color: isActive ? DSColors.onSurface : DSColors.onSurfaceVariant,
+                        color: isActive ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       const SizedBox(height: 2),
                       Text(
@@ -64,7 +64,7 @@ class MobileNav extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                          color: isActive ? DSColors.onSurface : DSColors.onSurfaceVariant,
+                          color: isActive ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],

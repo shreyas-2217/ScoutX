@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -115,7 +115,7 @@ class _SearchScreenState extends State<SearchScreen> {
           decoration: InputDecoration(
             hintText: 'Search players, highlights, skills...',
             hintStyle: TextStyle(
-              color: DSColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontSize: 16,
             ),
             border: InputBorder.none,
@@ -161,7 +161,7 @@ class _SearchScreenState extends State<SearchScreen> {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: DSColors.onSurfaceVariant,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
         SizedBox(height: DSSpacing.sm),
@@ -224,7 +224,7 @@ class _SearchScreenState extends State<SearchScreen> {
       itemBuilder: (context, index) {
         final s = _suggestions[index];
         return ListTile(
-          leading: Icon(Icons.search, size: 20, color: DSColors.onSurfaceVariant),
+          leading: Icon(Icons.search, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
           title: Text(s),
           dense: true,
           onTap: () {
@@ -238,7 +238,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildResults() {
     if (_isSearching) {
-      return Center(child: CircularProgressIndicator(color: DSColors.onSurface));
+      return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface));
     }
 
     final hasClips = _clipResults.isNotEmpty;
@@ -285,19 +285,19 @@ class _SectionHeader extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: DSColors.onSurface,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           SizedBox(width: 6),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
             decoration: BoxDecoration(
-              color: DSColors.surfaceContainerHigh,
+              color: Theme.of(context).colorScheme.surfaceContainerHigh,
               borderRadius: BorderRadius.circular(DSRadius.chip),
             ),
             child: Text(
               '$count',
-              style: TextStyle(fontSize: 11, color: DSColors.onSurfaceVariant),
+              style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
           ),
         ],
@@ -324,10 +324,10 @@ class _UserTile extends StatelessWidget {
           if (user.sport != null) user.sport!,
           if (user.position != null) user.position!,
           if (user.city != null) user.city!,
-        ].join(' · '),
-        style: TextStyle(fontSize: 12, color: DSColors.onSurfaceVariant),
+        ].join(' Â· '),
+        style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
       ),
-      trailing: Icon(Icons.chevron_right, color: DSColors.onSurfaceVariant),
+      trailing: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant),
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -364,8 +364,8 @@ class _ClipTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      DSColors.onSurface.withValues(alpha: 0.3),
-                      DSColors.cyan.withValues(alpha: 0.3),
+                      Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                      Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                     ],
                   ),
                 ),
@@ -395,17 +395,17 @@ class _ClipTile extends StatelessWidget {
         children: [
           Text(
             clip.playerName,
-            style: TextStyle(fontSize: 12, color: DSColors.onSurfaceVariant),
+            style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
-          SizedBox(height: 2),
-          _buildMetadataBadges(clip),
+          const SizedBox(height: 2),
+          _buildMetadataBadges(context, clip),
           if (result.matchReasons.isNotEmpty) ...[
             SizedBox(height: 4),
             Text(
-              result.matchReasons.take(3).join(' · '),
+              result.matchReasons.take(3).join(' Â· '),
               style: TextStyle(
                 fontSize: 11,
-                color: DSColors.onSurface,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontWeight: FontWeight.w500,
               ),
               maxLines: 1,
@@ -428,30 +428,30 @@ class _ClipTile extends StatelessWidget {
     );
   }
 
-  Widget _buildMetadataBadges(models.Clip clip) {
+  Widget _buildMetadataBadges(BuildContext context, models.Clip clip) {
     final badges = <String>[];
     if (clip.sport.isNotEmpty) badges.add(clip.sport);
     if (clip.position.isNotEmpty) badges.add(clip.position);
     if (clip.location != null) badges.add(clip.location!);
     if (clip.ageGroup != null) badges.add(clip.ageGroup!);
 
-    if (badges.isEmpty) return SizedBox.shrink();
+    if (badges.isEmpty) return const SizedBox.shrink();
 
     return Wrap(
       spacing: 4,
       runSpacing: 2,
       children: badges.take(4).map((b) {
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
           decoration: BoxDecoration(
-            color: DSColors.surfaceContainerHigh,
+            color: Theme.of(context).colorScheme.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(DSRadius.chip),
           ),
           child: Text(
             b,
             style: TextStyle(
               fontSize: 10,
-              color: DSColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -468,12 +468,14 @@ class _PresetChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return ActionChip(
-      label: Text(label, style: TextStyle(fontSize: 13)),
-      avatar: Icon(Icons.search, size: 16),
+      label: Text(label, style: TextStyle(fontSize: 13, color: scheme.onSurface)),
+      avatar: Icon(Icons.search, size: 16, color: scheme.onSurfaceVariant),
       onPressed: onTap,
-      backgroundColor: DSColors.surfaceContainerHigh,
-      side: BorderSide(color: DSColors.outlineVariant),
+      backgroundColor: scheme.surfaceContainerHigh,
+      side: BorderSide(color: scheme.outlineVariant),
+      labelStyle: TextStyle(color: scheme.onSurface),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(DSRadius.chip),
       ),
