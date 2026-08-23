@@ -1,1 +1,33 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"scoutx-ed075","appId":"1:353251846505:android:1a328f65e417aca64ef5f8","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"scoutx-ed075","configurations":{"android":"1:353251846505:android:1a328f65e417aca64ef5f8","web":"1:353251846505:web:716bc681127a5c364ef5f8"}}}}}}
+{
+  "hosting": {
+    "public": "build/web",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "headers": [
+      { "source": "/flutter_service_worker.js", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }] },
+      { "source": "/index.html", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }] },
+      { "source": "/flutter_bootstrap.js", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }] },
+      { "source": "/main.dart.js", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }] }
+    ],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }]
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "scoutx-ed075",
+          "appId": "1:353251846505:android:1a328f65e417aca64ef5f8",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "scoutx-ed075",
+          "configurations": {
+            "android": "1:353251846505:android:1a328f65e417aca64ef5f8",
+            "web": "1:353251846505:web:716bc681127a5c364ef5f8"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:scoutx/design_system.dart';
 import '../../models/clip_comment.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
@@ -80,6 +79,19 @@ class _CommentSheetState extends State<CommentSheet>
         createdAt: DateTime.now(),
       ),
     );
+    // Notify clip owner (skip self-comments)
+    try {
+      final clip = await db.getClip(widget.clipId);
+      if (clip != null && clip.playerId != user.uid) {
+        await db.createNotification(
+          toUserId: clip.playerId,
+          fromUserId: user.uid,
+          fromUserName: me.displayName,
+          type: 'comment',
+          message: text.length > 50 ? '${text.substring(0, 50)}...' : text,
+        );
+      }
+    } catch (_) {}
     _input.clear();
     if (mounted) setState(() => _sending = false);
   }
@@ -154,7 +166,7 @@ class _CommentSheetState extends State<CommentSheet>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            CircularProgressIndicator(color: DSColors.volt),
+                            CircularProgressIndicator(color: DSColors.onSurface),
                             SizedBox(height: DSSpacing.md),
                             Text(
                               'Loading comments...',

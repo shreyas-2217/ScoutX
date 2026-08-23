@@ -53,7 +53,7 @@ class DesktopNavRail extends StatelessWidget {
                           Icon(
                             isActive ? item.activeIcon : item.icon,
                             size: DSIconSize.md,
-                            color: isActive ? DSColors.volt : DSColors.onSurfaceVariant,
+                            color: isActive ? DSColors.onSurface : DSColors.onSurfaceVariant,
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -61,7 +61,7 @@ class DesktopNavRail extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                              color: isActive ? DSColors.volt : DSColors.onSurfaceVariant,
+                              color: isActive ? DSColors.onSurface : DSColors.onSurfaceVariant,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

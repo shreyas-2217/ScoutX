@@ -22,13 +22,15 @@ class SetupScreen extends StatelessWidget {
                   width: 88,
                   height: 88,
                   decoration: BoxDecoration(
-                    gradient: DSColors.brandSubtle,
+                    gradient: LinearGradient(
+                      colors: [DSColors.onSurface.withValues(alpha: 0.08), DSColors.surfaceContainer],
+                    ),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     DSIcons.cloudSlash,
                     size: DSIconSize.xxl,
-                    color: DSColors.volt,
+                    color: DSColors.onSurface,
                   ),
                 ),
                 SizedBox(height: DSSpacing.lg),

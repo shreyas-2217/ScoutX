@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 import '../../models/opening.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
-import '../shared/widgets.dart'
-    show DSColors, DSSpacing, DSIconSize, DSRadius, DSMotion, DSElevation, DSCard, EmptyState, DSButton, DSButtonVariant, SectionHeader, AnimatedPage;
+import '../shared/widgets.dart';
 
 class PostOpeningScreen extends StatefulWidget {
   const PostOpeningScreen({super.key});
@@ -144,7 +142,7 @@ class _PostOpeningScreenState extends State<PostOpeningScreen>
                           isExpanded: true,
                           decoration: InputDecoration(
                             labelText: 'Position needed',
-                            prefixIcon: Icon(DSIcons.sports_rounded),
+                            prefixIcon: Icon(DSIcons.sportsRounded),
                           ),
                           items: (AppConstants.positionsBySport[_sport] ?? const [])
                               .map((p) => DropdownMenuItem(value: p, child: Text(p)))

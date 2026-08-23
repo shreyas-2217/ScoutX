@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoutx/design_system.dart';
 import 'ai_character.dart';
+import 'ai_result_cards.dart';
 import '../../services/ai/ai_message.dart';
 
 class AIMessageBubble extends StatelessWidget {
@@ -33,7 +34,7 @@ class _UserBubble extends StatelessWidget {
         margin: const EdgeInsets.only(left: 48, top: 4, bottom: 4),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: DSColors.volt,
+          color: DSColors.onSurface,
           borderRadius: BorderRadius.circular(18).copyWith(bottomRight: const Radius.circular(4)),
         ),
         child: Text(
@@ -61,64 +62,71 @@ class _AIBubble extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.only(right: 48, top: 4, bottom: 4),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AICharacter(
-              state: isThinking
-                  ? AICharacterState.thinking
-                  : isError
-                      ? AICharacterState.error
-                      : AICharacterState.idle,
-              size: 32,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  color: isRateLimited
-                      ? Colors.amber.withValues(alpha: 0.1)
-                      : theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(18).copyWith(bottomLeft: const Radius.circular(4)),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AICharacter(
+                  state: isThinking
+                      ? AICharacterState.thinking
+                      : isError
+                          ? AICharacterState.error
+                          : AICharacterState.idle,
+                  size: 32,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (isThinking) ...[
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 14,
-                            height: 14,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: DSColors.volt),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: isRateLimited
+                          ? Colors.amber.withValues(alpha: 0.1)
+                          : theme.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(18).copyWith(bottomLeft: const Radius.circular(4)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (isThinking) ...[
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 14,
+                                height: 14,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: DSColors.onSurface),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                message.text.isEmpty ? 'Thinking...' : message.text,
+                                style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 14),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            message.text.isEmpty ? 'Thinking...' : message.text,
-                            style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 14),
+                        ] else ...[
+                          _buildMarkdownText(
+                            message.text,
+                            TextStyle(
+                              color: isError
+                                  ? DSColors.red
+                                  : isRateLimited
+                                      ? Colors.amber.shade800
+                                      : theme.colorScheme.onSurface,
+                              fontSize: 15,
+                              height: 1.4,
+                            ),
+                            theme,
                           ),
                         ],
-                      ),
-                    ] else ...[
-                      _buildMarkdownText(
-                        message.text,
-                        TextStyle(
-                          color: isError
-                              ? DSColors.red
-                              : isRateLimited
-                                  ? Colors.amber.shade800
-                                  : theme.colorScheme.onSurface,
-                          fontSize: 15,
-                          height: 1.4,
-                        ),
-                        theme,
-                      ),
-                    ],
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
+            if (!isThinking && !isError && message.cards.isNotEmpty)
+              ...message.cards.map((card) => AIResultCard(card: card)),
           ],
         ),
       ),

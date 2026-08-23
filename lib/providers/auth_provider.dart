@@ -45,6 +45,12 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       _profile = null;
     }
+    // No Firestore profile yet — registration may have been interrupted
+    // before the profile write finished, or the profile was deleted
+    // server-side. Keep the auth session and let HomeGate route to
+    // CompleteProfileScreen so the user can finish setup. Signing out here
+    // would trap freshly registered users: login loops back here and
+    // re-registering fails with email-already-in-use.
     _loadingProfile = false;
     notifyListeners();
   }
@@ -53,6 +59,11 @@ class AuthProvider extends ChangeNotifier {
     if (_user == null) return;
     await _db.syncClipCount(_user!.uid);
     _profile = await _db.getUserProfile(_user!.uid);
+    notifyListeners();
+  }
+
+  void setProfileDirectly(UserProfile profile) {
+    _profile = profile;
     notifyListeners();
   }
 
@@ -66,6 +77,38 @@ class AuthProvider extends ChangeNotifier {
       });
     } on FirebaseAuthException catch (e) {
       _error = _friendlyAuthError(e.code);
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    _error = null;
+    notifyListeners();
+    try {
+      await _authService.signInWithGoogle()
+          .timeout(const Duration(seconds: 30), onTimeout: () {
+        throw Exception('Google sign-in timed out. Please try again.');
+      });
+    } on FirebaseAuthException catch (e) {
+      // User closed the popup or cancelled — not an error worth showing.
+      if (e.code == 'popup-closed-by-user' ||
+          e.code == 'cancelled-popup-request') {
+        notifyListeners();
+        return;
+      }
+      _error = _friendlyAuthError(e.code);
+      if (e.code == 'operation-not-allowed') {
+        _error =
+            'Google sign-in is not enabled yet. Enable the Google provider in '
+            'Firebase Console → Authentication → Sign-in method.';
+      }
+      notifyListeners();
+      rethrow;
+    } catch (e) {
+      _error = e.toString().contains('Exception:')
+          ? e.toString().replaceFirst('Exception: ', '')
+          : 'Could not start Google sign-in. Please try again.';
       notifyListeners();
       rethrow;
     }
@@ -134,7 +177,11 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> signOut() async {
-    await _authService.signOut();
+    try {
+      await _authService.signOut();
+    } catch (e) {
+      debugPrint('AuthProvider signOut error: $e');
+    }
     _user = null;
     _profile = null;
     _error = null;
@@ -166,6 +213,11 @@ class AuthProvider extends ChangeNotifier {
         return 'Password should be at least 6 characters.';
       case 'invalid-email':
         return 'Please enter a valid email address.';
+      case 'account-exists-with-different-credential':
+        return 'This email is already registered with a password. '
+            'Sign in with your password to connect Google.';
+      case 'popup-blocked':
+        return 'Your browser blocked the sign-in popup. Allow popups and try again.';
       default:
         return 'Something went wrong. Please try again.';
     }

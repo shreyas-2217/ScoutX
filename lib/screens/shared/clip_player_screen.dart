@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-import 'package:scoutx/design_system.dart';
 import 'widgets.dart';
 
 /// Full-screen video player used when a clip is opened.
@@ -117,7 +116,7 @@ class _ClipPlayerScreenState extends State<ClipPlayerScreen>
                 ? Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(color: DSColors.volt),
+                      CircularProgressIndicator(color: DSColors.onSurface),
                       SizedBox(height: DSSpacing.md),
                       Text(
                         'Loading video...',
@@ -233,8 +232,8 @@ class _ClipPlayerScreenState extends State<ClipPlayerScreen>
                                   vertical: DSSpacing.sm,
                                 ),
                                 colors: VideoProgressColors(
-                                  playedColor: DSColors.volt,
-                                  bufferedColor: DSColors.volt.withValues(alpha: 0.3),
+                                  playedColor: DSColors.onSurface,
+                                  bufferedColor: DSColors.onSurface.withValues(alpha: 0.3),
                                   backgroundColor: DSColors.onSurface.withValues(alpha: 0.2),
                                 ),
                               ),

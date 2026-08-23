@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:scoutx/design_system.dart';
 import '../../models/trial.dart';
 import '../../models/trial_application.dart';
 import '../../models/user_profile.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
 import '../shared/widgets.dart'
-    show DSColors, DSSpacing, DSIconSize, DSRadius, DSMotion, DSElevation, DSCard, EmptyState, DSButton, DSButtonVariant, TagChip, SectionHeader, StaggeredItem, StaggeredList, InitialsAvatar, VerifiedBadge, AnimatedPage;
+    show DSColors, DSSpacing, DSIconSize, DSIcons, DSCard, EmptyState, DSButton, DSButtonVariant, TagChip, StaggeredList, InitialsAvatar, AnimatedPage;
 import '../shared/player_profile_view_screen.dart';
-import '../shared/widgets.dart';
 
 /// Trial detail. Shows coach controls when the owner views it,
 /// and apply/status UI when a player views it.
@@ -195,7 +193,7 @@ class _ApplicantsList extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-            child: CircularProgressIndicator(color: DSColors.volt),
+            child: CircularProgressIndicator(color: DSColors.onSurface),
           );
         }
         final apps = snapshot.data ?? [];
@@ -207,8 +205,8 @@ class _ApplicantsList extends StatelessWidget {
           );
         }
         return StaggeredList(
-          children: apps.map((app) => _ApplicantCard(trial: trial, app: app)).toList(),
           spacing: DSSpacing.md,
+          children: apps.map((app) => _ApplicantCard(trial: trial, app: app)).toList(),
         );
       },
     );
@@ -629,6 +627,7 @@ class _PlayerPanel extends StatelessWidget {
         ),
       );
       if (result == null) return;
+      if (!context.mounted) return;
       final me = context.read<AuthProvider>().profile;
       if (me == null) return;
       final app = TrialApplication(
@@ -641,6 +640,7 @@ class _PlayerPanel extends StatelessWidget {
         message: result,
         appliedAt: DateTime.now(),
       );
+      if (!context.mounted) return;
       await context.read<Database>().applyToTrial(app);
     } catch (e) {
       if (context.mounted) {

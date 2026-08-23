@@ -7,9 +7,7 @@ import '../../constants.dart';
 import '../../models/user_profile.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
-import '../../theme.dart';
 import '../../widgets/location_picker.dart';
-import '../shared/widgets.dart';
 
 class CompleteProfileScreen extends StatefulWidget {
   const CompleteProfileScreen({super.key});
@@ -86,7 +84,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
         createdAt: DateTime.now(),
       );
       await context.read<Database>().createUserProfile(profile);
-      await auth.refreshProfile();
+      auth.setProfileDirectly(profile);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -112,200 +110,433 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen>
     }
   }
 
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: GoogleFonts.inter(
+        fontSize: 16,
+        color: DSColors.onSurfaceDisabled,
+      ),
+      filled: true,
+      fillColor: DSColors.surfaceContainer,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: DSSpacing.md,
+        vertical: DSSpacing.md,
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(DSRadius.input),
+        borderSide: const BorderSide(color: DSColors.outlineVariant, width: 1),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(DSRadius.input),
+        borderSide: const BorderSide(color: DSColors.outlineVariant, width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(DSRadius.input),
+        borderSide: const BorderSide(color: DSColors.onSurface, width: 1),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Welcome')),
-      body: Padding(
-        padding: EdgeInsets.all(DSSpacing.xl),
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return Opacity(
-              opacity: _opacityAnim.value,
-              child: Transform.translate(
-                offset: _slideAnim.value * 30,
-                child: child,
-              ),
-            );
-          },
+      backgroundColor: DSColors.surface,
+      appBar: AppBar(
+        backgroundColor: DSColors.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(DSIcons.arrowLeft),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          'SCOUTX',
+          style: GoogleFonts.barlowCondensed(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.32,
+            color: DSColors.onSurface,
+          ),
+        ),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: DSSpacing.md),
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: DSColors.surfaceContainer,
+              borderRadius: BorderRadius.circular(DSRadius.sm),
+              border: Border.all(color: DSColors.outlineVariant),
+            ),
+            child: Icon(
+              DSIcons.user,
+              size: 18,
+              color: DSColors.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextFormField(
-                  controller: _name,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    labelText: 'Your name',
-                    prefixIcon: Icon(DSIcons.user),
+            padding: const EdgeInsets.symmetric(
+              horizontal: DSSpacing.lg,
+              vertical: DSSpacing.lg,
+            ),
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _opacityAnim.value,
+                  child: Transform.translate(
+                    offset: _slideAnim.value * 30,
+                    child: child,
                   ),
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter your name' : null,
-                ),
-                SizedBox(height: DSSpacing.xl),
-                Text(
-                  'How will you use ScoutX?',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: DSColors.onSurfaceVariant,
-                  ),
-                ),
-                SizedBox(height: DSSpacing.md),
-                for (final r in [
-                  ('player', 'Player', DSIcons.trophy),
-                  ('coach', 'Coach', DSIcons.shield),
-                  ('viewer', 'Viewer', DSIcons.smart_display_rounded),
-                ])
-                  Padding(
-                    padding: EdgeInsets.only(bottom: DSSpacing.sm),
-                    child: InkWell(
-                      onTap: () => setState(() => _role = r.$1),
-                      borderRadius: BorderRadius.circular(DSRadius.md),
-                      child: AnimatedContainer(
-                        duration: DSMotion.fast,
-                        padding: EdgeInsets.all(DSSpacing.md),
-                        decoration: BoxDecoration(
-                          color: _role == r.$1
-                              ? DSColors.volt.withValues(alpha: 0.08)
-                              : DSColors.surface,
-                          borderRadius: BorderRadius.circular(DSRadius.md),
-                          border: Border.all(
-                            color: _role == r.$1
-                                ? DSColors.volt
-                                : DSColors.outline,
-                            width: _role == r.$1 ? 1.5 : 1,
+                );
+              },
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Progress bar
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(2),
+                      child: LinearProgressIndicator(
+                        value: 0.6,
+                        minHeight: 4,
+                        backgroundColor: DSColors.surfaceContainerHigh,
+                        valueColor: AlwaysStoppedAnimation<Color>(DSColors.onSurface),
+                      ),
+                    ),
+                    const SizedBox(height: DSSpacing.xl),
+
+                    // Heading
+                    Text(
+                      'COMPLETE YOUR PROFILE',
+                      style: GoogleFonts.barlowCondensed(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.32,
+                        color: DSColors.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: DSSpacing.sm),
+                    Text(
+                      'Set up your credentials to begin scouting or getting scouted',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: DSColors.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: DSSpacing.xl),
+
+                    // Avatar
+                    Center(
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: DSColors.surfaceContainer,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: DSColors.outlineVariant),
+                            ),
+                            child: Icon(
+                              DSIcons.user,
+                              size: 36,
+                              color: DSColors.onSurfaceDisabled,
+                            ),
                           ),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(r.$3, color: DSColors.volt),
-                            SizedBox(width: DSSpacing.md),
-                            Expanded(
-                              child: Text(
-                                r.$2,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: DSColors.onSurface,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: DSColors.surface, width: 2),
+                              ),
+                              child: Icon(
+                                DSIcons.add,
+                                size: 14,
+                                color: DSColors.surface,
                               ),
                             ),
-                            Icon(
-                              _role == r.$1
-                                  ? DSIcons.radio_button_checked_rounded
-                                  : DSIcons.radio_button_unchecked_rounded,
-                              size: DSIconSize.md,
-                              color: _role == r.$1
-                                  ? DSColors.volt
-                                  : DSColors.onSurfaceDisabled,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                // Sport & Position for Players
-                if (_role == 'player') ...[
-                  SizedBox(height: DSSpacing.xl),
-                  DropdownButtonFormField<String>(
-                    value: _sport,
-                    isExpanded: true,
-                    decoration: InputDecoration(
-                      labelText: 'Sport',
-                      prefixIcon: Icon(DSIcons.trophy),
-                    ),
-                    items: AppConstants.sportList
-                        .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                        .toList(),
-                    onChanged: (v) => setState(() {
-                      _sport = v;
-                      _position = null;
-                    }),
-                  ),
-                  if (_sport != null) ...[
-                    SizedBox(height: DSSpacing.md),
-                    DropdownButtonFormField<String>(
-                      value: _position,
-                      isExpanded: true,
-                      decoration: InputDecoration(
-                        labelText: 'Position',
-                        prefixIcon: Icon(DSIcons.sports_rounded),
-                      ),
-                      items: (AppConstants.positionsBySport[_sport] ?? [])
-                          .map((p) => DropdownMenuItem(value: p, child: Text(p)))
-                          .toList(),
-                      onChanged: (v) => setState(() => _position = v),
-                    ),
-                  ],
-                ],
-
-                // Location for Player/Coach
-                if (_role == 'player' || _role == 'coach') ...[
-                  SizedBox(height: DSSpacing.xl),
-                  Text(
-                    'Location',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: DSColors.onSurfaceVariant,
-                    ),
-                  ),
-                  SizedBox(height: DSSpacing.sm),
-                  if (_city != null && _city!.isNotEmpty) ...[
-                    Container(
-                      padding: EdgeInsets.all(DSSpacing.md),
-                      decoration: BoxDecoration(
-                        color: DSColors.volt.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(DSRadius.md),
-                        border: Border.all(color: DSColors.volt.withValues(alpha: 0.2)),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.location_on, color: DSColors.volt, size: 20),
-                          SizedBox(width: DSSpacing.sm),
-                          Expanded(
-                            child: Text(_city!, style: TextStyle(fontWeight: FontWeight.w600, color: DSColors.volt)),
-                          ),
-                          TextButton(
-                            onPressed: _openLocationPicker,
-                            child: Text('Change'),
                           ),
                         ],
                       ),
                     ),
-                  ] else ...[
-                    InkWell(
-                      onTap: _openLocationPicker,
-                      borderRadius: BorderRadius.circular(DSRadius.md),
-                      child: Container(
-                        padding: EdgeInsets.all(DSSpacing.md),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: DSColors.outline),
-                          borderRadius: BorderRadius.circular(DSRadius.md),
+                    const SizedBox(height: DSSpacing.xl),
+
+                    // Display Name
+                    Text(
+                      'DISPLAY NAME',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.5,
+                        color: DSColors.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: DSSpacing.sm),
+                    TextFormField(
+                      controller: _name,
+                      textCapitalization: TextCapitalization.words,
+                      style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                      decoration: _inputDecoration('e.g. John Doe'),
+                    ),
+                    const SizedBox(height: DSSpacing.xl),
+
+                    // Account Role
+                    Text(
+                      'ACCOUNT ROLE',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.5,
+                        color: DSColors.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: DSSpacing.sm),
+                    Row(
+                      children: [
+                        Expanded(child: _roleButton('PLAYER', 'player')),
+                        const SizedBox(width: DSSpacing.sm),
+                        Expanded(child: _roleButton('COACH', 'coach')),
+                        const SizedBox(width: DSSpacing.sm),
+                        Expanded(child: _roleButton('VIEWER', 'viewer')),
+                      ],
+                    ),
+                    const SizedBox(height: DSSpacing.xl),
+
+                    // Sport & Position for Players
+                    if (_role == 'player') ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildDropdown<String>(
+                              value: _sport,
+                              label: 'PRIMARY SPORT',
+                              items: AppConstants.sportList,
+                              onChanged: (v) => setState(() {
+                                _sport = v;
+                                _position = null;
+                              }),
+                            ),
+                          ),
+                          const SizedBox(width: DSSpacing.sm),
+                          Expanded(
+                            child: _buildDropdown<String>(
+                              value: _position,
+                              label: 'POSITION',
+                              items: AppConstants.positionsBySport[_sport] ?? const [],
+                              onChanged: (v) => setState(() => _position = v),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: DSSpacing.md),
+                    ],
+
+                    // Location for Player/Coach
+                    if (_role == 'player' || _role == 'coach') ...[
+                      Text(
+                        'BASE LOCATION',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5,
+                          color: DSColors.onSurfaceVariant,
                         ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.add_location_alt_outlined, color: DSColors.volt),
-                            SizedBox(width: DSSpacing.sm),
-                            Text('Select your location', style: TextStyle(color: DSColors.onSurfaceVariant)),
-                          ],
+                      ),
+                      const SizedBox(height: DSSpacing.sm),
+                      if (_city != null && _city!.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.all(DSSpacing.md),
+                          decoration: BoxDecoration(
+                            color: DSColors.surfaceContainer,
+                            borderRadius: BorderRadius.circular(DSRadius.input),
+                            border: Border.all(color: DSColors.outlineVariant),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(DSIcons.mapPin, size: 18, color: DSColors.onSurfaceVariant),
+                              const SizedBox(width: DSSpacing.sm),
+                              Expanded(
+                                child: Text(
+                                  _city!,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: DSColors.onSurface,
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: _openLocationPicker,
+                                child: Text(
+                                  'Change',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    color: DSColors.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        GestureDetector(
+                          onTap: _openLocationPicker,
+                          child: Container(
+                            padding: const EdgeInsets.all(DSSpacing.md),
+                            decoration: BoxDecoration(
+                              color: DSColors.surfaceContainer,
+                              borderRadius: BorderRadius.circular(DSRadius.input),
+                              border: Border.all(color: DSColors.outlineVariant),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(DSIcons.mapPin, size: 18, color: DSColors.onSurfaceVariant),
+                                const SizedBox(width: DSSpacing.sm),
+                                Text(
+                                  'City, State, Country',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    color: DSColors.onSurfaceDisabled,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+                    ],
+
+                    const SizedBox(height: DSSpacing.xl),
+
+                    // Get Started button
+                    SizedBox(
+                      height: 52,
+                      child: FilledButton(
+                        onPressed: _loading ? null : _create,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: DSColors.onSurface,
+                          foregroundColor: DSColors.surface,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(DSRadius.button),
+                          ),
+                        ),
+                        child: _loading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: DSColors.surface,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'GET STARTED',
+                                    style: GoogleFonts.barlowCondensed(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.32,
+                                    ),
+                                  ),
+                                  const SizedBox(width: DSSpacing.sm),
+                                  const Icon(DSIcons.arrowForwardRounded, size: 18),
+                                ],
+                              ),
                       ),
                     ),
                   ],
-                ],
-
-                SizedBox(height: DSSpacing.xl),
-                DSButton(
-                  label: 'Continue',
-                  leadingIcon: DSIcons.arrow_forward_rounded,
-                  loading: _loading,
-                  fullWidth: true,
-                  onPressed: _loading ? null : _create,
                 ),
-              ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _roleButton(String label, String value) {
+    final isSelected = _role == value;
+    return GestureDetector(
+      onTap: () => setState(() => _role = value),
+      child: AnimatedContainer(
+        duration: DSMotion.fast,
+        height: 48,
+        decoration: BoxDecoration(
+          color: isSelected ? DSColors.onSurface : DSColors.surfaceContainer,
+          borderRadius: BorderRadius.circular(DSRadius.button),
+          border: Border.all(
+            color: isSelected ? DSColors.onSurface : DSColors.outlineVariant,
+            width: 1,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: GoogleFonts.barlowCondensed(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.32,
+              color: isSelected ? DSColors.surface : DSColors.onSurface,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdown<T>({
+    required T? value,
+    required String label,
+    required List<T> items,
+    required ValueChanged<T?> onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
+            color: DSColors.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: DSSpacing.sm),
+        Container(
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: DSSpacing.md),
+          decoration: BoxDecoration(
+            color: DSColors.surfaceContainer,
+            borderRadius: BorderRadius.circular(DSRadius.input),
+            border: Border.all(color: DSColors.outlineVariant, width: 1),
+          ),
+          child: DropdownButton<T>(
+            value: value,
+            isExpanded: true,
+            underline: const SizedBox.shrink(),
+            dropdownColor: DSColors.surface,
+            style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+            items: items
+                .map((i) => DropdownMenuItem(value: i, child: Text('$i')))
+                .toList(),
+            onChanged: onChanged,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../../services/cloudinary_service.dart';
 import '../../services/database.dart';
 import '../shared/clip_player_screen.dart';
 import '../shared/player_profile_view_screen.dart';
@@ -139,7 +140,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(DSIcons.more_vert_rounded),
+            icon: const Icon(DSIcons.moreVertRounded),
             onSelected: (value) => _handleMenuAction(context, value),
             itemBuilder: (_) => [
               const PopupMenuItem(
@@ -158,7 +159,7 @@ class _ChatScreenState extends State<ChatScreen> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
-                    child: CircularProgressIndicator(color: DSColors.volt),
+                    child: CircularProgressIndicator(color: DSColors.onSurface),
                   );
                 }
                 final messages = snapshot.data ?? [];
@@ -168,7 +169,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          DSIcons.forum_rounded,
+                          DSIcons.forumRounded,
                           size: 48,
                           color: theme.colorScheme.outline,
                         ),
@@ -269,12 +270,12 @@ class _ChatScreenState extends State<ChatScreen> {
                       height: 20,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: DSColors.volt,
+                        color: DSColors.onSurface,
                       ),
                     )
-                  : const Icon(DSIcons.send, color: DSColors.volt),
+                  : const Icon(DSIcons.send, color: DSColors.onSurface),
               style: IconButton.styleFrom(
-                backgroundColor: DSColors.volt.withValues(alpha: 0.1),
+                backgroundColor: DSColors.onSurface.withValues(alpha: 0.08),
               ),
             ),
           ),
@@ -344,7 +345,7 @@ class _ChatBubble extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: isMine
-                    ? DSColors.volt
+                    ? DSColors.onSurface
                     : theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(DSRadius.lg),
@@ -407,6 +408,11 @@ class _ClipCard extends StatelessWidget {
     final title = (message.clipTitle?.isEmpty ?? true)
         ? 'Highlight'
         : message.clipTitle!;
+    final thumbnail = CloudinaryService.videoThumbnail(
+      message.clipVideoUrl,
+      width: 120,
+      height: 120,
+    );
     return GestureDetector(
       onTap: () {
         final url = message.clipVideoUrl;
@@ -420,13 +426,38 @@ class _ClipCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(DSSpacing.sm),
         decoration: BoxDecoration(
-          color: DSColors.volt.withValues(alpha: 0.12),
+          color: DSColors.onSurface.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(DSRadius.md),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(DSIcons.playCircle, size: 24, color: DSColors.volt),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(DSRadius.sm),
+              child: SizedBox(
+                width: 40,
+                height: 40,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(color: DSColors.onSurface.withValues(alpha: 0.2)),
+                    if (thumbnail != null)
+                      Image.network(
+                        thumbnail,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                      ),
+                    const Center(
+                      child: Icon(
+                        Icons.play_arrow_rounded,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             const SizedBox(width: 8),
             Flexible(
               child: Text(
@@ -435,7 +466,7 @@ class _ClipCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: DSColors.volt,
+                      color: DSColors.onSurface,
                     ),
               ),
             ),

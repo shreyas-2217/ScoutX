@@ -19,8 +19,8 @@ class StatTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = iconColor ?? DSColors.volt;
-    final bgColor = iconBackgroundColor ?? DSColors.voltSurface;
+    final color = iconColor ?? DSColors.onSurface;
+    final bgColor = iconBackgroundColor ?? DSColors.surfaceContainer;
 
     return Container(
       padding: const EdgeInsets.all(DSSpacing.sm + 4),

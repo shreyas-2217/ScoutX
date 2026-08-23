@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -12,6 +13,35 @@ class AuthService {
       email: email.trim(),
       password: password,
     );
+    return cred.user!;
+  }
+
+  /// Google sign-in via Firebase. Uses a popup flow on web (handled entirely
+  /// by the Firebase JS SDK, no extra packages or OAuth client setup).
+  Future<User> signInWithGoogle() async {
+    final provider = GoogleAuthProvider();
+    final UserCredential cred;
+    if (kIsWeb) {
+      cred = await _auth.signInWithPopup(provider);
+    } else {
+      cred = await _auth.signInWithProvider(provider);
+    }
+    return cred.user!;
+  }
+
+  /// Signs in with email/password and links the pending [googleCredential]
+  /// (from an `account-exists-with-different-credential` conflict) to that
+  /// account, so future Google sign-ins go straight through.
+  Future<User> linkGoogleCredential(
+    String email,
+    String password,
+    AuthCredential googleCredential,
+  ) async {
+    final cred = await _auth.signInWithEmailAndPassword(
+      email: email.trim(),
+      password: password,
+    );
+    await cred.user!.linkWithCredential(googleCredential);
     return cred.user!;
   }
 

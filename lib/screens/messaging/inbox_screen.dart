@@ -171,7 +171,7 @@ class _ConversationTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           color: hasUnread
-              ? DSColors.volt.withValues(alpha: 0.04)
+              ? DSColors.onSurface.withValues(alpha: 0.04)
               : Colors.transparent,
           child: Row(
             children: [
@@ -328,7 +328,7 @@ class _UserSearchSheetState extends State<_UserSearchSheet> {
                             ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(
-                                color: DSColors.volt),
+                                color: DSColors.onSurface),
                           );
                         }
                         final users = (snapshot.data ?? [])

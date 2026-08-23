@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:scoutx/design_system.dart';
+import '../../constants.dart';
 import '../../models/clip.dart';
 import '../../models/conversation.dart';
 import '../../providers/auth_provider.dart';
@@ -16,7 +16,8 @@ class ShareSheet extends StatefulWidget {
 
   const ShareSheet({super.key, required this.clip});
 
-  static String linkFor(Clip clip) => 'https://scoutx.app/clip/${clip.id}';
+  static String linkFor(Clip clip) =>
+      '${AppConstants.shareBaseUrl}/#/clip/${clip.id}';
 
   @override
   State<ShareSheet> createState() => _ShareSheetState();

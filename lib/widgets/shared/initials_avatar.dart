@@ -110,7 +110,7 @@ class InitialsAvatar extends StatelessWidget {
                 width: _onlineIndicatorSize,
                 height: _onlineIndicatorSize,
                 decoration: BoxDecoration(
-                  color: DSColors.volt,
+                  color: DSColors.onSurface,
                   shape: BoxShape.circle,
                   border: Border.all(
                     color: DSColors.surface,

@@ -5,9 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 import '../../providers/auth_provider.dart';
-import '../../theme.dart';
 import '../../widgets/location_picker.dart';
-import '../shared/widgets.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -31,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   double? _latitude;
   double? _longitude;
   bool _loading = false;
+  bool _obscure = true;
 
   late final AnimationController _controller;
   late final Animation<double> _opacityAnim;
@@ -88,7 +87,8 @@ class _RegisterScreenState extends State<RegisterScreen>
             longitude: _longitude,
           );
       if (mounted) {
-        Navigator.of(context).pushNamedAndRemoveUntil('/', (_) => false);
+        // AuthProvider handles state; HomeGate will rebuild automatically.
+        Navigator.of(context).popUntil((route) => route.isFirst);
       }
     } catch (_) {
       if (mounted) {
@@ -123,227 +123,410 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
+  InputDecoration _inputDecoration(String hint, {Widget? suffix}) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: GoogleFonts.inter(
+        fontSize: 16,
+        color: DSColors.onSurfaceDisabled,
+      ),
+      filled: true,
+      fillColor: DSColors.surfaceContainer,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: DSSpacing.md,
+        vertical: DSSpacing.md,
+      ),
+      suffixIcon: suffix,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(DSRadius.input),
+        borderSide: const BorderSide(color: DSColors.outlineVariant, width: 1),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(DSRadius.input),
+        borderSide: const BorderSide(color: DSColors.outlineVariant, width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(DSRadius.input),
+        borderSide: const BorderSide(color: DSColors.onSurface, width: 1),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final error = context.watch<AuthProvider>().error;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      backgroundColor: DSColors.surface,
       appBar: AppBar(
-        title: const Text('Create Account'),
-        backgroundColor: Colors.transparent,
+        backgroundColor: DSColors.surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(DSIcons.arrowLeft),
           onPressed: () => Navigator.of(context).pop(),
         ),
+        title: Text(
+          'SCOUTX',
+          style: GoogleFonts.barlowCondensed(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.32,
+            color: DSColors.onSurface,
+          ),
+        ),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: DSSpacing.md),
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: DSColors.surfaceContainer,
+              borderRadius: BorderRadius.circular(DSRadius.sm),
+              border: Border.all(color: DSColors.outlineVariant),
+            ),
+            child: Icon(
+              DSIcons.user,
+              size: 18,
+              color: DSColors.onSurfaceVariant,
+            ),
+          ),
+        ],
       ),
-      body: Container(
-        decoration: const BoxDecoration(gradient: DSColors.bgGradient),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.all(DSSpacing.xl),
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return Opacity(
-                    opacity: _opacityAnim.value,
-                    child: Transform.translate(
-                      offset: _slideAnim.value * 30,
-                      child: child,
-                    ),
-                  );
-                },
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 420),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Center(
-                          child: BrandLogo(
-                            markSize: 64,
-                            fontSize: 38,
-                            animate: false,
-                          ),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: DSSpacing.lg,
+              vertical: DSSpacing.lg,
+            ),
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _opacityAnim.value,
+                  child: Transform.translate(
+                    offset: _slideAnim.value * 30,
+                    child: child,
+                  ),
+                );
+              },
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Heading
+                      Text(
+                        'CREATE ACCOUNT',
+                        style: GoogleFonts.barlowCondensed(
+                          fontSize: 34,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.32,
+                          color: DSColors.onSurface,
                         ),
-                        SizedBox(height: DSSpacing.md),
+                      ),
+                      const SizedBox(height: DSSpacing.sm),
+                      Text(
+                        'Join the scouting network',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: DSColors.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: DSSpacing.xl),
+
+                      // Full Name
+                      Text(
+                        'FULL NAME',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5,
+                          color: DSColors.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: DSSpacing.sm),
+                      TextFormField(
+                        controller: _name,
+                        textCapitalization: TextCapitalization.words,
+                        style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                        decoration: _inputDecoration('Enter your full name'),
+                        validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter your name' : null,
+                      ),
+                      const SizedBox(height: DSSpacing.md),
+
+                      // Email
+                      Text(
+                        'EMAIL',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5,
+                          color: DSColors.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: DSSpacing.sm),
+                      TextFormField(
+                        controller: _email,
+                        keyboardType: TextInputType.emailAddress,
+                        style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                        decoration: _inputDecoration('Enter your email address'),
+                        validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
+                      ),
+                      const SizedBox(height: DSSpacing.md),
+
+                      // Password
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'PASSWORD',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.5,
+                              color: DSColors.onSurfaceVariant,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => setState(() => _obscure = !_obscure),
+                            child: Text(
+                              'SHOW',
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                letterSpacing: 0.5,
+                                color: DSColors.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: DSSpacing.sm),
+                      TextFormField(
+                        controller: _password,
+                        obscureText: _obscure,
+                        style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                        decoration: _inputDecoration('Create a password'),
+                        validator: (v) => (v == null || v.length < 6) ? 'Password must be 6+ characters' : null,
+                        onFieldSubmitted: (_) => _submit(),
+                      ),
+                      const SizedBox(height: DSSpacing.xl),
+
+                      // Role selector
+                      Text(
+                        'I AM A',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5,
+                          color: DSColors.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: DSSpacing.sm),
+                      Row(
+                        children: [
+                          Expanded(child: _roleButton('PLAYER', 'player')),
+                          const SizedBox(width: DSSpacing.sm),
+                          Expanded(child: _roleButton('COACH', 'coach')),
+                          const SizedBox(width: DSSpacing.sm),
+                          Expanded(child: _roleButton('VIEWER', 'viewer')),
+                        ],
+                      ),
+                      const SizedBox(height: DSSpacing.xl),
+
+                      // Conditional fields
+                      if (_role == 'player') ...[
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildDropdown<String>(
+                                value: _sport,
+                                label: 'SPORT',
+                                items: AppConstants.sportList,
+                                onChanged: (v) => setState(() {
+                                  _sport = v;
+                                  _position = null;
+                                }),
+                              ),
+                            ),
+                            const SizedBox(width: DSSpacing.sm),
+                            Expanded(
+                              child: _buildDropdown<String>(
+                                value: _position,
+                                label: 'POSITION',
+                                items: AppConstants.positionsBySport[_sport] ?? const [],
+                                onChanged: (v) => setState(() => _position = v),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: DSSpacing.md),
+                      ],
+                      if (_role == 'coach') ...[
                         Text(
-                          'Tell us about you',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyMedium?.copyWith(
+                          'TEAM / CLUB NAME',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.5,
                             color: DSColors.onSurfaceVariant,
                           ),
                         ),
-                        SizedBox(height: DSSpacing.xxl),
-                        DSCard(
-                          padding: EdgeInsets.all(DSSpacing.xl),
-                          animate: false,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                'I am a\u2026',
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  color: DSColors.onSurfaceVariant,
-                                ),
-                              ),
-                              SizedBox(height: DSSpacing.md),
-                              _roleSelector(theme),
-                              SizedBox(height: DSSpacing.xl),
-                              TextFormField(
-                                controller: _name,
-                                textCapitalization: TextCapitalization.words,
-                                decoration: const InputDecoration(
-                                  labelText: 'Full name',
-                                  prefixIcon: Icon(DSIcons.user),
-                                ),
-                                validator: (v) => (v == null ||
-                                        v.trim().isEmpty)
-                                    ? 'Enter your name'
-                                    : null,
-                              ),
-                              SizedBox(height: DSSpacing.md),
-                              TextFormField(
-                                controller: _email,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: const InputDecoration(
-                                  labelText: 'Email',
-                                  prefixIcon: Icon(DSIcons.envelope),
-                                ),
-                                validator: (v) => (v == null ||
-                                        !v.contains('@'))
-                                    ? 'Enter a valid email'
-                                    : null,
-                              ),
-                              SizedBox(height: DSSpacing.md),
-                              TextFormField(
-                                controller: _password,
-                                obscureText: true,
-                                decoration: const InputDecoration(
-                                  labelText: 'Password',
-                                  prefixIcon: Icon(DSIcons.lock),
-                                  helperText: 'At least 6 characters',
-                                ),
-                                validator: (v) => (v == null || v.length < 6)
-                                    ? 'Password must be 6+ characters'
-                                    : null,
-                                onFieldSubmitted: (_) => _submit(),
-                              ),
-                              if (_role == 'player') ...[
-                                SizedBox(height: DSSpacing.xl),
-                                _dropdown<String>(
-                                  value: _sport,
-                                  label: 'Sport',
-                                  icon: DSIcons.trophy,
-                                  items: AppConstants.sportList,
-                                  onChanged: (v) => setState(() {
-                                    _sport = v;
-                                    _position = null;
-                                  }),
-                                ),
-                                if (_sport != null) ...[
-                                  SizedBox(height: DSSpacing.md),
-                                  _dropdown<String>(
-                                    value: _position,
-                                    label: 'Position',
-                                    icon: DSIcons.sports_rounded,
-                                    items:
-                                        AppConstants.positionsBySport[_sport] ??
-                                            const [],
-                                    onChanged: (v) =>
-                                        setState(() => _position = v),
-                                  ),
-                                ],
-                              ],
-                              if (_role == 'coach') ...[
-                                SizedBox(height: DSSpacing.xl),
-                                TextFormField(
-                                  controller: _teamName,
-                                  textCapitalization: TextCapitalization.words,
-                                  decoration: InputDecoration(
-                                    labelText: 'Team / Club name (optional)',
-                                    prefixIcon: Icon(DSIcons.shield),
-                                  ),
-                                ),
-                              ],
-                              if (_role == 'player' || _role == 'coach') ...[
-                                SizedBox(height: DSSpacing.xl),
-                                Text(
-                                  'Location',
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    color: DSColors.onSurfaceVariant,
-                                  ),
-                                ),
-                                SizedBox(height: DSSpacing.sm),
-                                if (_city != null && _city!.isNotEmpty) ...[
-                                  Container(
-                                    padding: EdgeInsets.all(DSSpacing.md),
-                                    decoration: BoxDecoration(
-                                      color: DSColors.volt.withValues(alpha: 0.08),
-                                      borderRadius: BorderRadius.circular(DSRadius.md),
-                                      border: Border.all(color: DSColors.volt.withValues(alpha: 0.2)),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.location_on, color: DSColors.volt, size: 20),
-                                        SizedBox(width: DSSpacing.sm),
-                                        Expanded(
-                                          child: Text(_city!, style: TextStyle(fontWeight: FontWeight.w600, color: DSColors.volt)),
-                                        ),
-                                        TextButton(
-                                          onPressed: _openLocationPicker,
-                                          child: Text('Change'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ] else ...[
-                                  InkWell(
-                                    onTap: _openLocationPicker,
-                                    borderRadius: BorderRadius.circular(DSRadius.md),
-                                    child: Container(
-                                      padding: EdgeInsets.all(DSSpacing.md),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: DSColors.outline),
-                                        borderRadius: BorderRadius.circular(DSRadius.md),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.add_location_alt_outlined, color: DSColors.volt),
-                                          SizedBox(width: DSSpacing.sm),
-                                          Text('Select your location', style: TextStyle(color: DSColors.onSurfaceVariant)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ],
-                              SizedBox(height: DSSpacing.xxl),
-                              DSButton(
-                                label: 'Sign Up',
-                                leadingIcon: DSIcons.arrow_forward_rounded,
-                                loading: _loading,
-                                fullWidth: true,
-                                onPressed: _loading ? null : _submit,
-                              ),
-                              if (error != null) ...[
-                                SizedBox(height: DSSpacing.md),
-                                Text(
-                                  error,
-                                  textAlign: TextAlign.center,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: DSColors.red,
-                                  ),
-                                ),
-                              ],
-                            ],
+                        const SizedBox(height: DSSpacing.sm),
+                        TextFormField(
+                          controller: _teamName,
+                          textCapitalization: TextCapitalization.words,
+                          style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+                          decoration: _inputDecoration('Enter team name (optional)'),
+                        ),
+                        const SizedBox(height: DSSpacing.md),
+                      ],
+                      if (_role == 'player' || _role == 'coach') ...[
+                        Text(
+                          'LOCATION',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.5,
+                            color: DSColors.onSurfaceVariant,
                           ),
                         ),
+                        const SizedBox(height: DSSpacing.sm),
+                        if (_city != null && _city!.isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.all(DSSpacing.md),
+                            decoration: BoxDecoration(
+                              color: DSColors.surfaceContainer,
+                              borderRadius: BorderRadius.circular(DSRadius.input),
+                              border: Border.all(color: DSColors.outlineVariant),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(DSIcons.mapPin, size: 18, color: DSColors.onSurfaceVariant),
+                                const SizedBox(width: DSSpacing.sm),
+                                Expanded(
+                                  child: Text(
+                                    _city!,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: DSColors.onSurface,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: _openLocationPicker,
+                                  child: Text(
+                                    'Change',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      color: DSColors.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        else
+                          GestureDetector(
+                            onTap: _openLocationPicker,
+                            child: Container(
+                              padding: const EdgeInsets.all(DSSpacing.md),
+                              decoration: BoxDecoration(
+                                color: DSColors.surfaceContainer,
+                                borderRadius: BorderRadius.circular(DSRadius.input),
+                                border: Border.all(color: DSColors.outlineVariant),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(DSIcons.mapPin, size: 18, color: DSColors.onSurfaceVariant),
+                                  const SizedBox(width: DSSpacing.sm),
+                                  Text(
+                                    'City, State or Zip Code',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      color: DSColors.onSurfaceDisabled,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                       ],
-                    ),
+
+                      if (error != null) ...[
+                        const SizedBox(height: DSSpacing.md),
+                        Text(
+                          error,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(fontSize: 14, color: DSColors.red),
+                        ),
+                      ],
+
+                      const SizedBox(height: DSSpacing.xl),
+
+                      // Continue button
+                      SizedBox(
+                        height: 52,
+                        child: FilledButton(
+                          onPressed: _loading ? null : _submit,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: DSColors.onSurface,
+                            foregroundColor: DSColors.surface,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(DSRadius.button),
+                            ),
+                          ),
+                          child: _loading
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: DSColors.surface,
+                                  ),
+                                )
+                              : Text(
+                                  'CONTINUE',
+                                  style: GoogleFonts.barlowCondensed(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.32,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: DSSpacing.xl),
+
+                      // Sign in link
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Already have an account? ',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: DSColors.onSurfaceVariant,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Text(
+                              'Sign in',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: DSColors.onSurface,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -354,101 +537,76 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
-  Widget _roleSelector(ThemeData theme) {
-    final roles = [
-      ('player', 'Player', DSIcons.trophy,
-          'Upload clips & get scouted'),
-      ('coach', 'Coach', DSIcons.shield, 'Find players, post trials'),
-      ('viewer', 'Viewer', DSIcons.smart_display_rounded, 'Just scroll reels'),
-    ];
-    return Column(
-      children: [
-        for (final r in roles)
-          Padding(
-            padding: EdgeInsets.only(bottom: DSSpacing.sm),
-            child: InkWell(
-              onTap: () => setState(() => _role = r.$1),
-              borderRadius: BorderRadius.circular(DSRadius.md),
-              child: AnimatedContainer(
-                duration: DSMotion.fast,
-                padding: EdgeInsets.all(DSSpacing.md),
-                decoration: BoxDecoration(
-                  color: _role == r.$1
-                      ? DSColors.volt.withValues(alpha: 0.08)
-                      : DSColors.surface,
-                  borderRadius: BorderRadius.circular(DSRadius.md),
-                  border: Border.all(
-                    color: _role == r.$1
-                        ? DSColors.volt
-                        : DSColors.outline,
-                    width: _role == r.$1 ? 1.5 : 1,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      r.$3,
-                      color: _role == r.$1
-                          ? DSColors.volt
-                          : DSColors.onSurfaceVariant,
-                    ),
-                    SizedBox(width: DSSpacing.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            r.$2,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          SizedBox(height: DSSpacing.xs),
-                          Text(
-                            r.$4,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: DSColors.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Icon(
-                      _role == r.$1
-                          ? DSIcons.radio_button_checked_rounded
-                          : DSIcons.radio_button_unchecked_rounded,
-                      size: DSIconSize.md,
-                      color: _role == r.$1
-                          ? DSColors.volt
-                          : DSColors.onSurfaceDisabled,
-                    ),
-                  ],
-                ),
-              ),
+  Widget _roleButton(String label, String value) {
+    final isSelected = _role == value;
+    return GestureDetector(
+      onTap: () => setState(() => _role = value),
+      child: AnimatedContainer(
+        duration: DSMotion.fast,
+        height: 48,
+        decoration: BoxDecoration(
+          color: isSelected ? DSColors.onSurface : DSColors.surfaceContainer,
+          borderRadius: BorderRadius.circular(DSRadius.button),
+          border: Border.all(
+            color: isSelected ? DSColors.onSurface : DSColors.outlineVariant,
+            width: 1,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: GoogleFonts.barlowCondensed(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.32,
+              color: isSelected ? DSColors.surface : DSColors.onSurface,
             ),
           ),
-      ],
+        ),
+      ),
     );
   }
 
-  Widget _dropdown<T>({
+  Widget _buildDropdown<T>({
     required T? value,
     required String label,
-    required IconData icon,
     required List<T> items,
     required ValueChanged<T?> onChanged,
   }) {
-    return DropdownButtonFormField<T>(
-      initialValue: value,
-      isExpanded: true,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-      ),
-      items: items
-          .map((i) => DropdownMenuItem(value: i, child: Text('$i')))
-          .toList(),
-      onChanged: onChanged,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
+            color: DSColors.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: DSSpacing.sm),
+        Container(
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: DSSpacing.md),
+          decoration: BoxDecoration(
+            color: DSColors.surfaceContainer,
+            borderRadius: BorderRadius.circular(DSRadius.input),
+            border: Border.all(color: DSColors.outlineVariant, width: 1),
+          ),
+          child: DropdownButton<T>(
+            value: value,
+            isExpanded: true,
+            underline: const SizedBox.shrink(),
+            dropdownColor: DSColors.surface,
+            style: GoogleFonts.inter(fontSize: 16, color: DSColors.onSurface),
+            items: items
+                .map((i) => DropdownMenuItem(value: i, child: Text('$i')))
+                .toList(),
+            onChanged: onChanged,
+          ),
+        ),
+      ],
     );
   }
 }

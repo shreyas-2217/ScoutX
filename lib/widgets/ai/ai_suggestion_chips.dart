@@ -49,14 +49,14 @@ class AISuggestionChips extends StatelessWidget {
               color: theme.colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: DSColors.volt.withValues(alpha: 0.3),
+                color: DSColors.onSurface.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
             child: Text(
               s,
               style: TextStyle(
-                color: DSColors.volt,
+                color: DSColors.onSurface,
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:scoutx/design_system.dart';
-import '../../theme.dart';
 export '../../design_system.dart';
 
 class BrandLogo extends StatefulWidget {
@@ -57,6 +56,11 @@ class _BrandLogoState extends State<BrandLogo>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Force high-contrast: pure white/black, never blends with bg
+    final markBg = isDark ? Colors.white : const Color(0xFF1C1B1B);
+    final markIcon = isDark ? const Color(0xFF1C1B1B) : Colors.white;
+    final textCol = widget.textColor ?? (isDark ? Colors.white : const Color(0xFF1C1B1B));
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -75,13 +79,19 @@ class _BrandLogoState extends State<BrandLogo>
             width: widget.markSize,
             height: widget.markSize,
             decoration: BoxDecoration(
-              color: DSColors.volt,
+              color: markBg,
               borderRadius: BorderRadius.circular(widget.markSize * 0.28),
-              boxShadow: DSElevation.level1,
+              boxShadow: const [
+                BoxShadow(color: Color(0x1A000000), blurRadius: 8, offset: Offset(0, 2)),
+              ],
+              border: Border.all(
+                color: isDark ? const Color(0x4DFFFFFF) : Colors.transparent,
+                width: 1.2,
+              ),
             ),
             child: Icon(
               DSIcons.brand,
-              color: DSColors.onBrand,
+              color: markIcon,
               size: widget.markSize * 0.55,
             ),
           ),
@@ -91,8 +101,8 @@ class _BrandLogoState extends State<BrandLogo>
             style: GoogleFonts.sora(
               fontSize: widget.fontSize,
               fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
-              color: widget.textColor ?? DSColors.onSurface,
+              letterSpacing: 0.32,
+              color: textCol,
             ),
           ),
         ],
@@ -137,6 +147,12 @@ class _DSButtonState extends State<DSButton>
   late final Animation<double> _scaleAnim;
   bool _pressed = false;
 
+  void _setPressed(bool pressed) {
+    if (_pressed == pressed) return;
+    setState(() => _pressed = pressed);
+    pressed ? _controller.forward() : _controller.reverse();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -155,20 +171,17 @@ class _DSButtonState extends State<DSButton>
     super.dispose();
   }
 
-  void _resetPress() {
-    setState(() => _pressed = false);
-    _controller.reverse();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textStyle = theme.textTheme.labelLarge?.copyWith(
-      letterSpacing: 0.2,
+    final textStyle = GoogleFonts.barlowCondensed(
+      fontSize: 14,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 0.32,
+      color: DSColors.surface,
     );
     
     final isDisabled = widget.onPressed == null || widget.loading;
-    final color = widget.customColor ?? DSColors.volt;
+    final color = widget.customColor ?? DSColors.onSurface;
     
     Widget content = Row(
       mainAxisSize: MainAxisSize.min,
@@ -181,7 +194,7 @@ class _DSButtonState extends State<DSButton>
             child: CircularProgressIndicator(
               strokeWidth: 2.5,
               color: widget.variant == DSButtonVariant.filled 
-                  ? DSColors.onBrand 
+                  ? DSColors.surface 
                   : color,
             ),
           ),
@@ -282,14 +295,21 @@ class _DSButtonState extends State<DSButton>
         break;
     }
 
-    return AnimatedScale(
-      scale: _scaleAnim.value,
-      duration: DSMotion.press,
-      curve: DSMotion.easeOut,
-      child: AnimatedOpacity(
-        opacity: isDisabled ? 0.5 : 1.0,
-        duration: DSMotion.fast,
-        child: button,
+    // Listener (not GestureDetector) so raw pointer events never compete
+    // with the inner InkWell's tap recognizer.
+    return Listener(
+      onPointerDown: isDisabled ? null : (_) => _setPressed(true),
+      onPointerUp: (_) => _setPressed(false),
+      onPointerCancel: (_) => _setPressed(false),
+      child: AnimatedScale(
+        scale: _scaleAnim.value,
+        duration: DSMotion.press,
+        curve: DSMotion.easeOut,
+        child: AnimatedOpacity(
+          opacity: isDisabled ? 0.5 : 1.0,
+          duration: DSMotion.fast,
+          child: button,
+        ),
       ),
     );
   }
@@ -331,8 +351,8 @@ class _FilledButton extends StatelessWidget {
         child: InkWell(
           onTap: loading ? null : onPressed,
           borderRadius: borderRadius,
-          splashColor: DSColors.pressOverlay,
-          highlightColor: DSColors.hoverOverlay,
+          splashColor: DSColors.onSurface.withValues(alpha: 0.08),
+          highlightColor: DSColors.onSurface.withValues(alpha: 0.04),
           child: Center(child: content),
         ),
       ),
@@ -373,7 +393,7 @@ class _OutlinedButton extends StatelessWidget {
           color: DSColors.outline,
           width: 1.5,
         ),
-        color: pressed ? DSColors.volt.withValues(alpha: 0.04) : Colors.transparent,
+        color: pressed ? DSColors.onSurface.withValues(alpha: 0.04) : Colors.transparent,
       ),
       child: Material(
         color: Colors.transparent,
@@ -516,8 +536,8 @@ class _ElevatedButton extends StatelessWidget {
         child: InkWell(
           onTap: loading ? null : onPressed,
           borderRadius: borderRadius,
-          splashColor: DSColors.pressOverlay,
-          highlightColor: DSColors.hoverOverlay,
+          splashColor: DSColors.onSurface.withValues(alpha: 0.08),
+          highlightColor: DSColors.onSurface.withValues(alpha: 0.04),
           child: Center(child: content),
         ),
       ),
@@ -595,7 +615,7 @@ class _SectionHeaderState extends State<SectionHeader>
               width: 3,
               height: 20,
               decoration: BoxDecoration(
-                color: DSColors.volt,
+                color: DSColors.onSurface,
                 borderRadius: BorderRadius.circular(DSRadius.xs),
               ),
             ),
@@ -603,10 +623,10 @@ class _SectionHeaderState extends State<SectionHeader>
           ],
           Text(
             widget.text,
-            style: GoogleFonts.sora(
+            style: GoogleFonts.barlowCondensed(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              letterSpacing: -0.3,
+              letterSpacing: 0.32,
               color: DSColors.onSurface,
             ),
           ),
@@ -662,24 +682,27 @@ class _InitialsAvatarState extends State<InitialsAvatar>
   @override
   Widget build(BuildContext context) {
     final initials = _initials(widget.name);
-    final colors = [
-      DSColors.volt,
-      DSColors.voltLight,
-      DSColors.cyan,
-      DSColors.green,
-      DSColors.indigo,
+    // High-contrast, theme-visible palette (saturated, works on light & dark)
+    const palette = [
+      Color(0xFF1E88E5),
+      Color(0xFF43A047),
+      Color(0xFFE53935),
+      Color(0xFF8E24AA),
+      Color(0xFFFB8C00),
+      Color(0xFF00897B),
+      Color(0xFF3949AB),
     ];
-    final color = colors[widget.name.hashCode.abs() % colors.length];
+    final color = palette[widget.name.hashCode.abs() % palette.length];
 
     Widget avatar = CircleAvatar(
       radius: widget.radius,
-      backgroundColor: color.withValues(alpha: 0.12),
+      backgroundColor: color.withValues(alpha: 0.14),
       child: Text(
         initials,
         style: TextStyle(
           color: color,
           fontSize: widget.radius * 0.7,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w800,
         ),
       ),
     );
@@ -794,13 +817,13 @@ class _EmptyStateState extends State<EmptyState>
                 width: 88,
                 height: 88,
                 decoration: BoxDecoration(
-                  color: DSColors.volt.withValues(alpha: 0.08),
+                  color: DSColors.onSurface.withValues(alpha: 0.08),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   widget.icon, 
                   size: DSIconSize.emptyState, 
-                  color: DSColors.volt,
+                  color: DSColors.onSurface,
                 ),
               ),
               SizedBox(height: DSSpacing.lg),
@@ -894,7 +917,7 @@ class _TagChipState extends State<TagChip>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final chipColor = widget.color ?? DSColors.volt;
+    final chipColor = widget.color ?? Theme.of(context).colorScheme.onSurface;
     
     return GestureDetector(
       onTapDown: _handleTapDown,
@@ -960,7 +983,7 @@ class VerifiedBadge extends StatelessWidget {
     Widget badge = Icon(
       DSIcons.sealCheck,
       size: size,
-      color: DSColors.volt,
+      color: DSColors.onSurface,
     );
     
     if (animate) {
@@ -1339,6 +1362,7 @@ class StaggeredItem extends StatefulWidget {
   final Widget child;
 
   const StaggeredItem({
+    super.key,
     required this.index,
     required this.delay,
     required this.duration,
@@ -1675,7 +1699,7 @@ class _NavBarItemState extends State<_NavBarItem>
               ),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? DSColors.volt.withValues(alpha: 0.08)
+                    ? DSColors.onSurface.withValues(alpha: 0.08)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(DSRadius.lg),
               ),
@@ -1684,7 +1708,7 @@ class _NavBarItemState extends State<_NavBarItem>
                 children: [
                   Icon(
                     isSelected ? widget.item.activeIcon : widget.item.icon,
-                    color: isSelected ? DSColors.volt : DSColors.onSurfaceVariant,
+                    color: isSelected ? DSColors.onSurface : DSColors.onSurfaceVariant,
                     size: DSIconSize.bottomNav,
                   ),
                   const SizedBox(height: 4),
@@ -1697,7 +1721,7 @@ class _NavBarItemState extends State<_NavBarItem>
                               const TextStyle(fontSize: 12))
                           .copyWith(
                             color: isSelected
-                                ? DSColors.volt
+                                ? DSColors.onSurface
                                 : DSColors.onSurfaceVariant,
                             fontWeight:
                                 isSelected ? FontWeight.w700 : FontWeight.w500,

@@ -3,6 +3,7 @@ import 'package:scoutx/design_system.dart';
 import '../shared/initials_avatar.dart';
 import '../../services/ai/ai_message.dart';
 import '../../models/trial.dart';
+import '../../screens/shared/clip_player_screen.dart';
 import '../../screens/shared/player_profile_view_screen.dart';
 import '../../screens/trials/trial_detail_screen.dart';
 
@@ -77,12 +78,12 @@ class _AthleteCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: DSColors.volt.withValues(alpha: 0.1),
+                    color: DSColors.onSurface.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text('${e.key}: ${e.value}',
                       style:
-                          const TextStyle(fontSize: 11, color: DSColors.volt)),
+                          const TextStyle(fontSize: 11, color: DSColors.onSurface)),
                 );
               }).toList(),
             ),
@@ -134,11 +135,11 @@ class _TrialCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: DSColors.volt.withValues(alpha: 0.15),
+                  color: DSColors.onSurface.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.emoji_events,
-                    color: DSColors.volt, size: 20),
+                    color: DSColors.onSurface, size: 20),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -179,12 +180,14 @@ class _TrialCard extends StatelessWidget {
                     trial: Trial(
                       id: card.id,
                       coachId: '',
-                      coachName: card.subtitle,
-                      teamName: '',
+                      coachName: card.metadata['Coach'] ?? card.subtitle,
+                      teamName: card.metadata['Team'] ?? '',
                       title: card.title,
-                      sport: '',
-                      position: '',
-                      skillLevel: '',
+                      sport: card.metadata['Sport'] ?? '',
+                      position: card.metadata['Position'] ?? '',
+                      skillLevel: card.metadata['Level'] ?? '',
+                      location: card.metadata['Location'],
+                      date: card.metadata['Date'],
                       createdAt: DateTime.now(),
                     ),
                   ),
@@ -204,6 +207,8 @@ class _HighlightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canPlay =
+        card.videoUrl != null && card.videoUrl!.isNotEmpty;
     return Container(
       margin: const EdgeInsets.only(left: 40, top: 4, bottom: 4),
       padding: const EdgeInsets.all(12),
@@ -216,14 +221,34 @@ class _HighlightCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: DSColors.volt.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(8),
+          MouseRegion(
+            cursor: canPlay ? SystemMouseCursors.click : MouseCursor.defer,
+            child: GestureDetector(
+              onTap: canPlay
+                  ? () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => ClipPlayerScreen(
+                            videoUrl: card.videoUrl!,
+                            title: card.title,
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: DSColors.onSurface.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.play_circle_outline,
+                  color: DSColors.onSurface,
+                  size: 20,
+                ),
+              ),
             ),
-            child: const Icon(Icons.play_circle_outline,
-                color: DSColors.volt, size: 20),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -238,9 +263,30 @@ class _HighlightCard extends StatelessWidget {
                         color:
                             Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12)),
+                if (card.metadata.isNotEmpty)
+                  Text(
+                    card.metadata.entries
+                        .map((e) => '${e.key}: ${e.value}')
+                        .join('  •  '),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 11),
+                  ),
               ],
             ),
           ),
+          if (canPlay)
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                'Tap to watch',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -267,19 +313,19 @@ class _ActionButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: DSColors.volt.withValues(alpha: 0.1),
+            color: DSColors.onSurface.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 14, color: DSColors.volt),
+              Icon(icon, size: 14, color: DSColors.onSurface),
               const SizedBox(width: 4),
               Text(label,
                   style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: DSColors.volt)),
+                      color: DSColors.onSurface)),
             ],
           ),
         ),

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../models/trial.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
-import 'package:scoutx/design_system.dart';
 import '../shared/widgets.dart';
 import '../trials/trial_detail_screen.dart';
 import 'post_trial_screen.dart';
@@ -54,7 +53,7 @@ class _CoachTrialsScreenState extends State<CoachTrialsScreen>
         title: const Text('My Trials'),
         actions: [
           IconButton(
-            icon: Icon(DSIcons.add_circle_rounded, size: DSIconSize.appBar),
+            icon: Icon(DSIcons.addCircleRounded, size: DSIconSize.appBar),
             tooltip: 'Post a trial',
             onPressed: () {
               Navigator.of(context).push(
@@ -64,14 +63,23 @@ class _CoachTrialsScreenState extends State<CoachTrialsScreen>
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const PostTrialScreen()),
-          );
-        },
-        icon: Icon(DSIcons.add_rounded, size: DSIconSize.sm),
-        label: Text('Post Trial', style: Theme.of(context).textTheme.labelLarge),
+      floatingActionButton: SizedBox(
+        height: 48,
+        child: FilledButton.icon(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const PostTrialScreen()),
+            );
+          },
+          style: FilledButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.onSurface,
+            foregroundColor: Theme.of(context).colorScheme.surface,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          ),
+          icon: const Icon(Icons.add, size: 18),
+          label: Text('New', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.w700)),
+        ),
       ),
       body: uid == null
           ? const SizedBox.shrink()
@@ -95,7 +103,7 @@ class _CoachTrialsScreenState extends State<CoachTrialsScreen>
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            CircularProgressIndicator(color: DSColors.volt),
+                            CircularProgressIndicator(color: DSColors.onSurface),
                             SizedBox(height: DSSpacing.md),
                             Text(
                               'Loading trials...',

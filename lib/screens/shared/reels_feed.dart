@@ -7,7 +7,6 @@ import '../../models/clip.dart';
 import '../../models/user_profile.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
-import 'package:scoutx/design_system.dart';
 import 'comment_sheet.dart';
 import 'share_sheet.dart';
 import 'widgets.dart';
@@ -95,7 +94,7 @@ class _ReelsFeedState extends State<ReelsFeed> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(color: DSColors.volt),
+                CircularProgressIndicator(color: DSColors.onSurface),
                 SizedBox(height: DSSpacing.md),
                 Text(
                   'Loading highlights...',
@@ -316,6 +315,21 @@ class _ReelItemState extends State<ReelItem>
       await db.unlikeClip(widget.clip.id, uid);
     } else {
       await db.likeClip(widget.clip.id, uid);
+      // Notify clip owner (skip self-likes). Best-effort: never let a
+      // notification failure desync the like state from the database.
+      final ownerId = widget.clip.playerId;
+      if (ownerId != uid) {
+        final me = auth.profile;
+        try {
+          await db.createNotification(
+            toUserId: ownerId,
+            fromUserId: uid,
+            fromUserName: me?.displayName ?? 'Someone',
+            type: 'like',
+            message: 'liked your highlight',
+          );
+        } catch (_) {}
+      }
     }
     if (mounted) setState(() => _liked = !_liked);
   }
@@ -351,6 +365,10 @@ class _ReelItemState extends State<ReelItem>
       await db.unfollow(uid, widget.clip.playerId);
     } else {
       await db.follow(uid, widget.clip.playerId);
+    }
+    // Refresh the local profile so followingCount stays in sync
+    if (mounted) {
+      await context.read<AuthProvider>().refreshProfile();
     }
   }
 
@@ -503,9 +521,11 @@ class _ReelItemState extends State<ReelItem>
     final isSelf = myUid == widget.clip.playerId;
     final likeCount = widget.clip.likeCount + (_liked ? 1 : 0);
 
-    final maxH = MediaQuery.of(context).size.height * 0.75;
+    final isDesktop = MediaQuery.of(context).size.width >= 800;
+    final maxH = MediaQuery.of(context).size.height * (isDesktop ? 0.88 : 0.75);
+    final maxW = isDesktop ? 520.0 : double.infinity;
 
-    return GestureDetector(
+    Widget content = GestureDetector(
       onTap: _togglePlay,
       onDoubleTap: _onDoubleTap,
       child: Stack(
@@ -515,10 +535,13 @@ class _ReelItemState extends State<ReelItem>
           if (_ready && _controller != null)
             Center(
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: maxH),
-                child: AspectRatio(
-                  aspectRatio: _controller!.value.aspectRatio,
-                  child: VideoPlayer(_controller!),
+                constraints: BoxConstraints(maxHeight: maxH, maxWidth: maxW),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(isDesktop ? 12 : 0),
+                  child: AspectRatio(
+                    aspectRatio: _controller!.value.aspectRatio,
+                    child: VideoPlayer(_controller!),
+                  ),
                 ),
               ),
             )
@@ -527,7 +550,7 @@ class _ReelItemState extends State<ReelItem>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(color: DSColors.volt),
+                  CircularProgressIndicator(color: DSColors.onSurface),
                   SizedBox(height: DSSpacing.md),
                   Text(
                     'Loading video...',
@@ -792,6 +815,7 @@ class _ReelItemState extends State<ReelItem>
         ],
       ),
     );
+    return content;
   }
 
   Widget _buildFollowButton() {

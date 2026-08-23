@@ -2,6 +2,8 @@ class AppConstants {
   static const appName = 'ScoutX';
   static const tagline = 'Find your next player. Get scouted.';
 
+  static const shareBaseUrl = 'https://scoutx-ed075.web.app';
+
   static const roles = ['player', 'coach', 'viewer'];
 
   static const sportList = [
@@ -248,6 +250,49 @@ class AppConstants {
     'Coimbatore',
     'Thiruvananthapuram',
   ];
+
+  /// Approximate [latitude, longitude] for [popularCities], used for offline
+  /// distance calculations where only a city name is known.
+  static const cityCoordinates = <String, List<double>>{
+    'bangalore': [12.9716, 77.5946],
+    'bengaluru': [12.9716, 77.5946],
+    'mumbai': [19.0760, 72.8777],
+    'delhi': [28.7041, 77.1025],
+    'chennai': [13.0827, 80.2707],
+    'kolkata': [22.5726, 88.3639],
+    'hyderabad': [17.3850, 78.4867],
+    'pune': [18.5204, 73.8567],
+    'ahmedabad': [23.0225, 72.5714],
+    'jaipur': [26.9124, 75.7873],
+    'lucknow': [26.8467, 80.9462],
+    'kochi': [9.9312, 76.2673],
+    'chandigarh': [30.7333, 76.7794],
+    'bhopal': [23.2599, 77.4126],
+    'indore': [22.7196, 75.8577],
+    'nagpur': [21.1458, 79.0882],
+    'surat': [21.1702, 72.8311],
+    'visakhapatnam': [17.6868, 83.2185],
+    'coimbatore': [11.0168, 76.9558],
+    'thiruvananthapuram': [8.5241, 76.9366],
+  };
+
+  /// Resolves a free-text location (e.g. "Bengaluru", "Mumbai India") to
+  /// approximate coordinates via aliases and the known-cities table.
+  static List<double>? coordinatesForLocation(String? location) {
+    if (location == null || location.trim().isEmpty) return null;
+    final alias = locationAliases[location.trim().toLowerCase()];
+    final normalized = (alias ?? location)
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z]'), '');
+    for (final entry in cityCoordinates.entries) {
+      final key = entry.key.replaceAll(RegExp(r'[^a-z]'), '');
+      if (normalized == key || normalized.contains(key)) {
+        return entry.value;
+      }
+    }
+    return null;
+  }
 }
 
 class AppPaths {

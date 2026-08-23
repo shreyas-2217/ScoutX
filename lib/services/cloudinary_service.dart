@@ -26,6 +26,54 @@ class CloudinaryService {
 
   final CloudinaryConfig config;
 
+  /// Derives a poster-frame image URL from a Cloudinary video delivery URL by
+  /// rewriting the path (no API call). Returns null for non-Cloudinary URLs.
+  ///
+  /// [width]/[height] control the crop box; pass values matching the widget's
+  /// aspect ratio for crisp results (e.g. 640x360 for 16:9 cards).
+  static String? videoThumbnail(
+    String? videoUrl, {
+    int width = 400,
+    int height = 600,
+  }) {
+    if (videoUrl == null || videoUrl.isEmpty) return null;
+    const marker = '/video/upload/';
+    final index = videoUrl.indexOf(marker);
+    if (index == -1 || index + marker.length >= videoUrl.length) return null;
+
+    final head = videoUrl.substring(0, index + marker.length);
+    final tail = videoUrl.substring(index + marker.length);
+    final lastSlash = tail.lastIndexOf('/');
+    final lastDot = tail.lastIndexOf('.');
+    final stem =
+        (lastDot > lastSlash && lastDot != -1) ? tail.substring(0, lastDot) : tail;
+
+    return '$head${_transform([
+      'so_auto',
+      'w_$width',
+      'h_$height',
+      'c_fill',
+      'f_jpg',
+      'q_auto',
+    ])}/$stem.jpg';
+  }
+
+  /// Returns an auto-format/auto-quality variant of a Cloudinary video URL so
+  /// playback uses less bandwidth. Non-Cloudinary URLs pass through untouched.
+  static String? optimizedVideo(String? videoUrl) {
+    if (videoUrl == null ||
+        videoUrl.isEmpty ||
+        !videoUrl.contains('/video/upload/')) {
+      return videoUrl;
+    }
+    return videoUrl.replaceFirst(
+      '/video/upload/',
+      '/video/upload/${_transform(['f_auto', 'q_auto'])}/',
+    );
+  }
+
+  static String _transform(List<String> components) => components.join(',');
+
   Uri _uploadUri() {
     final cloudName = config.cloudName;
     if (cloudName.isEmpty) {

@@ -6,7 +6,7 @@ import '../../models/clip.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
 import '../shared/widgets.dart'
-    show DSColors, DSSpacing, DSIconSize, DSRadius, DSMotion, DSElevation, DSCard, EmptyState, DSButton, DSButtonVariant, SectionHeader, AnimatedPage, BrandLogo;
+    show DSIconSize, DSMotion, BrandLogo;
 import '../shared/player_profile_view_screen.dart';
 import '../shared/reels_feed.dart';
 import '../messaging/inbox_screen.dart';

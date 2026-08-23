@@ -21,7 +21,7 @@ class SectionHeader extends StatelessWidget {
             width: 3,
             height: 16,
             decoration: BoxDecoration(
-              color: DSColors.volt,
+              color: DSColors.onSurface,
               borderRadius: BorderRadius.circular(DSRadius.xs),
             ),
           ),
@@ -36,7 +36,7 @@ class SectionHeader extends StatelessWidget {
               ),
             ),
           ),
-          if (trailing != null) trailing!,
+          ? trailing,
         ],
       ),
     );

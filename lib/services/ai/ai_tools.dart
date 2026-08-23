@@ -174,6 +174,7 @@ class AITools {
           'position': data['position'] ?? '',
           'viewCount': data['viewCount'] ?? 0,
           'likeCount': data['likeCount'] ?? 0,
+          'videoUrl': data['videoUrl'] ?? '',
         };
       }).toList();
     } catch (e) {
@@ -242,7 +243,7 @@ class AITools {
           .get();
 
       return snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
+        final data = doc.data();
         return {
           'id': doc.id,
           'trialId': data['trialId'] as String? ?? '',
@@ -283,6 +284,7 @@ class AITools {
           'sport': data['sport'] as String? ?? '',
           'viewCount': data['viewCount'] as int? ?? 0,
           'likeCount': data['likeCount'] as int? ?? 0,
+          'videoUrl': data['videoUrl'] as String? ?? '',
         };
       }).toList();
     } catch (e) {

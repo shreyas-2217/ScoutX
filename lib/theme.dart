@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'design_system.dart';
+
+class SmoothScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
+}
 
 class AppTheme {
   AppTheme._();
@@ -10,35 +20,35 @@ class AppTheme {
     const scheme = ColorScheme.light(
       primary: DSColors.volt,
       onPrimary: DSColors.onBrand,
-      primaryContainer: Color(0xFFE8F5E9),
-      onPrimaryContainer: Color(0xFF1B6B3A),
+      primaryContainer: Color(0xFFF1EDEC),
+      onPrimaryContainer: Color(0xFF1C1B1B),
       secondary: DSColors.cyan,
       onSecondary: DSColors.onSecondary,
-      secondaryContainer: Color(0xFFE8F5E9),
-      onSecondaryContainer: Color(0xFF2E7D32),
-      tertiary: DSColors.green,
+      secondaryContainer: Color(0xFFE1DFDF),
+      onSecondaryContainer: Color(0xFF626262),
+      tertiary: Color(0xFF1C1B1A),
       onTertiary: DSColors.onTertiary,
-      tertiaryContainer: Color(0xFFE8F5E9),
-      onTertiaryContainer: Color(0xFF2E7D32),
+      tertiaryContainer: Color(0xFF1C1B1A),
+      onTertiaryContainer: Color(0xFF858383),
       error: DSColors.red,
       onError: DSColors.onError,
-      errorContainer: Color(0xFFFFEBEE),
-      onErrorContainer: Color(0xFFC62828),
+      errorContainer: Color(0xFFFFDAD6),
+      onErrorContainer: Color(0xFF93000A),
       surface: DSColors.surface,
       onSurface: DSColors.onSurface,
       onSurfaceVariant: DSColors.onSurfaceVariant,
       surfaceContainer: DSColors.surfaceContainer,
       surfaceContainerHigh: DSColors.surfaceContainerHigh,
       surfaceContainerHighest: DSColors.surfaceContainerHighest,
-      surfaceContainerLow: DSColors.surfaceContainer,
-      surfaceContainerLowest: DSColors.surface,
-      surfaceTint: DSColors.volt,
+      surfaceContainerLow: Color(0xFFF7F3F2),
+      surfaceContainerLowest: Color(0xFFFFFFFF),
+      surfaceTint: Color(0xFF5F5E5E),
       outline: DSColors.outline,
       outlineVariant: DSColors.outlineVariant,
       shadow: Colors.black,
       scrim: Colors.black,
       inverseSurface: DSColors.inverseSurface,
-      onInverseSurface: DSColors.surface,
+      onInverseSurface: Color(0xFFF4F0EF),
       inversePrimary: DSColors.inversePrimary,
     );
 
@@ -53,7 +63,7 @@ class AppTheme {
 
     return base.copyWith(
       textTheme: textTheme,
-      scaffoldBackgroundColor: DSColors.bg,
+      scaffoldBackgroundColor: DSColors.surface,
 
       appBarTheme: AppBarTheme(
         backgroundColor: DSColors.surface,
@@ -77,9 +87,9 @@ class AppTheme {
       ),
 
       textSelectionTheme: TextSelectionThemeData(
-        cursorColor: DSColors.volt,
-        selectionColor: DSColors.volt.withValues(alpha: 0.20),
-        selectionHandleColor: DSColors.volt,
+        cursorColor: DSColors.onSurface,
+        selectionColor: DSColors.onSurface.withValues(alpha: 0.20),
+        selectionHandleColor: DSColors.onSurface,
       ),
 
       cardTheme: CardThemeData(
@@ -104,7 +114,7 @@ class AppTheme {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: DSColors.surface,
         surfaceTintColor: Colors.transparent,
-        indicatorColor: DSColors.volt.withValues(alpha: 0.12),
+        indicatorColor: DSColors.onSurface.withValues(alpha: 0.08),
         indicatorShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(DSRadius.lg),
         ),
@@ -115,7 +125,7 @@ class AppTheme {
         iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
           if (states.contains(WidgetState.selected)) {
             return IconThemeData(
-              color: DSColors.volt,
+              color: DSColors.onSurface,
               size: DSIconSize.bottomNav,
             );
           }
@@ -128,7 +138,7 @@ class AppTheme {
           final base = textTheme.labelSmall ?? textTheme.bodyMedium!;
           if (states.contains(WidgetState.selected)) {
             return base.copyWith(
-              color: DSColors.volt,
+              color: DSColors.onSurface,
               fontWeight: FontWeight.w700,
             );
           }
@@ -184,22 +194,22 @@ class AppTheme {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DSRadius.input),
           borderSide: const BorderSide(
-            color: DSColors.outline,
+            color: DSColors.outlineVariant,
             width: 1,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DSRadius.input),
           borderSide: const BorderSide(
-            color: DSColors.volt,
-            width: 1.5,
+            color: DSColors.onSurface,
+            width: 1,
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DSRadius.input),
           borderSide: const BorderSide(
             color: DSColors.red,
-            width: 1.5,
+            width: 1,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
@@ -212,18 +222,18 @@ class AppTheme {
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DSRadius.input),
           borderSide: BorderSide(
-            color: DSColors.outline.withValues(alpha: 0.5),
+            color: DSColors.outlineVariant.withValues(alpha: 0.5),
             width: 1,
           ),
         ),
         hintStyle: textTheme.bodyMedium?.copyWith(
-          color: DSColors.onSurfaceDisabled,
+          color: DSColors.onSurfaceVariant,
         ),
         labelStyle: textTheme.bodyMedium?.copyWith(
           color: DSColors.onSurfaceVariant,
         ),
         floatingLabelStyle: textTheme.labelMedium?.copyWith(
-          color: DSColors.volt,
+          color: DSColors.onSurface,
         ),
         errorStyle: textTheme.bodySmall?.copyWith(
           color: DSColors.red,
@@ -240,15 +250,15 @@ class AppTheme {
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
             if (states.contains(WidgetState.disabled)) {
-              return DSColors.volt.withValues(alpha: 0.4);
+              return DSColors.onSurface.withValues(alpha: 0.4);
             }
-            return DSColors.volt;
+            return DSColors.onSurface;
           }),
           foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
             if (states.contains(WidgetState.disabled)) {
-              return DSColors.onBrand.withValues(alpha: 0.7);
+              return DSColors.surface.withValues(alpha: 0.7);
             }
-            return DSColors.onBrand;
+            return DSColors.surface;
           }),
           padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
             const EdgeInsets.symmetric(
@@ -263,7 +273,10 @@ class AppTheme {
             ),
           ),
           textStyle: WidgetStateProperty.all<TextStyle?>(
-            textTheme.labelLarge?.copyWith(letterSpacing: 0.2),
+            textTheme.labelLarge?.copyWith(
+              letterSpacing: 0.32,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           elevation: WidgetStateProperty.all<double>(0),
           shadowColor: WidgetStateProperty.all<Color?>(Colors.transparent),
@@ -284,7 +297,7 @@ class AppTheme {
 
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: WidgetStateProperty.all<Color>(DSColors.volt),
+          foregroundColor: WidgetStateProperty.all<Color>(DSColors.onSurface),
           padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
             const EdgeInsets.symmetric(
               horizontal: DSSpacing.lg,
@@ -298,23 +311,23 @@ class AppTheme {
             ),
           ),
           textStyle: WidgetStateProperty.all<TextStyle?>(
-            textTheme.labelLarge?.copyWith(letterSpacing: 0.2),
+            textTheme.labelLarge?.copyWith(letterSpacing: 0.32),
           ),
           side: WidgetStateProperty.all<BorderSide>(
             const BorderSide(
-              color: DSColors.outline,
-              width: 1.5,
+              color: DSColors.outlineVariant,
+              width: 1,
             ),
           ),
           overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
             if (states.contains(WidgetState.pressed)) {
-              return DSColors.volt.withValues(alpha: 0.08);
+              return DSColors.onSurface.withValues(alpha: 0.08);
             }
             if (states.contains(WidgetState.hovered)) {
-              return DSColors.volt.withValues(alpha: 0.04);
+              return DSColors.onSurface.withValues(alpha: 0.04);
             }
             if (states.contains(WidgetState.focused)) {
-              return DSColors.volt.withValues(alpha: 0.08);
+              return DSColors.onSurface.withValues(alpha: 0.08);
             }
             return Colors.transparent;
           }),
@@ -323,7 +336,7 @@ class AppTheme {
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: DSColors.volt,
+          foregroundColor: DSColors.onSurface,
           padding: const EdgeInsets.symmetric(
             horizontal: DSSpacing.md,
             vertical: DSSpacing.sm,
@@ -333,20 +346,20 @@ class AppTheme {
             borderRadius: BorderRadius.circular(DSRadius.button),
           ),
           textStyle: textTheme.labelLarge?.copyWith(
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
 
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: DSColors.volt,
-        foregroundColor: DSColors.onBrand,
+        backgroundColor: DSColors.onSurface,
+        foregroundColor: DSColors.surface,
         elevation: 0,
         focusElevation: 0,
         hoverElevation: 0,
         highlightElevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(DSRadius.xl),
+          borderRadius: BorderRadius.circular(DSRadius.button),
         ),
         extendedPadding: const EdgeInsets.symmetric(
           horizontal: DSSpacing.lg,
@@ -359,18 +372,18 @@ class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: DSColors.surfaceContainer,
         disabledColor: DSColors.surfaceContainerHigh,
-        selectedColor: DSColors.volt.withValues(alpha: 0.12),
-        secondarySelectedColor: DSColors.volt.withValues(alpha: 0.18),
-        checkmarkColor: DSColors.volt,
+        selectedColor: DSColors.onSurface.withValues(alpha: 0.12),
+        secondarySelectedColor: DSColors.onSurface.withValues(alpha: 0.18),
+        checkmarkColor: DSColors.onSurface,
         side: const BorderSide(
-          color: DSColors.outline,
+          color: DSColors.outlineVariant,
           width: 1,
         ),
         labelStyle: textTheme.labelMedium?.copyWith(
           color: DSColors.onSurface,
         ),
         secondaryLabelStyle: textTheme.labelMedium?.copyWith(
-          color: DSColors.volt,
+          color: DSColors.onSurface,
         ),
         brightness: Brightness.light,
         padding: const EdgeInsets.symmetric(
@@ -390,8 +403,8 @@ class AppTheme {
         contentTextStyle: textTheme.bodyMedium?.copyWith(
           color: DSColors.surface,
         ),
-        actionTextColor: DSColors.volt,
-        disabledActionTextColor: DSColors.volt.withValues(alpha: 0.5),
+        actionTextColor: DSColors.surface,
+        disabledActionTextColor: DSColors.surface.withValues(alpha: 0.5),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(DSRadius.lg),
@@ -401,12 +414,12 @@ class AppTheme {
       ),
 
       tabBarTheme: TabBarThemeData(
-        indicatorColor: DSColors.volt,
+        indicatorColor: DSColors.onSurface,
         indicatorSize: TabBarIndicatorSize.label,
         indicator: UnderlineTabIndicator(
-          borderSide: const BorderSide(width: 3, color: DSColors.volt),
+          borderSide: const BorderSide(width: 3, color: DSColors.onSurface),
         ),
-        dividerColor: DSColors.outline,
+        dividerColor: DSColors.outlineVariant,
         labelColor: DSColors.onSurface,
         unselectedLabelColor: DSColors.onSurfaceVariant,
         labelStyle: textTheme.labelMedium?.copyWith(
@@ -427,7 +440,7 @@ class AppTheme {
       ),
 
       dividerTheme: DividerThemeData(
-        color: DSColors.outline,
+        color: DSColors.outlineVariant,
         thickness: 1,
         space: 1,
         indent: 0,
@@ -435,7 +448,7 @@ class AppTheme {
       ),
 
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: DSColors.volt,
+        color: DSColors.onSurface,
         linearTrackColor: DSColors.surfaceContainerHigh,
         circularTrackColor: DSColors.surfaceContainerHigh,
         refreshBackgroundColor: DSColors.surfaceContainer,
@@ -453,7 +466,7 @@ class AppTheme {
         labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
           if (states.contains(WidgetState.selected)) {
             return textTheme.bodyMedium!.copyWith(
-              color: DSColors.volt,
+              color: DSColors.onSurface,
               fontWeight: FontWeight.w600,
             );
           }
@@ -470,8 +483,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(DSRadius.md),
         ),
         tileColor: Colors.transparent,
-        selectedTileColor: DSColors.volt.withValues(alpha: 0.08),
-        selectedColor: DSColors.volt,
+        selectedTileColor: DSColors.onSurface.withValues(alpha: 0.08),
+        selectedColor: DSColors.onSurface,
         iconColor: DSColors.onSurfaceVariant,
         textColor: DSColors.onSurface,
         titleTextStyle: textTheme.titleMedium?.copyWith(
@@ -519,29 +532,29 @@ class AppTheme {
         },
       ),
 
-      splashColor: DSColors.volt.withValues(alpha: 0.06),
-      highlightColor: DSColors.volt.withValues(alpha: 0.03),
+      splashColor: DSColors.onSurface.withValues(alpha: 0.06),
+      highlightColor: DSColors.onSurface.withValues(alpha: 0.03),
     );
   }
 
   static ThemeData dark() {
     const scheme = ColorScheme.dark(
-      primary: Color(0xFF4ADE80), // Lighter green for dark mode
-      onPrimary: Color(0xFF052E16),
-      primaryContainer: Color(0xFF14532D),
-      onPrimaryContainer: Color(0xFF86EFAC),
-      secondary: Color(0xFF34D399),
-      onSecondary: Color(0xFF022C22),
-      secondaryContainer: Color(0xFF064E3B),
-      onSecondaryContainer: Color(0xFFA7F3D0),
-      tertiary: Color(0xFF22C55E),
-      onTertiary: Color(0xFF052E16),
-      tertiaryContainer: Color(0xFF14532D),
-      onTertiaryContainer: Color(0xFF86EFAC),
-      error: Color(0xFFFCA5A5),
-      onError: Color(0xFF7F1D1D),
-      errorContainer: Color(0xFF991B1B),
-      onErrorContainer: Color(0xFFFEE2E2),
+      primary: Color(0xFFE6E1E5),
+      onPrimary: Color(0xFF1C1B1B),
+      primaryContainer: Color(0xFF49454F),
+      onPrimaryContainer: Color(0xFFE6E1E5),
+      secondary: Color(0xFFCAC4D0),
+      onSecondary: Color(0xFF1D1B20),
+      secondaryContainer: Color(0xFF49454F),
+      onSecondaryContainer: Color(0xFFCAC4D0),
+      tertiary: Color(0xFFCAC4D0),
+      onTertiary: Color(0xFF1D1B20),
+      tertiaryContainer: Color(0xFF49454F),
+      onTertiaryContainer: Color(0xFFCAC4D0),
+      error: Color(0xFFF2B8B5),
+      onError: Color(0xFF601410),
+      errorContainer: Color(0xFF8C1D18),
+      onErrorContainer: Color(0xFFF2B8B5),
       surface: DSColors.darkSurface,
       onSurface: DSColors.darkOnSurface,
       onSurfaceVariant: DSColors.darkOnSurfaceVariant,
@@ -550,14 +563,14 @@ class AppTheme {
       surfaceContainerHighest: DSColors.darkSurfaceContainerHighest,
       surfaceContainerLow: DSColors.darkSurface,
       surfaceContainerLowest: DSColors.darkBg,
-      surfaceTint: Color(0xFF4ADE80),
+      surfaceTint: Color(0xFFE6E1E5),
       outline: DSColors.darkOutline,
       outlineVariant: DSColors.darkOutlineVariant,
       shadow: Colors.black,
       scrim: Colors.black,
       inverseSurface: DSColors.darkOnSurface,
       onInverseSurface: DSColors.darkBg,
-      inversePrimary: DSColors.volt,
+      inversePrimary: Color(0xFF313030),
     );
 
     final base = ThemeData(
@@ -595,9 +608,9 @@ class AppTheme {
       ),
 
       textSelectionTheme: TextSelectionThemeData(
-        cursorColor: const Color(0xFF4ADE80),
-        selectionColor: const Color(0xFF4ADE80).withValues(alpha: 0.20),
-        selectionHandleColor: const Color(0xFF4ADE80),
+        cursorColor: const Color(0xFFE6E1E5),
+        selectionColor: const Color(0xFFE6E1E5).withValues(alpha: 0.20),
+        selectionHandleColor: const Color(0xFFE6E1E5),
       ),
 
       cardTheme: CardThemeData(
@@ -622,7 +635,7 @@ class AppTheme {
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: DSColors.darkSurface,
         surfaceTintColor: Colors.transparent,
-        indicatorColor: const Color(0xFF4ADE80).withValues(alpha: 0.12),
+        indicatorColor: const Color(0xFFE6E1E5).withValues(alpha: 0.12),
         indicatorShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(DSRadius.lg),
         ),
@@ -633,7 +646,7 @@ class AppTheme {
         iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
           if (states.contains(WidgetState.selected)) {
             return const IconThemeData(
-              color: Color(0xFF4ADE80),
+              color: Color(0xFFE6E1E5),
               size: DSIconSize.bottomNav,
             );
           }
@@ -646,7 +659,7 @@ class AppTheme {
           final base = textTheme.labelSmall ?? textTheme.bodyMedium!;
           if (states.contains(WidgetState.selected)) {
             return base.copyWith(
-              color: const Color(0xFF4ADE80),
+              color: const Color(0xFFE6E1E5),
               fontWeight: FontWeight.w700,
             );
           }
@@ -709,21 +722,21 @@ class AppTheme {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DSRadius.input),
           borderSide: const BorderSide(
-            color: Color(0xFF4ADE80),
-            width: 1.5,
+            color: Color(0xFFE6E1E5),
+            width: 1,
           ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DSRadius.input),
           borderSide: const BorderSide(
-            color: Color(0xFFFCA5A5),
-            width: 1.5,
+            color: Color(0xFFF2B8B5),
+            width: 1,
           ),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(DSRadius.input),
           borderSide: const BorderSide(
-            color: Color(0xFFFCA5A5),
+            color: Color(0xFFF2B8B5),
             width: 2,
           ),
         ),
@@ -741,10 +754,10 @@ class AppTheme {
           color: DSColors.darkOnSurfaceVariant,
         ),
         floatingLabelStyle: textTheme.labelMedium?.copyWith(
-          color: const Color(0xFF4ADE80),
+          color: const Color(0xFFE6E1E5),
         ),
         errorStyle: textTheme.bodySmall?.copyWith(
-          color: const Color(0xFFFCA5A5),
+          color: const Color(0xFFF2B8B5),
         ),
         prefixIconColor: DSColors.darkOnSurfaceVariant,
         suffixIconColor: DSColors.darkOnSurfaceVariant,
@@ -758,15 +771,15 @@ class AppTheme {
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
             if (states.contains(WidgetState.disabled)) {
-              return const Color(0xFF4ADE80).withValues(alpha: 0.4);
+              return const Color(0xFFE6E1E5).withValues(alpha: 0.4);
             }
-            return const Color(0xFF4ADE80);
+            return const Color(0xFFE6E1E5);
           }),
           foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
             if (states.contains(WidgetState.disabled)) {
-              return const Color(0xFF052E16).withValues(alpha: 0.7);
+              return const Color(0xFF1C1B1B).withValues(alpha: 0.7);
             }
-            return const Color(0xFF052E16);
+            return const Color(0xFF1C1B1B);
           }),
           padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
             const EdgeInsets.symmetric(
@@ -781,19 +794,19 @@ class AppTheme {
             ),
           ),
           textStyle: WidgetStateProperty.all<TextStyle?>(
-            textTheme.labelLarge?.copyWith(letterSpacing: 0.2),
+            textTheme.labelLarge?.copyWith(letterSpacing: 0.32),
           ),
           elevation: WidgetStateProperty.all<double>(0),
           shadowColor: WidgetStateProperty.all<Color?>(Colors.transparent),
           overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
             if (states.contains(WidgetState.pressed)) {
-              return const Color(0xFF4ADE80).withValues(alpha: 0.12);
+              return const Color(0xFFE6E1E5).withValues(alpha: 0.12);
             }
             if (states.contains(WidgetState.hovered)) {
-              return const Color(0xFF4ADE80).withValues(alpha: 0.08);
+              return const Color(0xFFE6E1E5).withValues(alpha: 0.08);
             }
             if (states.contains(WidgetState.focused)) {
-              return const Color(0xFF4ADE80).withValues(alpha: 0.12);
+              return const Color(0xFFE6E1E5).withValues(alpha: 0.12);
             }
             return Colors.transparent;
           }),
@@ -802,7 +815,7 @@ class AppTheme {
 
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
-          foregroundColor: WidgetStateProperty.all<Color>(const Color(0xFF4ADE80)),
+          foregroundColor: WidgetStateProperty.all<Color>(const Color(0xFFE6E1E5)),
           padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
             const EdgeInsets.symmetric(
               horizontal: DSSpacing.lg,
@@ -816,23 +829,23 @@ class AppTheme {
             ),
           ),
           textStyle: WidgetStateProperty.all<TextStyle?>(
-            textTheme.labelLarge?.copyWith(letterSpacing: 0.2),
+            textTheme.labelLarge?.copyWith(letterSpacing: 0.32),
           ),
           side: WidgetStateProperty.all<BorderSide>(
             const BorderSide(
               color: DSColors.darkOutline,
-              width: 1.5,
+              width: 1,
             ),
           ),
           overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
             if (states.contains(WidgetState.pressed)) {
-              return const Color(0xFF4ADE80).withValues(alpha: 0.08);
+              return const Color(0xFFE6E1E5).withValues(alpha: 0.08);
             }
             if (states.contains(WidgetState.hovered)) {
-              return const Color(0xFF4ADE80).withValues(alpha: 0.04);
+              return const Color(0xFFE6E1E5).withValues(alpha: 0.04);
             }
             if (states.contains(WidgetState.focused)) {
-              return const Color(0xFF4ADE80).withValues(alpha: 0.08);
+              return const Color(0xFFE6E1E5).withValues(alpha: 0.08);
             }
             return Colors.transparent;
           }),
@@ -841,7 +854,7 @@ class AppTheme {
 
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: const Color(0xFF4ADE80),
+          foregroundColor: const Color(0xFFE6E1E5),
           padding: const EdgeInsets.symmetric(
             horizontal: DSSpacing.md,
             vertical: DSSpacing.sm,
@@ -857,14 +870,14 @@ class AppTheme {
       ),
 
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-        backgroundColor: const Color(0xFF4ADE80),
-        foregroundColor: const Color(0xFF052E16),
+        backgroundColor: const Color(0xFFE6E1E5),
+        foregroundColor: const Color(0xFF1C1B1B),
         elevation: 0,
         focusElevation: 0,
         hoverElevation: 0,
         highlightElevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(DSRadius.xl),
+          borderRadius: BorderRadius.circular(DSRadius.button),
         ),
         extendedPadding: const EdgeInsets.symmetric(
           horizontal: DSSpacing.lg,
@@ -877,9 +890,9 @@ class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: DSColors.darkSurfaceContainer,
         disabledColor: DSColors.darkSurfaceContainerHigh,
-        selectedColor: const Color(0xFF4ADE80).withValues(alpha: 0.12),
-        secondarySelectedColor: const Color(0xFF4ADE80).withValues(alpha: 0.18),
-        checkmarkColor: const Color(0xFF4ADE80),
+        selectedColor: const Color(0xFFE6E1E5).withValues(alpha: 0.12),
+        secondarySelectedColor: const Color(0xFFE6E1E5).withValues(alpha: 0.18),
+        checkmarkColor: const Color(0xFFE6E1E5),
         side: const BorderSide(
           color: DSColors.darkOutline,
           width: 1,
@@ -888,7 +901,7 @@ class AppTheme {
           color: DSColors.darkOnSurface,
         ),
         secondaryLabelStyle: textTheme.labelMedium?.copyWith(
-          color: const Color(0xFF4ADE80),
+          color: const Color(0xFFE6E1E5),
         ),
         brightness: Brightness.dark,
         padding: const EdgeInsets.symmetric(
@@ -908,8 +921,8 @@ class AppTheme {
         contentTextStyle: textTheme.bodyMedium?.copyWith(
           color: DSColors.darkOnSurface,
         ),
-        actionTextColor: const Color(0xFF4ADE80),
-        disabledActionTextColor: const Color(0xFF4ADE80).withValues(alpha: 0.5),
+        actionTextColor: const Color(0xFFE6E1E5),
+        disabledActionTextColor: const Color(0xFFE6E1E5).withValues(alpha: 0.5),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(DSRadius.lg),
@@ -919,10 +932,10 @@ class AppTheme {
       ),
 
       tabBarTheme: TabBarThemeData(
-        indicatorColor: const Color(0xFF4ADE80),
+        indicatorColor: const Color(0xFFE6E1E5),
         indicatorSize: TabBarIndicatorSize.label,
         indicator: const UnderlineTabIndicator(
-          borderSide: BorderSide(width: 3, color: Color(0xFF4ADE80)),
+          borderSide: BorderSide(width: 3, color: Color(0xFFE6E1E5)),
         ),
         dividerColor: DSColors.darkOutline,
         labelColor: DSColors.darkOnSurface,
@@ -935,10 +948,10 @@ class AppTheme {
         ),
         overlayColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.pressed)) {
-            return const Color(0xFF4ADE80).withValues(alpha: 0.12);
+            return const Color(0xFFE6E1E5).withValues(alpha: 0.12);
           }
           if (states.contains(WidgetState.hovered)) {
-            return const Color(0xFF4ADE80).withValues(alpha: 0.08);
+            return const Color(0xFFE6E1E5).withValues(alpha: 0.08);
           }
           return Colors.transparent;
         }),
@@ -953,7 +966,7 @@ class AppTheme {
       ),
 
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: const Color(0xFF4ADE80),
+        color: const Color(0xFFE6E1E5),
         linearTrackColor: DSColors.darkSurfaceContainerHigh,
         circularTrackColor: DSColors.darkSurfaceContainerHigh,
         refreshBackgroundColor: DSColors.darkSurfaceContainer,
@@ -971,7 +984,7 @@ class AppTheme {
         labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
           if (states.contains(WidgetState.selected)) {
             return textTheme.bodyMedium!.copyWith(
-              color: const Color(0xFF4ADE80),
+              color: const Color(0xFFE6E1E5),
               fontWeight: FontWeight.w600,
             );
           }
@@ -988,8 +1001,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(DSRadius.md),
         ),
         tileColor: Colors.transparent,
-        selectedTileColor: const Color(0xFF4ADE80).withValues(alpha: 0.08),
-        selectedColor: const Color(0xFF4ADE80),
+        selectedTileColor: const Color(0xFFE6E1E5).withValues(alpha: 0.08),
+        selectedColor: const Color(0xFFE6E1E5),
         iconColor: DSColors.darkOnSurfaceVariant,
         textColor: DSColors.darkOnSurface,
         titleTextStyle: textTheme.titleMedium?.copyWith(
@@ -1024,8 +1037,8 @@ class AppTheme {
 
       extensions: <ThemeExtension<dynamic>>[
         DSColorScheme(
-          brand: const Color(0xFF4ADE80),
-          accent: const Color(0xFF34D399),
+          brand: const Color(0xFFE6E1E5),
+          accent: const Color(0xFFCAC4D0),
         ),
       ],
 
@@ -1040,8 +1053,8 @@ class AppTheme {
         },
       ),
 
-      splashColor: const Color(0xFF4ADE80).withValues(alpha: 0.06),
-      highlightColor: const Color(0xFF4ADE80).withValues(alpha: 0.03),
+      splashColor: const Color(0xFFE6E1E5).withValues(alpha: 0.06),
+      highlightColor: const Color(0xFFE6E1E5).withValues(alpha: 0.03),
     );
   }
 }

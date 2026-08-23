@@ -70,6 +70,7 @@ class AIProvider extends ChangeNotifier {
     final userPosition = profile?.position;
 
     String accumulatedText = '';
+    final accumulatedCards = <AICardData>[];
     _currentSubscription?.cancel();
 
     final stream = _aiService.sendMessageStream(
@@ -79,10 +80,25 @@ class AIProvider extends ChangeNotifier {
       userName: userName,
       userSport: userSport,
       userPosition: userPosition,
+      onCards: (cards) {
+        accumulatedCards.addAll(cards);
+        final idx = _messages.indexWhere((m) => m.id == thinkingMsg.id);
+        if (idx != -1) {
+          _messages[idx] =
+              _messages[idx].copyWith(cards: List<AICardData>.of(accumulatedCards));
+          notifyListeners();
+        }
+      },
     );
 
     _currentSubscription = stream.listen(
       (chunk) {
+        // The service is retrying on a fresh API key after a quota error —
+        // drop the partial answer so the retried one replaces it cleanly.
+        if (chunk == AIService.retryResetSignal) {
+          accumulatedText = '';
+          return;
+        }
         accumulatedText += chunk;
         final idx = _messages.indexWhere((m) => m.id == thinkingMsg.id);
         if (idx != -1) {

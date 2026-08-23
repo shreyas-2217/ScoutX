@@ -101,7 +101,6 @@ class SearchParser {
     String? highlightType;
     String? location;
     final skills = <String>[];
-    final remaining = <String>[];
 
     final used = List<bool>.filled(tokens.length, false);
 

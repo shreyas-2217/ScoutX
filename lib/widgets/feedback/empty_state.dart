@@ -35,7 +35,7 @@ class EmptyState extends StatelessWidget {
               child: Icon(
                 icon,
                 size: 32,
-                color: DSColors.volt,
+                color: DSColors.onSurface,
               ),
             ),
             const SizedBox(height: DSSpacing.md),
@@ -64,7 +64,7 @@ class EmptyState extends StatelessWidget {
                 builder: (context) => ElevatedButton(
                   onPressed: onAction,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: DSColors.volt,
+                    backgroundColor: DSColors.onSurface,
                     foregroundColor: DSColors.onBrand,
                     padding: const EdgeInsets.symmetric(
                       horizontal: DSSpacing.lg,

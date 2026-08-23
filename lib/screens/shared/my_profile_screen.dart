@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/clip.dart';
 import '../../models/user_profile.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/theme_provider.dart';
+import '../../services/cloudinary_service.dart';
 import '../../services/database.dart';
 import '../../widgets/sport_icons.dart';
 import '../shared/edit_profile_screen.dart';
@@ -27,9 +28,17 @@ class MyProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Profile'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, size: 22),
-            onPressed: () {},
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, _) {
+              return IconButton(
+                icon: Icon(
+                  themeProvider.isDark ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+                  size: 22,
+                ),
+                onPressed: () => themeProvider.toggleTheme(),
+                tooltip: themeProvider.isDark ? 'Switch to light mode' : 'Switch to dark mode',
+              );
+            },
           ),
         ],
       ),
@@ -129,7 +138,20 @@ class MyProfileScreen extends StatelessWidget {
                     SizedBox(
                       width: 180,
                       child: OutlinedButton.icon(
-                        onPressed: () => context.read<AuthProvider>().signOut(),
+                        onPressed: () async {
+                          try {
+                            await context.read<AuthProvider>().signOut();
+                            if (context.mounted) {
+                              Navigator.of(context).popUntil((route) => route.isFirst);
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Sign out failed: $e')),
+                              );
+                            }
+                          }
+                        },
                         icon: Icon(Icons.logout, size: 18, color: DSColors.red),
                         label: Text('Sign Out', style: TextStyle(color: DSColors.red)),
                         style: OutlinedButton.styleFrom(
@@ -219,7 +241,7 @@ class _ProfileHeader extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                colors: [DSColors.volt, DSColors.cyan],
+                colors: [DSColors.onSurface, DSColors.cyan],
               ),
             ),
             child: Container(
@@ -341,10 +363,10 @@ class _ProfileHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
             decoration: BoxDecoration(
-              color: DSColors.volt.withValues(alpha: 0.1),
+              color: DSColors.onSurface.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: DSColors.volt.withValues(alpha: 0.3),
+                color: DSColors.onSurface.withValues(alpha: 0.3),
               ),
             ),
             child: Text(
@@ -352,7 +374,7 @@ class _ProfileHeader extends StatelessWidget {
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1,
-                color: DSColors.volt,
+                color: DSColors.onSurface,
               ),
             ),
           ),
@@ -385,7 +407,7 @@ class _StatsRow extends StatelessWidget {
           _StatItem(
             value: '${profile.clipCount < 0 ? 0 : profile.clipCount}',
             label: 'Clips',
-            color: DSColors.volt,
+            color: DSColors.onSurface,
           ),
           Container(width: 1, height: 32, color: Theme.of(context).colorScheme.outlineVariant),
           _StatItem(
@@ -467,7 +489,7 @@ class _SectionBlock extends StatelessWidget {
                 width: 3,
                 height: 16,
                 decoration: BoxDecoration(
-                  color: DSColors.volt,
+                  color: DSColors.onSurface,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -536,7 +558,7 @@ class _InfoGrid extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(item.icon, size: 18, color: DSColors.volt),
+              Icon(item.icon, size: 18, color: DSColors.onSurface),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -595,7 +617,7 @@ class _YourReelsGrid extends StatelessWidget {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(32),
-              child: CircularProgressIndicator(color: DSColors.volt),
+              child: CircularProgressIndicator(color: DSColors.onSurface),
             ),
           );
         }
@@ -761,6 +783,11 @@ class _ReelTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = _gradient(context);
+    final thumbnail = CloudinaryService.videoThumbnail(
+      clip.videoUrl,
+      width: 320,
+      height: 320,
+    );
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -773,6 +800,12 @@ class _ReelTile extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          if (thumbnail != null)
+            Image.network(
+              thumbnail,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => const SizedBox.shrink(),
+            ),
           Center(
             child: Container(
               width: 40,

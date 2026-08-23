@@ -67,18 +67,18 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: DSColors.bgGradient),
+        decoration: const BoxDecoration(color: DSColors.surface),
         child: Stack(
           children: [
             Positioned(
               top: -120,
               right: -100,
-              child: _glow(DSColors.volt),
+              child: _glow(DSColors.onSurface.withValues(alpha: 0.05)),
             ),
             Positioned(
               bottom: -140,
               left: -120,
-              child: _glow(DSColors.cyan),
+              child: _glow(DSColors.onSurface.withValues(alpha: 0.03)),
             ),
             Center(
               child: AnimatedBuilder(
@@ -95,13 +95,13 @@ class _SplashScreenState extends State<SplashScreen>
                             width: 96,
                             height: 96,
                             decoration: BoxDecoration(
-                              color: DSColors.volt,
+                              color: DSColors.onSurface,
                               borderRadius: BorderRadius.circular(24),
-                              boxShadow: DSElevation.brandGlow,
+                              boxShadow: DSElevation.level1,
                             ),
                             child: Icon(
                               DSIcons.brand,
-                              color: DSColors.onBrand,
+                              color: DSColors.surface,
                               size: 52,
                             ),
                           ),

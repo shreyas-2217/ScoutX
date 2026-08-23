@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:scoutx/design_system.dart';
 import '../services/location_service.dart';
 import '../providers/location_provider.dart';
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
 
 class LocationPickerResult {
@@ -288,7 +289,7 @@ class _LocationPickerState extends State<LocationPicker> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: _searchResults.length,
-                separatorBuilder: (_, __) => Divider(height: 1, color: DSColors.outlineVariant.withValues(alpha: 0.5)),
+                separatorBuilder: (_, _) => Divider(height: 1, color: DSColors.outlineVariant.withValues(alpha: 0.5)),
                 itemBuilder: (context, index) {
                   final place = _searchResults[index];
                   final displayName = place.name.length > 40
@@ -296,7 +297,7 @@ class _LocationPickerState extends State<LocationPicker> {
                       : place.name;
                   return ListTile(
                     dense: true,
-                    leading: const Icon(Icons.location_on_outlined, size: 20, color: DSColors.volt),
+                    leading: const Icon(Icons.location_on_outlined, size: 20, color: DSColors.onSurface),
                     title: Text(displayName, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                     subtitle: Text(place.address, style: TextStyle(fontSize: 12, color: DSColors.onSurfaceVariant)),
                     onTap: () => _selectPlace(place),
@@ -312,13 +313,13 @@ class _LocationPickerState extends State<LocationPicker> {
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: DSColors.volt.withValues(alpha: 0.08),
+                color: DSColors.onSurface.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: DSColors.volt.withValues(alpha: 0.3)),
+                border: Border.all(color: DSColors.onSurface.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.check_circle, color: DSColors.volt, size: 20),
+                  const Icon(Icons.check_circle, color: DSColors.onSurface, size: 20),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -329,7 +330,7 @@ class _LocationPickerState extends State<LocationPicker> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: DSColors.volt,
+                            color: DSColors.onSurface,
                           ),
                         ),
                         if (_selectedCoords != null)
@@ -381,7 +382,7 @@ class _LocationPickerState extends State<LocationPicker> {
                   onPressed: _selectedCoords != null ? _confirm : null,
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    backgroundColor: DSColors.volt,
+                    backgroundColor: DSColors.onSurface,
                     foregroundColor: Colors.white,
                     disabledBackgroundColor: DSColors.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
@@ -430,16 +431,16 @@ class _LocationOption extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: DSColors.volt.withValues(alpha: 0.1),
+                  color: DSColors.onSurface.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: isLoading
                     ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: DSColors.volt),
+                        child: CircularProgressIndicator(strokeWidth: 2, color: DSColors.onSurface),
                       )
-                    : Icon(icon, color: DSColors.volt, size: 20),
+                    : Icon(icon, color: DSColors.onSurface, size: 20),
               ),
               const SizedBox(width: 14),
               Expanded(

@@ -20,14 +20,14 @@ class AICharacter extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [DSColors.volt, DSColors.volt.withValues(alpha: 0.7)],
+          colors: [DSColors.onSurface, DSColors.onSurface.withValues(alpha: 0.7)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: DSColors.volt.withValues(alpha: 0.3),
+            color: DSColors.onSurface.withValues(alpha: 0.3),
             blurRadius: 16,
             spreadRadius: 2,
           ),

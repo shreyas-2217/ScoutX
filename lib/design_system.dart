@@ -4,108 +4,64 @@ import 'package:google_fonts/google_fonts.dart';
 class DSColors {
   DSColors._();
 
-  // Brand primary - Green palette
-  static const Color volt = Color(0xFF1B6B3A);
-  static const Color voltDark = Color(0xFF145A2E);
-  static const Color voltLight = Color(0xFF2E8B4F);
-  static const Color voltSurface = Color(0xFFE8F5E9);
+  // Brand primary - Puma palette (near-black)
+  static const Color volt = Color(0xFF000000);
+  static const Color voltDark = Color(0xFF000000);
+  static const Color voltLight = Color(0xFF313030);
+  static const Color voltSurface = Color(0xFFF1EDEC);
 
-  static const Color cyan = Color(0xFF43A047);
-  static const Color green = Color(0xFF2E7D32);
-  static const Color red = Color(0xFFE53935);
+  static const Color cyan = Color(0xFF5F5E5E);
+  static const Color green = Color(0xFF5F5E5E);
+  static const Color red = Color(0xFFBA1A1A);
   static const Color amber = Color(0xFFFF8F00);
-  static const Color indigo = Color(0xFF5C6BC0);
+  static const Color indigo = Color(0xFF5F5E5E);
 
-  // Neutrals (light theme)
-  static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceContainer = Color(0xFFF5F5F5);
-  static const Color surfaceContainerHigh = Color(0xFFEEEEEE);
-  static const Color surfaceContainerHighest = Color(0xFFE0E0E0);
+  // Neutrals (light theme - exact from Stitch)
+  static const Color surface = Color(0xFFfdf8f8);
+  static const Color surfaceContainer = Color(0xFFF1EDEC);
+  static const Color surfaceContainerHigh = Color(0xFFEBE7E6);
+  static const Color surfaceContainerHighest = Color(0xFFE5E2E1);
   static const Color surfaceElevated = Color(0xFFFFFFFF);
-  static const Color bg = Color(0xFFF8F9FA);
+  static const Color bg = Color(0xFFfdf8f8);
   static const Color bgElevated = Color(0xFFFFFFFF);
 
-  static const Color onSurface = Color(0xFF1A1A1A);
-  static const Color onSurfaceVariant = Color(0xFF757575);
-  static const Color onSurfaceDisabled = Color(0xFFBDBDBD);
+  static const Color onSurface = Color(0xFF1C1B1B);
+  static const Color onSurfaceVariant = Color(0xFF444748);
+  static const Color onSurfaceDisabled = Color(0xFFC4C7C7);
   static const Color onBrand = Color(0xFFFFFFFF);
   static const Color onSecondary = Color(0xFFFFFFFF);
   static const Color onTertiary = Color(0xFFFFFFFF);
   static const Color onError = Color(0xFFFFFFFF);
-  static const Color onBg = Color(0xFF1A1A1A);
+  static const Color onBg = Color(0xFF1C1B1B);
 
-  static const Color outline = Color(0xFFE0E0E0);
-  static const Color outlineVariant = Color(0xFFEEEEEE);
-  static const Color inverseSurface = Color(0xFF1A1A1A);
-  static const Color inversePrimary = Color(0xFF1B6B3A);
-  static const Color hairline = Color(0xFFEEEEEE);
+  static const Color outline = Color(0xFF747878);
+  static const Color outlineVariant = Color(0xFFC4C7C7);
+  static const Color inverseSurface = Color(0xFF313030);
+  static const Color inversePrimary = Color(0xFFC8C6C5);
+  static const Color hairline = Color(0xFFE5E2E1);
 
   // Interaction overlays
-  static const Color pressOverlay = Color(0x1A1B6B3A);
-  static const Color hoverOverlay = Color(0x0D1B6B3A);
-  static const Color focusOverlay = Color(0x141B6B3A);
+  static const Color pressOverlay = Color(0x1A000000);
+  static const Color hoverOverlay = Color(0x0D000000);
+  static const Color focusOverlay = Color(0x14000000);
 
-  // Gradients
-  static const Gradient brand = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFF1B6B3A),
-      Color(0xFF2E8B4F),
-    ],
-  );
+  // No gradients in Puma style - flat and minimal
 
-  static const Gradient accent = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFF2E7D32),
-      Color(0xFF43A047),
-    ],
-  );
+  // Dark theme colors (for dark mode support)
+  static const Color darkBg = Color(0xFF1C1B1B);
+  static const Color darkSurface = Color(0xFF1C1B1B);
+  static const Color darkSurfaceContainer = Color(0xFF2A2929);
+  static const Color darkSurfaceContainerHigh = Color(0xFF353434);
+  static const Color darkSurfaceContainerHighest = Color(0xFF403F3F);
+  static const Color darkSurfaceElevated = Color(0xFF2A2929);
 
-  static const Gradient bgGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      Color(0xFFF8F9FA),
-      Color(0xFFF0F0F0),
-    ],
-  );
+  static const Color darkOnSurface = Color(0xFFE6E1E5);
+  static const Color darkOnSurfaceVariant = Color(0xFFCAC4D0);
+  static const Color darkOnSurfaceDisabled = Color(0xFF605D62);
 
-  static const Gradient brandSubtle = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0x1A1B6B3A),
-      Color(0x0D2E8B4F),
-    ],
-  );
-
-  static const Gradient surfaceGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFFFFFFFF),
-      Color(0xFFF8F9FA),
-    ],
-  );
-
-  // Dark theme colors
-  static const Color darkBg = Color(0xFF0F1419);
-  static const Color darkSurface = Color(0xFF1A1F25);
-  static const Color darkSurfaceContainer = Color(0xFF232A31);
-  static const Color darkSurfaceContainerHigh = Color(0xFF2C343C);
-  static const Color darkSurfaceContainerHighest = Color(0xFF374049);
-  static const Color darkSurfaceElevated = Color(0xFF1E252B);
-
-  static const Color darkOnSurface = Color(0xFFF0F2F5);
-  static const Color darkOnSurfaceVariant = Color(0xFF8B95A0);
-  static const Color darkOnSurfaceDisabled = Color(0xFF4A5568);
-
-  static const Color darkOutline = Color(0xFF2C343C);
-  static const Color darkOutlineVariant = Color(0xFF232A31);
-  static const Color darkHairline = Color(0xFF232A31);
+  static const Color darkOutline = Color(0xFF938F99);
+  static const Color darkOutlineVariant = Color(0xFF49454F);
+  static const Color darkHairline = Color(0xFF353434);
 }
 
 class DSIcons {
@@ -163,7 +119,7 @@ class DSIcons {
   static const IconData music = Icons.music_note;
   static const IconData chatCircle = Icons.chat_bubble;
   static const IconData chatCircleDots = Icons.chat_bubble_outline;
-  static const IconData forum_rounded = Icons.forum_rounded;
+  static const IconData forumRounded = Icons.forum_rounded;
 
   // Actions
   static const IconData send = Icons.send_outlined;
@@ -180,7 +136,7 @@ class DSIcons {
 
   // Navigation controls
   static const IconData arrowLeft = Icons.arrow_back_ios_new;
-  static const IconData arrow_forward_rounded = Icons.arrow_forward_rounded;
+  static const IconData arrowForwardRounded = Icons.arrow_forward_rounded;
   static const IconData arrowCounterClockwise = Icons.undo;
   static const IconData arrowsClockwise = Icons.sync;
   static const IconData arrowsVertical = Icons.swipe_vertical;
@@ -188,28 +144,28 @@ class DSIcons {
 
   // Input / form
   static const IconData magnifyingGlass = Icons.search;
-  static const IconData clear_rounded = Icons.clear_rounded;
-  static const IconData search_off_rounded = Icons.search_off_rounded;
-  static const IconData flash_on_rounded = Icons.flash_on;
-  static const IconData login_rounded = Icons.login_rounded;
+  static const IconData clearRounded = Icons.clear_rounded;
+  static const IconData searchOffRounded = Icons.search_off_rounded;
+  static const IconData flashOnRounded = Icons.flash_on;
+  static const IconData loginRounded = Icons.login_rounded;
   static const IconData calendar = Icons.calendar_today_outlined;
   static const IconData calendarCheck = Icons.calendar_today_outlined;
   static const IconData mapPin = Icons.location_pin;
   static const IconData textT = Icons.text_fields;
   static const IconData trendUp = Icons.trending_up;
-  static const IconData add_circle_rounded = Icons.add_circle_outline;
-  static const IconData add_rounded = Icons.add_rounded;
-  static const IconData sports_rounded = Icons.sports_soccer;
+  static const IconData addCircleRounded = Icons.add_circle_outline;
+  static const IconData addRounded = Icons.add_rounded;
+  static const IconData sportsRounded = Icons.sports_soccer;
   static const IconData shield = Icons.shield_outlined;
-  static const IconData smart_display_rounded = Icons.smart_display_outlined;
-  static const IconData radio_button_checked_rounded = Icons.radio_button_checked;
-  static const IconData radio_button_unchecked_rounded = Icons.radio_button_unchecked;
+  static const IconData smartDisplayRounded = Icons.smart_display_outlined;
+  static const IconData radioButtonCheckedRounded = Icons.radio_button_checked;
+  static const IconData radioButtonUncheckedRounded = Icons.radio_button_unchecked;
 
   // UI elements
   static const IconData bookmark = Icons.bookmark;
-  static const IconData bookmark_rounded = Icons.bookmark_rounded;
+  static const IconData bookmarkRounded = Icons.bookmark_rounded;
   static const IconData more = Icons.more_horiz;
-  static const IconData more_vert_rounded = Icons.more_vert;
+  static const IconData moreVertRounded = Icons.more_vert;
   static const IconData notebook = Icons.note;
   static const IconData pencil = Icons.edit_outlined;
   static const IconData scale = Icons.scale;
@@ -266,20 +222,21 @@ class DSMotion {
 class DSRadius {
   DSRadius._();
 
+  // Puma style: 4px default, 8px lg, 12px xl
   static const double xs = 2.0;
   static const double sm = 4.0;
-  static const double md = 8.0;
-  static const double lg = 12.0;
-  static const double xl = 16.0;
+  static const double md = 4.0;
+  static const double lg = 8.0;
+  static const double xl = 12.0;
   static const double xxl = 24.0;
   static const double xxxl = 32.0;
   static const double full = 1000.0;
-  static const double card = 16.0;
-  static const double sheet = 24.0;
-  static const double dialog = 16.0;
-  static const double input = 12.0;
-  static const double button = 12.0;
-  static const double chip = 999.0;
+  static const double card = 4.0;
+  static const double sheet = 8.0;
+  static const double dialog = 8.0;
+  static const double input = 4.0;
+  static const double button = 4.0;
+  static const double chip = 4.0;
 }
 
 class DSIconSize {
@@ -324,7 +281,7 @@ class DSElevation {
 
   static const List<BoxShadow> brandGlow = [
     BoxShadow(
-      color: Color(0x261B6B3A),
+      color: Color(0x26000000),
       blurRadius: 24,
       offset: Offset(0, 8),
     ),
@@ -343,155 +300,216 @@ class DSTypography {
   DSTypography._();
 
   static TextTheme get light {
-    final base = GoogleFonts.interTextTheme();
-    return base.apply(
-      bodyColor: DSColors.onSurface,
-      displayColor: DSColors.onSurface,
-      decorationColor: DSColors.onSurface,
-    ).copyWith(
-      displayLarge: base.displayLarge?.copyWith(
+    // Use Barlow Condensed for headings, Inter for body
+    final headingStyle = GoogleFonts.barlowCondensed();
+    final bodyStyle = GoogleFonts.inter();
+
+    return TextTheme(
+      displayLarge: headingStyle.copyWith(
         color: DSColors.onSurface,
-        fontWeight: FontWeight.w800,
-        letterSpacing: -1.5,
-      ),
-      displayMedium: base.displayMedium?.copyWith(
-        color: DSColors.onSurface,
+        fontSize: 64,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.5,
+        letterSpacing: 0.32,
+        height: 1.0,
       ),
-      displaySmall: base.displaySmall?.copyWith(
+      displayMedium: headingStyle.copyWith(
         color: DSColors.onSurface,
+        fontSize: 48,
         fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.0,
       ),
-      headlineLarge: base.headlineLarge?.copyWith(
+      displaySmall: headingStyle.copyWith(
         color: DSColors.onSurface,
+        fontSize: 32,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.5,
+        letterSpacing: 0.32,
+        height: 1.1,
       ),
-      headlineMedium: base.headlineMedium?.copyWith(
+      headlineLarge: headingStyle.copyWith(
         color: DSColors.onSurface,
+        fontSize: 32,
         fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.1,
       ),
-      headlineSmall: base.headlineSmall?.copyWith(
+      headlineMedium: headingStyle.copyWith(
         color: DSColors.onSurface,
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.2,
+      ),
+      headlineSmall: headingStyle.copyWith(
+        color: DSColors.onSurface,
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.2,
+      ),
+      titleLarge: headingStyle.copyWith(
+        color: DSColors.onSurface,
+        fontSize: 20,
         fontWeight: FontWeight.w600,
+        height: 1.3,
       ),
-      titleLarge: base.titleLarge?.copyWith(
+      titleMedium: bodyStyle.copyWith(
         color: DSColors.onSurface,
-        fontWeight: FontWeight.w700,
-        letterSpacing: -0.3,
-      ),
-      titleMedium: base.titleMedium?.copyWith(
-        color: DSColors.onSurface,
+        fontSize: 16,
         fontWeight: FontWeight.w600,
-      ),
-      titleSmall: base.titleSmall?.copyWith(
-        color: DSColors.onSurface,
-        fontWeight: FontWeight.w600,
-      ),
-      bodyLarge: base.bodyLarge?.copyWith(
-        color: DSColors.onSurface,
-        height: 1.6,
-      ),
-      bodyMedium: base.bodyMedium?.copyWith(
-        color: DSColors.onSurface,
-        height: 1.5,
-      ),
-      bodySmall: base.bodySmall?.copyWith(
-        color: DSColors.onSurfaceVariant,
         height: 1.4,
       ),
-      labelLarge: base.labelLarge?.copyWith(
+      titleSmall: bodyStyle.copyWith(
         color: DSColors.onSurface,
+        fontSize: 14,
         fontWeight: FontWeight.w600,
-        letterSpacing: 0.2,
+        height: 1.4,
       ),
-      labelMedium: base.labelMedium?.copyWith(
+      bodyLarge: bodyStyle.copyWith(
         color: DSColors.onSurface,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.3,
+        fontSize: 18,
+        fontWeight: FontWeight.w400,
+        height: 1.6,
       ),
-      labelSmall: base.labelSmall?.copyWith(
+      bodyMedium: bodyStyle.copyWith(
+        color: DSColors.onSurface,
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        height: 1.5,
+      ),
+      bodySmall: bodyStyle.copyWith(
         color: DSColors.onSurfaceVariant,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        height: 1.5,
+      ),
+      labelLarge: headingStyle.copyWith(
+        color: DSColors.onSurface,
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.0,
+      ),
+      labelMedium: bodyStyle.copyWith(
+        color: DSColors.onSurfaceVariant,
+        fontSize: 12,
         fontWeight: FontWeight.w500,
-        letterSpacing: 0.3,
+        letterSpacing: 0.5,
+        height: 1.0,
+      ),
+      labelSmall: bodyStyle.copyWith(
+        color: DSColors.onSurfaceVariant,
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.5,
+        height: 1.0,
       ),
     );
   }
 
   static TextTheme get dark {
-    final base = GoogleFonts.interTextTheme();
-    return base.apply(
-      bodyColor: DSColors.darkOnSurface,
-      displayColor: DSColors.darkOnSurface,
-      decorationColor: DSColors.darkOnSurface,
-    ).copyWith(
-      displayLarge: base.displayLarge?.copyWith(
+    final headingStyle = GoogleFonts.barlowCondensed();
+    final bodyStyle = GoogleFonts.inter();
+
+    return TextTheme(
+      displayLarge: headingStyle.copyWith(
         color: DSColors.darkOnSurface,
-        fontWeight: FontWeight.w800,
-        letterSpacing: -1.5,
-      ),
-      displayMedium: base.displayMedium?.copyWith(
-        color: DSColors.darkOnSurface,
+        fontSize: 64,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.5,
+        letterSpacing: 0.32,
+        height: 1.0,
       ),
-      displaySmall: base.displaySmall?.copyWith(
+      displayMedium: headingStyle.copyWith(
         color: DSColors.darkOnSurface,
+        fontSize: 48,
         fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.0,
       ),
-      headlineLarge: base.headlineLarge?.copyWith(
+      displaySmall: headingStyle.copyWith(
         color: DSColors.darkOnSurface,
+        fontSize: 32,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.5,
+        letterSpacing: 0.32,
+        height: 1.1,
       ),
-      headlineMedium: base.headlineMedium?.copyWith(
+      headlineLarge: headingStyle.copyWith(
         color: DSColors.darkOnSurface,
+        fontSize: 32,
         fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.1,
       ),
-      headlineSmall: base.headlineSmall?.copyWith(
+      headlineMedium: headingStyle.copyWith(
         color: DSColors.darkOnSurface,
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.2,
+      ),
+      headlineSmall: headingStyle.copyWith(
+        color: DSColors.darkOnSurface,
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.2,
+      ),
+      titleLarge: headingStyle.copyWith(
+        color: DSColors.darkOnSurface,
+        fontSize: 20,
         fontWeight: FontWeight.w600,
+        height: 1.3,
       ),
-      titleLarge: base.titleLarge?.copyWith(
+      titleMedium: bodyStyle.copyWith(
         color: DSColors.darkOnSurface,
-        fontWeight: FontWeight.w700,
-        letterSpacing: -0.3,
-      ),
-      titleMedium: base.titleMedium?.copyWith(
-        color: DSColors.darkOnSurface,
+        fontSize: 16,
         fontWeight: FontWeight.w600,
-      ),
-      titleSmall: base.titleSmall?.copyWith(
-        color: DSColors.darkOnSurface,
-        fontWeight: FontWeight.w600,
-      ),
-      bodyLarge: base.bodyLarge?.copyWith(
-        color: DSColors.darkOnSurface,
-        height: 1.6,
-      ),
-      bodyMedium: base.bodyMedium?.copyWith(
-        color: DSColors.darkOnSurface,
-        height: 1.5,
-      ),
-      bodySmall: base.bodySmall?.copyWith(
-        color: DSColors.darkOnSurfaceVariant,
         height: 1.4,
       ),
-      labelLarge: base.labelLarge?.copyWith(
+      titleSmall: bodyStyle.copyWith(
         color: DSColors.darkOnSurface,
+        fontSize: 14,
         fontWeight: FontWeight.w600,
-        letterSpacing: 0.2,
+        height: 1.4,
       ),
-      labelMedium: base.labelMedium?.copyWith(
+      bodyLarge: bodyStyle.copyWith(
         color: DSColors.darkOnSurface,
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.3,
+        fontSize: 18,
+        fontWeight: FontWeight.w400,
+        height: 1.6,
       ),
-      labelSmall: base.labelSmall?.copyWith(
+      bodyMedium: bodyStyle.copyWith(
+        color: DSColors.darkOnSurface,
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        height: 1.5,
+      ),
+      bodySmall: bodyStyle.copyWith(
         color: DSColors.darkOnSurfaceVariant,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        height: 1.5,
+      ),
+      labelLarge: headingStyle.copyWith(
+        color: DSColors.darkOnSurface,
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.32,
+        height: 1.0,
+      ),
+      labelMedium: bodyStyle.copyWith(
+        color: DSColors.darkOnSurfaceVariant,
+        fontSize: 12,
         fontWeight: FontWeight.w500,
-        letterSpacing: 0.3,
+        letterSpacing: 0.5,
+        height: 1.0,
+      ),
+      labelSmall: bodyStyle.copyWith(
+        color: DSColors.darkOnSurfaceVariant,
+        fontSize: 11,
+        fontWeight: FontWeight.w500,
+        letterSpacing: 0.5,
+        height: 1.0,
       ),
     );
   }

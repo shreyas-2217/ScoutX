@@ -80,94 +80,90 @@ class _SXButtonState extends State<SXButton> {
     }
   }
 
-  Color get _backgroundColor {
+  Color _backgroundColor(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     if (!_isEnabled) {
       switch (widget.variant) {
         case SXButtonVariant.primary:
-          return DSColors.volt.withValues(alpha: 0.5);
+          return scheme.onSurface.withValues(alpha: 0.12);
         case SXButtonVariant.secondary:
-          return Colors.transparent;
         case SXButtonVariant.ghost:
           return Colors.transparent;
         case SXButtonVariant.destructive:
-          return DSColors.red.withValues(alpha: 0.5);
+          return scheme.error.withValues(alpha: 0.12);
       }
     }
-
     if (_isHovered && !_isPressed) {
       switch (widget.variant) {
         case SXButtonVariant.primary:
-          return DSColors.voltDark;
+          return scheme.onSurface.withValues(alpha: 0.92);
         case SXButtonVariant.secondary:
-          return DSColors.surfaceContainer;
         case SXButtonVariant.ghost:
-          return DSColors.surfaceContainer;
+          return scheme.surfaceContainerHighest;
         case SXButtonVariant.destructive:
-          return const Color(0xFFD32F2F);
+          return scheme.error.withValues(alpha: 0.9);
       }
     }
-
     if (_isPressed) {
       switch (widget.variant) {
         case SXButtonVariant.primary:
-          return DSColors.voltDark;
+          return scheme.onSurface.withValues(alpha: 0.84);
         case SXButtonVariant.secondary:
-          return DSColors.surfaceContainerHigh;
         case SXButtonVariant.ghost:
-          return DSColors.surfaceContainerHigh;
+          return scheme.surfaceContainerHigh;
         case SXButtonVariant.destructive:
-          return const Color(0xFFC62828);
+          return scheme.error.withValues(alpha: 0.85);
       }
     }
-
     switch (widget.variant) {
       case SXButtonVariant.primary:
-        return DSColors.volt;
+        return scheme.onSurface;
       case SXButtonVariant.secondary:
-        return Colors.transparent;
       case SXButtonVariant.ghost:
         return Colors.transparent;
       case SXButtonVariant.destructive:
-        return DSColors.red;
+        return scheme.error;
     }
   }
 
-  Color get _foregroundColor {
+  Color _foregroundColor(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     if (!_isEnabled) {
-      return DSColors.onSurfaceDisabled;
+      return scheme.onSurface.withValues(alpha: 0.38);
     }
     switch (widget.variant) {
       case SXButtonVariant.primary:
-        return DSColors.onBrand;
+        return scheme.surface;
       case SXButtonVariant.secondary:
-        return DSColors.onSurface;
       case SXButtonVariant.ghost:
-        return DSColors.onSurface;
+        return scheme.onSurface;
       case SXButtonVariant.destructive:
-        return DSColors.onError;
+        return scheme.onError;
     }
   }
 
-  Color get _spinnerColor {
+  Color _spinnerColor(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     switch (widget.variant) {
       case SXButtonVariant.primary:
       case SXButtonVariant.destructive:
-        return DSColors.onBrand;
+        return scheme.surface;
       case SXButtonVariant.secondary:
       case SXButtonVariant.ghost:
-        return DSColors.onSurface;
+        return scheme.onSurface;
     }
   }
 
-  Border? get _border {
+  Border? _border(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     if (widget.variant == SXButtonVariant.secondary) {
       if (!_isEnabled) {
-        return Border.all(color: DSColors.outline.withValues(alpha: 0.5), width: 1.5);
+        return Border.all(color: scheme.outline.withValues(alpha: 0.5), width: 1.5);
       }
       if (_isPressed) {
-        return Border.all(color: DSColors.volt.withValues(alpha: 0.4), width: 1.5);
+        return Border.all(color: scheme.onSurface.withValues(alpha: 0.4), width: 1.5);
       }
-      return Border.all(color: DSColors.outline, width: 1.5);
+      return Border.all(color: scheme.outline, width: 1.5);
     }
     return null;
   }
@@ -192,9 +188,9 @@ class _SXButtonState extends State<SXButton> {
             height: _height,
             padding: EdgeInsets.symmetric(horizontal: _horizontalPadding),
             decoration: BoxDecoration(
-              color: _backgroundColor,
+              color: _backgroundColor(context),
               borderRadius: BorderRadius.circular(DSRadius.button),
-              border: _border,
+              border: _border(context),
             ),
             child: Row(
               mainAxisSize: widget.fullWidth ? MainAxisSize.max : MainAxisSize.min,
@@ -206,22 +202,22 @@ class _SXButtonState extends State<SXButton> {
                     height: _iconSize,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(_spinnerColor),
+                      valueColor: AlwaysStoppedAnimation<Color>(_spinnerColor(context)),
                     ),
                   ),
                   SizedBox(width: DSSpacing.sm),
                 ] else if (widget.leadingIcon != null) ...[
-                  Icon(widget.leadingIcon, size: _iconSize, color: _foregroundColor),
+                  Icon(widget.leadingIcon, size: _iconSize, color: _foregroundColor(context)),
                   SizedBox(width: DSSpacing.xs),
                 ],
                 if (!widget.loading || widget.label.isNotEmpty)
                   Text(
                     widget.label,
-                    style: _textStyle.copyWith(color: _foregroundColor),
+                    style: _textStyle.copyWith(color: _foregroundColor(context)),
                   ),
                 if (widget.trailingIcon != null && !widget.loading) ...[
                   SizedBox(width: DSSpacing.xs),
-                  Icon(widget.trailingIcon, size: _iconSize, color: _foregroundColor),
+                  Icon(widget.trailingIcon, size: _iconSize, color: _foregroundColor(context)),
                 ],
               ],
             ),

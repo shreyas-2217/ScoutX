@@ -62,7 +62,7 @@ class ErrorState extends StatelessWidget {
                 builder: (context) => ElevatedButton(
                   onPressed: onRetry,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: DSColors.volt,
+                    backgroundColor: DSColors.onSurface,
                     foregroundColor: DSColors.onBrand,
                     padding: const EdgeInsets.symmetric(
                       horizontal: DSSpacing.lg,

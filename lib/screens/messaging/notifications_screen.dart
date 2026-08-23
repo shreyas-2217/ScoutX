@@ -32,7 +32,7 @@ class NotificationsScreen extends StatelessWidget {
             onPressed: () => db.markAllNotificationsRead(uid),
             child: Text(
               'Mark all read',
-              style: TextStyle(color: DSColors.volt),
+              style: TextStyle(color: DSColors.onSurface),
             ),
           ),
         ],
@@ -65,10 +65,10 @@ class NotificationsScreen extends StatelessWidget {
 
   void _handleTap(
       BuildContext context, AppNotification notif, String myUid, Database db) {
+    if (!notif.isRead) {
+      db.markNotificationRead(notif.id);
+    }
     if (notif.type == 'message' && notif.conversationId != null) {
-      if (!notif.isRead) {
-        db.markNotificationRead(notif.id);
-      }
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => ChatScreen(
@@ -78,10 +78,9 @@ class NotificationsScreen extends StatelessWidget {
           ),
         ),
       );
-    } else if (notif.type == 'follow') {
-      if (!notif.isRead) {
-        db.markNotificationRead(notif.id);
-      }
+    } else if (notif.type == 'follow' ||
+        notif.type == 'like' ||
+        notif.type == 'comment') {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => PlayerProfileViewScreen(playerId: notif.fromUserId),
@@ -138,7 +137,7 @@ class NotificationsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'When someone follows you or messages you, it will appear here.',
+              'When someone follows you, likes or comments on your highlights, or messages you, it will appear here.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -173,7 +172,7 @@ class _NotificationTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           color: notif.isRead
               ? Colors.transparent
-              : DSColors.volt.withValues(alpha: 0.04),
+              : DSColors.onSurface.withValues(alpha: 0.04),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -217,7 +216,7 @@ class _NotificationTile extends StatelessWidget {
                   height: 8,
                   margin: const EdgeInsets.only(top: 6),
                   decoration: const BoxDecoration(
-                    color: DSColors.volt,
+                    color: DSColors.onSurface,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -236,6 +235,12 @@ class _NotificationTile extends StatelessWidget {
         return notif.message != null && notif.message!.isNotEmpty
             ? ' sent you a message: "${notif.message}"'
             : ' sent you a message';
+      case 'like':
+        return ' liked your highlight';
+      case 'comment':
+        return notif.message != null && notif.message!.isNotEmpty
+            ? ' commented: "${notif.message}"'
+            : ' commented on your highlight';
       default:
         return ' interacted with you';
     }

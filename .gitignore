@@ -43,3 +43,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local tooling / scratch files (may contain secrets)
+.firebase/
+.freebuff/
+opencode.json
+stitch_login.html
+stitch_request.json

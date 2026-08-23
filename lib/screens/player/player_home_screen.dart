@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../models/clip.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/fab_visibility_provider.dart';
+import '../../services/cloudinary_service.dart';
 import '../../services/database.dart';
 import '../shared/widgets.dart';
 import '../shared/reels_feed.dart';
@@ -20,6 +23,42 @@ class PlayerHomeScreen extends StatefulWidget {
 }
 
 class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
+  late final ScrollController _scrollController;
+  bool _lastVisible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+    // Fresh screen always starts scrolled to the top — make sure the FAB is
+    // visible again in case a previous Home instance hid it before disposal.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<FabVisibilityProvider>().show();
+    });
+  }
+
+  void _onScroll() {
+    final offset = _scrollController.offset;
+    // Hide when scrolled past the "All Highlights" header (~650px)
+    final show = offset < 500;
+    if (show != _lastVisible) {
+      _lastVisible = show;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        context.read<FabVisibilityProvider>().setVisible(show);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
@@ -36,6 +75,7 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
 
     return Scaffold(
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           // Premium app bar
           SliverAppBar(
@@ -54,18 +94,20 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                 children: [
                   Text(
                     '$greeting, $name',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.5,
+                    style: GoogleFonts.barlowCondensed(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.32,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
-                  ),
+                  ).animate().fadeIn(duration: 400.ms, curve: Curves.easeOut).slideY(begin: 0.15, end: 0, duration: 400.ms, curve: Curves.easeOut),
                   const SizedBox(height: 4),
                   Text(
                     'Discover opportunities built for your game.',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-                  ),
+                  ).animate(delay: 80.ms).fadeIn(duration: 400.ms, curve: Curves.easeOut).slideY(begin: 0.15, end: 0, duration: 400.ms, curve: Curves.easeOut),
                   const SizedBox(height: 16),
                   // Search bar
                   GestureDetector(
@@ -77,14 +119,15 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                     child: Container(
                       height: 48,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(14),
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(DSRadius.input),
                       ),
                       child: IgnorePointer(
                         child: TextField(
                           decoration: InputDecoration(
                             hintText: 'Search athletes, coaches, highlights...',
-                            hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            hintStyle: GoogleFonts.inter(
+                              fontSize: 14,
                               color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                             prefixIcon: Icon(Icons.search, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
@@ -94,13 +137,13 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                         ),
                       ),
                     ),
-                  ),
+                  ).animate(delay: 160.ms).fadeIn(duration: 400.ms, curve: Curves.easeOut).slideY(begin: 0.12, end: 0, duration: 400.ms, curve: Curves.easeOut),
                 ],
               ),
             ),
           ),
 
-          // Quick actions
+          // Quick actions — staggered glass
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -109,6 +152,7 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                   _QuickAction(
                     icon: Icons.videocam_outlined,
                     label: 'Upload Clip',
+                    index: 0,
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (_) => const UploadClipScreen()),
@@ -119,14 +163,16 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                   _QuickAction(
                     icon: Icons.emoji_events_outlined,
                     label: 'Find Trials',
+                    index: 1,
                     onTap: () {
-                      context.read<TabSwitcher>().switchTo(1);
+                      context.read<TabSwitcher>().switchTo(2);
                     },
                   ),
                   const SizedBox(width: 12),
                   _QuickAction(
                     icon: Icons.explore_outlined,
                     label: 'Discover',
+                    index: 2,
                     onTap: () {
                       context.read<TabSwitcher>().switchTo(1);
                     },
@@ -146,15 +192,18 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                     width: 3,
                     height: 18,
                     decoration: BoxDecoration(
-                      color: DSColors.volt,
-                      borderRadius: BorderRadius.circular(2),
+                      color: Theme.of(context).colorScheme.onSurface,
+                      borderRadius: BorderRadius.circular(DSRadius.xs),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Text(
                     'Discover Talents',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    style: GoogleFonts.barlowCondensed(
+                      fontSize: 16,
                       fontWeight: FontWeight.w700,
+                      letterSpacing: 0.32,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -170,7 +219,42 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                 stream: db.streamClips(limit: 30),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator(color: DSColors.volt));
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: 4,
+                      itemBuilder: (context, i) => Container(
+                        width: 180,
+                        margin: const EdgeInsets.only(right: 12),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                          borderRadius: BorderRadius.circular(DSRadius.card),
+                          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ShimmerPlaceholder(
+                                width: 180,
+                                height: double.infinity,
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(DSRadius.card)),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ShimmerPlaceholder(width: 120, height: 12, borderRadius: BorderRadius.circular(6)),
+                                  const SizedBox(height: 6),
+                                  ShimmerPlaceholder(width: 80, height: 10, borderRadius: BorderRadius.circular(6)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ).animate(delay: (60 * i).ms).fadeIn(duration: 300.ms).slideY(begin: 0.08, end: 0, duration: 300.ms, curve: Curves.easeOut),
+                    );
                   }
                   final allClips = snapshot.data ?? [];
                   final otherClips = allClips.where((c) => c.playerId != uid).toList();
@@ -207,30 +291,38 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                     itemCount: otherClips.length,
                     itemBuilder: (context, index) {
                       final clip = otherClips[index];
-                      return Container(
-                        width: 180,
-                        margin: const EdgeInsets.only(right: 12),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => ReelsFeed(
-                                  clipsStream: Stream.value(otherClips),
-                                  initialIndex: index,
-                                  onOpenProfile: (c) {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => PlayerProfileViewScreen(
-                                          playerId: c.playerId,
+                      return StaggeredItem(
+                        index: index,
+                        delay: Duration(milliseconds: 60 * index),
+                        duration: const Duration(milliseconds: 350),
+                        child: Container(
+                          width: 180,
+                          margin: const EdgeInsets.only(right: 12),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ReelsFeed(
+                                    clipsStream: Stream.value(otherClips),
+                                    initialIndex: index,
+                                    onOpenProfile: (c) {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => PlayerProfileViewScreen(
+                                            playerId: c.playerId,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
+                                      );
+                                    },
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                          child: _HighlightCard(clip: clip),
+                              );
+                            },
+                            child: DSHero(
+                              tag: 'clip-${clip.id}',
+                              child: _HighlightCard(clip: clip),
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -250,15 +342,18 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                     width: 3,
                     height: 18,
                     decoration: BoxDecoration(
-                      color: DSColors.cyan,
-                      borderRadius: BorderRadius.circular(2),
+                      color: Theme.of(context).colorScheme.onSurface,
+                      borderRadius: BorderRadius.circular(DSRadius.xs),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Text(
                     'Trending Athletes',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    style: GoogleFonts.barlowCondensed(
+                      fontSize: 16,
                       fontWeight: FontWeight.w700,
+                      letterSpacing: 0.32,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -273,6 +368,33 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
               child: StreamBuilder(
                 stream: db.streamClips(limit: 10),
                 builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: 4,
+                      itemBuilder: (context, i) => Container(
+                        width: 130,
+                        margin: const EdgeInsets.only(right: 12),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ShimmerPlaceholder(width: 48, height: 48, borderRadius: BorderRadius.circular(24)),
+                            const SizedBox(height: 10),
+                            ShimmerPlaceholder(width: 80, height: 10, borderRadius: BorderRadius.circular(6)),
+                            const SizedBox(height: 6),
+                            ShimmerPlaceholder(width: 60, height: 8, borderRadius: BorderRadius.circular(6)),
+                          ],
+                        ),
+                      ).animate(delay: (60 * i).ms).fadeIn(duration: 300.ms),
+                    );
+                  }
                   final clips = snapshot.data ?? [];
                   final uniquePlayers = <String, dynamic>{};
                   for (final c in clips) {
@@ -295,13 +417,30 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                     itemCount: players.length,
                     itemBuilder: (context, index) {
                       final clip = players[index];
-                      return Container(
-                        width: 130,
-                        margin: const EdgeInsets.only(right: 12),
-                        child: _AthleteMiniCard(
-                          name: clip.playerName,
-                          sport: clip.sport,
-                          position: clip.position,
+                      return StaggeredItem(
+                        index: index,
+                        delay: Duration(milliseconds: 60 * index),
+                        duration: const Duration(milliseconds: 350),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => PlayerProfileViewScreen(playerId: clip.playerId),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 130,
+                            margin: const EdgeInsets.only(right: 12),
+                            child: DSHero(
+                              tag: 'athlete-${clip.playerId}',
+                              child: _AthleteMiniCard(
+                                name: clip.playerName,
+                                sport: clip.sport,
+                                position: clip.position,
+                              ),
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -321,15 +460,18 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
                     width: 3,
                     height: 18,
                     decoration: BoxDecoration(
-                      color: DSColors.amber,
-                      borderRadius: BorderRadius.circular(2),
+                      color: Theme.of(context).colorScheme.onSurface,
+                      borderRadius: BorderRadius.circular(DSRadius.xs),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Text(
                     'All Highlights',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    style: GoogleFonts.barlowCondensed(
+                      fontSize: 16,
                       fontWeight: FontWeight.w700,
+                      letterSpacing: 0.32,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -337,52 +479,63 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
             ),
           ),
 
-          // Full reels feed
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: ReelsFeed(
-                clipsStream: db.streamClips(),
-                onDelete: (clip) => db.deleteClip(clip.id),
+          // Full reels feed — fixed height to avoid viewport intrinsic error
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 560,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: ReelsFeed(
+                  clipsStream: db.streamClips(),
+                  onDelete: (clip) => db.deleteClip(clip.id),
+                ),
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: Material(
-        color: Colors.transparent,
-        elevation: 0,
-        child: InkWell(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const UploadClipScreen()),
-            );
-          },
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-            decoration: BoxDecoration(
-              color: DSColors.volt,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: DSColors.volt.withValues(alpha: 0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.videocam_outlined, size: 20, color: Colors.white),
-                const SizedBox(width: 8),
-                Text(
-                  'Upload',
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
+      floatingActionButtonLocation: MediaQuery.of(context).size.width < 800
+          ? FloatingActionButtonLocation.centerFloat
+          : FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Consumer<FabVisibilityProvider>(
+        builder: (context, fab, child) => AnimatedScale(
+          scale: fab.isVisible ? 1 : 0,
+          duration: const Duration(milliseconds: 320),
+          curve: Curves.easeOutBack,
+          child: AnimatedOpacity(
+            opacity: fab.isVisible ? 1 : 0,
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOut,
+            child: IgnorePointer(ignoring: !fab.isVisible, child: child),
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          elevation: 0,
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const UploadClipScreen()),
+              );
+            },
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSurface,
+                borderRadius: BorderRadius.circular(DSRadius.button),
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 12, offset: const Offset(0, 4))],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.videocam_outlined, size: 20, color: Theme.of(context).colorScheme.surface),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Upload',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.surface,
+                      fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -390,7 +543,8 @@ class _PlayerHomeScreenState extends State<PlayerHomeScreen> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }
 
@@ -398,42 +552,49 @@ class _QuickAction extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final int index;
 
   const _QuickAction({
     required this.icon,
     required this.label,
     required this.onTap,
+    this.index = 0,
   });
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: Theme.of(context).colorScheme.outlineVariant,
-            ),
+            color: cs.surface,
+            borderRadius: BorderRadius.circular(DSRadius.card),
+            border: Border.all(color: cs.outlineVariant),
+            boxShadow: DSElevation.cardShadow,
           ),
           child: Column(
             children: [
-              Icon(icon, size: 24, color: DSColors.volt),
+              Icon(icon, size: 24, color: cs.onSurface),
               const SizedBox(height: 8),
               Text(
                 label,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                      fontWeight: FontWeight.w600,
+                      color: cs.onSurface,
+                    ),
                 textAlign: TextAlign.center,
               ),
             ],
           ),
         ),
-      ),
+      )
+          .animate(delay: (80 * index).ms)
+          .fadeIn(duration: 350.ms, curve: Curves.easeOut)
+          .slideY(begin: 0.12, end: 0, duration: 350.ms, curve: Curves.easeOut)
+          .scale(begin: const Offset(0.96, 0.96), end: const Offset(1, 1), duration: 350.ms),
     );
   }
 }
@@ -466,12 +627,18 @@ class _HighlightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final thumbnail = CloudinaryService.videoThumbnail(
+      clip.videoUrl as String?,
+      width: 360,
+      height: 480,
+    );
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(14),
+        color: cs.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(DSRadius.card),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outlineVariant,
+          color: cs.outlineVariant,
         ),
       ),
       child: Column(
@@ -479,7 +646,7 @@ class _HighlightCard extends StatelessWidget {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(14)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(DSRadius.card)),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -492,6 +659,14 @@ class _HighlightCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (thumbnail != null)
+                    Positioned.fill(
+                      child: Image.network(
+                        thumbnail,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                      ),
+                    ),
                   Positioned(
                     top: 8,
                     left: 8,

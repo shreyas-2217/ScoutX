@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:scoutx/design_system.dart';
 import '../../constants.dart';
 import '../../models/clip.dart';
 import '../../providers/location_provider.dart';
 import '../../services/database.dart';
-import '../../services/location_service.dart';
 import '../../widgets/distance_filter.dart';
-import '../shared/widgets.dart'
-    show DSColors, DSSpacing, DSIconSize, DSRadius, DSMotion, DSElevation, DSCard, EmptyState, DSButton, DSButtonVariant, TagChip, SectionHeader, StaggeredItem, StaggeredList, InitialsAvatar, VerifiedBadge, AnimatedPage, BrandLogo;
+import '../shared/widgets.dart';
 import '../shared/player_profile_view_screen.dart';
 import '../shared/reels_feed.dart';
-import '../shared/widgets.dart';
 import '../messaging/inbox_screen.dart';
 
 /// Coach home: reels feed of player clips with search + filters.
@@ -85,18 +81,18 @@ class _CoachDiscoverScreenState extends State<CoachDiscoverScreen>
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                 hintText: 'Search player or title…',
-                prefixIcon: Icon(DSIcons.magnifyingGlass, color: DSColors.onSurfaceVariant),
+                prefixIcon: Icon(DSIcons.magnifyingGlass, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 suffixIcon: _search.text.isEmpty
                     ? null
                     : IconButton(
-                        icon: Icon(DSIcons.clear_rounded, color: DSColors.onSurfaceVariant),
+                        icon: Icon(DSIcons.clearRounded, color: Theme.of(context).colorScheme.onSurfaceVariant),
                         onPressed: () {
                           _search.clear();
                           setState(() {});
                         },
                       ),
                 filled: true,
-                fillColor: DSColors.surfaceContainer,
+                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
             ),
           ),
@@ -119,10 +115,10 @@ class _CoachDiscoverScreenState extends State<CoachDiscoverScreen>
             if (locationProvider.hasLocation)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                color: DSColors.volt.withValues(alpha: 0.06),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.06),
                 child: Row(
                   children: [
-                    Icon(Icons.location_on, size: 16, color: DSColors.volt),
+                    Icon(Icons.location_on, size: 16, color: Theme.of(context).colorScheme.onSurface),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -130,7 +126,7 @@ class _CoachDiscoverScreenState extends State<CoachDiscoverScreen>
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: DSColors.volt,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ),
@@ -160,13 +156,13 @@ class _CoachDiscoverScreenState extends State<CoachDiscoverScreen>
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(
-                      child: CircularProgressIndicator(color: DSColors.volt),
+                      child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                     );
                   }
                   final clips = snapshot.data ?? [];
                   if (clips.isEmpty) {
                     return EmptyState(
-                      icon: DSIcons.search_off_rounded,
+                      icon: DSIcons.searchOffRounded,
                       title: 'No clips match your filters',
                       subtitle: 'Try adjusting your search or filters.',
                     );
@@ -193,6 +189,7 @@ class _CoachDiscoverScreenState extends State<CoachDiscoverScreen>
 
   Stream<List<Clip>> _buildStream() {
     final db = context.read<Database>();
+    final locationProvider = context.read<LocationProvider>();
     return db.streamClips(limit: 100).map((clips) {
       var list = clips.where((c) {
         if (_sport != null && c.sport != _sport) return false;
@@ -203,6 +200,12 @@ class _CoachDiscoverScreenState extends State<CoachDiscoverScreen>
               !c.title.toLowerCase().contains(q)) {
             return false;
           }
+        }
+        if (_distanceFilter != null && locationProvider.hasLocation) {
+          final coords = AppConstants.coordinatesForLocation(c.location);
+          if (coords == null) return false;
+          final dist = locationProvider.distanceTo(coords[0], coords[1]);
+          if (dist == null || dist > _distanceFilter!) return false;
         }
         return true;
       }).toList();
@@ -282,14 +285,19 @@ class _FilterBarState extends State<_FilterBar>
                       label: Text(s),
                       selected: widget.sport == s,
                       onSelected: (_) => widget.onSportChanged(s),
-                      selectedColor: DSColors.volt.withValues(alpha: 0.24),
-                      checkmarkColor: DSColors.volt,
-                      backgroundColor: DSColors.surfaceContainerHigh,
+                      selectedColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.10),
+                      checkmarkColor: Theme.of(context).colorScheme.onSurface,
+                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                       labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: widget.sport == s
+                            ? Theme.of(context).colorScheme.onSurface
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       side: BorderSide(
-                        color: widget.sport == s ? DSColors.volt : DSColors.outlineVariant,
+                        color: widget.sport == s
+                            ? Theme.of(context).colorScheme.onSurface
+                            : Theme.of(context).colorScheme.outlineVariant,
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(DSRadius.chip),
@@ -306,7 +314,7 @@ class _FilterBarState extends State<_FilterBar>
           builder: (context, child) {
             return SizeTransition(
               sizeFactor: _heightAnim,
-              axisAlignment: -1.0,
+              alignment: Alignment.topCenter,
               child: widget.sport != null
                   ? SizedBox(
                       height: 56,
@@ -322,14 +330,19 @@ class _FilterBarState extends State<_FilterBar>
                                   label: Text(p),
                                   selected: widget.position == p,
                                   onSelected: (_) => widget.onPositionChanged(p),
-                                  selectedColor: DSColors.cyan.withValues(alpha: 0.24),
-                                  checkmarkColor: DSColors.cyan,
-                                  backgroundColor: DSColors.surfaceContainerHigh,
+                                  selectedColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.10),
+                                  checkmarkColor: Theme.of(context).colorScheme.onSurface,
+                                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                                   labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                                     fontWeight: FontWeight.w600,
+                                    color: widget.position == p
+                                        ? Theme.of(context).colorScheme.onSurface
+                                        : Theme.of(context).colorScheme.onSurfaceVariant,
                                   ),
                                   side: BorderSide(
-                                    color: widget.position == p ? DSColors.cyan : DSColors.outlineVariant,
+                                    color: widget.position == p
+                                        ? Theme.of(context).colorScheme.onSurface
+                                        : Theme.of(context).colorScheme.outlineVariant,
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(DSRadius.chip),

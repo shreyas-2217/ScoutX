@@ -233,13 +233,13 @@ class _UploadClipScreenState extends State<UploadClipScreen> {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: DSColors.volt.withValues(alpha: 0.12),
+                            color: DSColors.onSurface.withValues(alpha: 0.12),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.videocam,
                             size: DSIconSize.xxl,
-                            color: DSColors.volt,
+                            color: DSColors.onSurface,
                           ),
                         ),
                         SizedBox(height: DSSpacing.md),
@@ -345,7 +345,7 @@ class _UploadClipScreenState extends State<UploadClipScreen> {
                       isExpanded: true,
                       decoration: InputDecoration(
                         labelText: 'Position',
-                        prefixIcon: Icon(DSIcons.sports_rounded),
+                        prefixIcon: Icon(DSIcons.sportsRounded),
                       ),
                       items: (AppConstants.positionsBySport[_sport] ?? const [])
                           .map((p) => DropdownMenuItem(value: p, child: Text(p)))
@@ -456,7 +456,7 @@ class _UploadClipScreenState extends State<UploadClipScreen> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.tag, size: 18, color: DSColors.volt),
+                        Icon(Icons.tag, size: 18, color: DSColors.onSurface),
                         SizedBox(width: 6),
                         Text(
                           'Hashtags',
@@ -500,7 +500,7 @@ class _UploadClipScreenState extends State<UploadClipScreen> {
 
             if (_uploading) ...[
               LinearProgressIndicator(
-                color: DSColors.volt,
+                color: DSColors.onSurface,
                 backgroundColor: DSColors.surfaceContainerHigh,
               ),
               SizedBox(height: DSSpacing.md),
@@ -531,7 +531,7 @@ class _UploadProgressDialog extends StatelessWidget {
           SizedBox(
             width: 48,
             height: 48,
-            child: CircularProgressIndicator(color: DSColors.volt, strokeWidth: 3),
+            child: CircularProgressIndicator(color: DSColors.onSurface, strokeWidth: 3),
           ),
           SizedBox(height: DSSpacing.lg),
           Text(
@@ -560,20 +560,20 @@ class _AutoTag extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: DSColors.volt.withValues(alpha: 0.08),
+        color: DSColors.onSurface.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(DSRadius.chip),
-        border: Border.all(color: DSColors.volt.withValues(alpha: 0.2)),
+        border: Border.all(color: DSColors.onSurface.withValues(alpha: 0.15)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: DSColors.volt),
+          Icon(icon, size: 14, color: DSColors.onSurface),
           SizedBox(width: 4),
           Text(
             label,
             style: TextStyle(
               fontSize: 12,
-              color: DSColors.volt,
+              color: DSColors.onSurface,
               fontWeight: FontWeight.w500,
             ),
           ),

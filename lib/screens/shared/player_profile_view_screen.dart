@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/clip.dart';
 import '../../models/user_profile.dart';
 import '../../providers/auth_provider.dart';
+import '../../services/cloudinary_service.dart';
 import '../../services/database.dart';
+import '../../widgets/ai/scouting_report_sheet.dart';
 import '../messaging/chat_screen.dart';
 import 'clip_player_screen.dart';
 import 'widgets.dart';
@@ -57,7 +58,7 @@ class _PlayerProfileViewScreenState extends State<PlayerProfileViewScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-              child: CircularProgressIndicator(color: DSColors.volt),
+              child: CircularProgressIndicator(color: DSColors.onSurface),
             );
           }
           final player = snapshot.data;
@@ -75,7 +76,7 @@ class _PlayerProfileViewScreenState extends State<PlayerProfileViewScreen> {
             padding: EdgeInsets.zero,
             children: [
               // Hero header
-              _ProfileHero(player: player, me: me, showMessage: showMessage, onMessage: showMessage ? () => _openChat(me!, player) : null),
+              _ProfileHero(player: player, me: me, showMessage: showMessage, onMessage: showMessage ? () => _openChat(me, player) : null),
 
               // Stats
               _StatsBar(player: player),
@@ -126,7 +127,7 @@ class _ProfileHero extends StatelessWidget {
             padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(colors: [DSColors.volt, DSColors.cyan]),
+              gradient: LinearGradient(colors: [DSColors.onSurface, DSColors.cyan]),
             ),
             child: Container(
               padding: const EdgeInsets.all(2),
@@ -134,7 +135,16 @@ class _ProfileHero extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: Theme.of(context).colorScheme.surface,
               ),
-              child: InitialsAvatar(name: player.displayName, radius: 44),
+              child: CircleAvatar(
+                radius: 44,
+                backgroundColor: DSColors.surfaceContainerHighest,
+                backgroundImage: (player.profileImageUrl != null && player.profileImageUrl!.isNotEmpty)
+                    ? NetworkImage(player.profileImageUrl!)
+                    : null,
+                child: (player.profileImageUrl == null || player.profileImageUrl!.isEmpty)
+                    ? InitialsAvatar(name: player.displayName, radius: 44)
+                    : null,
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -230,6 +240,23 @@ class _ProfileHero extends StatelessWidget {
               ],
             ),
           ],
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: () => ScoutingReportSheet.show(context, player),
+              icon: const Icon(Icons.psychology, size: 18),
+              label: const Text('AI Scouting Report'),
+              style: FilledButton.styleFrom(
+                backgroundColor: DSColors.onSurface,
+                foregroundColor: Theme.of(context).colorScheme.surface,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -254,7 +281,7 @@ class _StatsBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _Stat(value: '${player.clipCount < 0 ? 0 : player.clipCount}', label: 'Clips', color: DSColors.volt),
+          _Stat(value: '${player.clipCount < 0 ? 0 : player.clipCount}', label: 'Clips', color: DSColors.onSurface),
           Container(width: 1, height: 32, color: Theme.of(context).colorScheme.outlineVariant),
           _Stat(value: _compact(player.followerCount), label: 'Followers', color: DSColors.cyan),
           Container(width: 1, height: 32, color: Theme.of(context).colorScheme.outlineVariant),
@@ -313,7 +340,7 @@ class _InfoSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(width: 3, height: 16, decoration: BoxDecoration(color: DSColors.volt, borderRadius: BorderRadius.circular(2))),
+              Container(width: 3, height: 16, decoration: BoxDecoration(color: DSColors.onSurface, borderRadius: BorderRadius.circular(2))),
               const SizedBox(width: 8),
               Text('Athletic Info', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
             ],
@@ -332,7 +359,7 @@ class _InfoSection extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(item.icon, size: 18, color: DSColors.volt),
+                    Icon(item.icon, size: 18, color: DSColors.onSurface),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Column(
@@ -375,7 +402,7 @@ class _ClipsSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(width: 3, height: 16, decoration: BoxDecoration(color: DSColors.volt, borderRadius: BorderRadius.circular(2))),
+              Container(width: 3, height: 16, decoration: BoxDecoration(color: DSColors.onSurface, borderRadius: BorderRadius.circular(2))),
               const SizedBox(width: 8),
               Text('Highlights', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
             ],
@@ -385,7 +412,7 @@ class _ClipsSection extends StatelessWidget {
             stream: context.read<Database>().streamClipsForPlayer(playerId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator(color: DSColors.volt));
+                return const Center(child: CircularProgressIndicator(color: DSColors.onSurface));
               }
               final clips = snapshot.data ?? [];
               if (clips.isEmpty) {
@@ -478,6 +505,7 @@ class _FollowButtonState extends State<_FollowButton> {
       return;
     }
     final db = context.read<Database>();
+    final auth = context.read<AuthProvider>();
     if (_following) {
       await db.unfollow(uid, widget.playerId);
     } else {
@@ -492,10 +520,14 @@ class _FollowButtonState extends State<_FollowButton> {
         );
       }
     }
-    if (mounted) setState(() {
-      _following = !_following;
-      _loading = false;
-    });
+    // Refresh the local profile so followingCount stays in sync
+    await auth.refreshProfile();
+    if (mounted) {
+      setState(() {
+        _following = !_following;
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -503,7 +535,7 @@ class _FollowButtonState extends State<_FollowButton> {
     if (_loading) {
       return const SizedBox(
         height: 48,
-        child: Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: DSColors.volt))),
+        child: Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: DSColors.onSurface))),
       );
     }
     return _following
@@ -522,7 +554,7 @@ class _FollowButtonState extends State<_FollowButton> {
             label: const Text('Follow'),
             style: FilledButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 14),
-              backgroundColor: DSColors.volt,
+              backgroundColor: DSColors.onSurface,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
@@ -558,6 +590,11 @@ class _ProfileClipTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = _gradientFor(context);
+    final thumbnail = CloudinaryService.videoThumbnail(
+      clip.videoUrl,
+      width: 320,
+      height: 320,
+    );
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -570,6 +607,12 @@ class _ProfileClipTile extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          if (thumbnail != null)
+            Image.network(
+              thumbnail,
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) => const SizedBox.shrink(),
+            ),
           Center(
             child: Container(
               width: 40,

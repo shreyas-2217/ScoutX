@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/opening.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
-import '../shared/widgets.dart'
-    show DSColors, DSSpacing, DSIconSize, DSRadius, DSMotion, DSElevation, DSCard, EmptyState, DSButton, DSButtonVariant, TagChip, StaggeredItem;
+import '../shared/widgets.dart';
 import 'post_opening_screen.dart';
 
 /// Coach side: post availability / team openings + manage.
@@ -54,7 +52,7 @@ class _CoachOpeningsScreenState extends State<CoachOpeningsScreen>
         title: const Text('Team Openings'),
         actions: [
           IconButton(
-            icon: Icon(DSIcons.add_circle_rounded, size: DSIconSize.appBar),
+            icon: Icon(DSIcons.addCircleRounded, size: DSIconSize.appBar),
             tooltip: 'Post an opening',
             onPressed: () {
               Navigator.of(context).push(
@@ -64,14 +62,20 @@ class _CoachOpeningsScreenState extends State<CoachOpeningsScreen>
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const PostOpeningScreen()),
-          );
-        },
-        icon: Icon(DSIcons.add_rounded, size: DSIconSize.sm),
-        label: Text('Post Opening', style: Theme.of(context).textTheme.labelLarge),
+      floatingActionButton: SizedBox(
+        width: 56,
+        height: 56,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const PostOpeningScreen()),
+            );
+          },
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: Theme.of(context).colorScheme.onSurface,
+          foregroundColor: Theme.of(context).colorScheme.surface,
+          child: const Icon(Icons.add, size: 28),
+        ),
       ),
       body: uid == null
           ? const SizedBox.shrink()
@@ -94,12 +98,12 @@ class _CoachOpeningsScreenState extends State<CoachOpeningsScreen>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CircularProgressIndicator(color: DSColors.volt),
+                          CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface),
                           SizedBox(height: DSSpacing.md),
                           Text(
                             'Loading openings...',
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: DSColors.onSurfaceVariant,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -174,7 +178,7 @@ class _OpeningCardState extends State<_OpeningCard> {
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Delete', style: TextStyle(color: DSColors.red)),
+            child: Text('Delete', style: TextStyle(color: Theme.of(ctx).colorScheme.error)),
           ),
         ],
       ),
@@ -215,7 +219,11 @@ class _OpeningCardState extends State<_OpeningCard> {
               ),
               TagChip(
                 text: isOpen ? 'OPEN' : 'CLOSED',
-                color: isOpen ? DSColors.green : DSColors.onSurfaceDisabled,
+                color: isOpen
+                    ? (Theme.of(context).brightness == Brightness.dark
+                        ? const Color(0xFF81C784)
+                        : const Color(0xFF2E7D32))
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ],
           ),
@@ -223,7 +231,7 @@ class _OpeningCardState extends State<_OpeningCard> {
           Text(
             '${widget.opening.teamName} · ${widget.opening.sport} · ${widget.opening.skillLevel}',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: DSColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           if (widget.opening.description.isNotEmpty) ...[
@@ -231,7 +239,7 @@ class _OpeningCardState extends State<_OpeningCard> {
             Text(
               widget.opening.description,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: DSColors.onSurface.withValues(alpha: 0.85),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.85),
               ),
             ),
           ],
@@ -244,7 +252,7 @@ class _OpeningCardState extends State<_OpeningCard> {
                 label: isOpen ? 'Close' : 'Reopen',
                 leadingIcon: isOpen ? DSIcons.circleMinus : DSIcons.arrowCounterClockwise,
                 variant: DSButtonVariant.outlined,
-                customColor: isOpen ? DSColors.red : DSColors.cyan,
+                customColor: isOpen ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.onSurface,
                 loading: _loading,
                 onPressed: _loading ? null : _toggleStatus,
               ),
@@ -252,7 +260,7 @@ class _OpeningCardState extends State<_OpeningCard> {
                 label: 'Delete',
                 leadingIcon: DSIcons.trash,
                 variant: DSButtonVariant.outlined,
-                customColor: DSColors.red,
+                customColor: Theme.of(context).colorScheme.error,
                 loading: _loading,
                 onPressed: _loading ? null : _delete,
               ),

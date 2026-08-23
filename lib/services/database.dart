@@ -59,6 +59,14 @@ class Database {
     return result;
   }
 
+  /// Cached AI scouting report stored on the user document, or null.
+  Future<Map<String, dynamic>?> getScoutingReport(String uid) async {
+    final doc = await _db.collection(AppPaths.users).doc(uid).get();
+    if (!doc.exists) return null;
+    final raw = doc.data()!['aiScoutingReport'];
+    return raw is Map<String, dynamic> ? raw : null;
+  }
+
   Stream<List<UserProfile>> streamUsers({String role = 'player'}) {
     return _db
         .collection(AppPaths.users)
@@ -519,7 +527,7 @@ class Database {
   // -------------------------------------------------------------------------
 
   Future<void> deleteAccount(String uid) async {
-    final batch = _db.batch();
+    final refs = <DocumentReference<Map<String, dynamic>>>[];
 
     // 1. Delete user's clips
     final clipsSnap = await _db
@@ -527,7 +535,7 @@ class Database {
         .where('playerId', isEqualTo: uid)
         .get();
     for (final doc in clipsSnap.docs) {
-      batch.delete(doc.reference);
+      refs.add(doc.reference);
     }
 
     // 2. Delete user's likes
@@ -536,7 +544,7 @@ class Database {
         .where('uid', isEqualTo: uid)
         .get();
     for (final doc in likesSnap.docs) {
-      batch.delete(doc.reference);
+      refs.add(doc.reference);
     }
 
     // 3. Delete user's comments
@@ -545,7 +553,7 @@ class Database {
         .where('uid', isEqualTo: uid)
         .get();
     for (final doc in commentsSnap.docs) {
-      batch.delete(doc.reference);
+      refs.add(doc.reference);
     }
 
     // 4. Delete user's saved clips
@@ -554,7 +562,7 @@ class Database {
         .where('uid', isEqualTo: uid)
         .get();
     for (final doc in savedSnap.docs) {
-      batch.delete(doc.reference);
+      refs.add(doc.reference);
     }
 
     // 5. Delete user's follow relations
@@ -563,14 +571,14 @@ class Database {
         .where('followerId', isEqualTo: uid)
         .get();
     for (final doc in followingSnap.docs) {
-      batch.delete(doc.reference);
+      refs.add(doc.reference);
     }
     final followersSnap = await _db
         .collection(AppPaths.follows)
         .where('followeeId', isEqualTo: uid)
         .get();
     for (final doc in followersSnap.docs) {
-      batch.delete(doc.reference);
+      refs.add(doc.reference);
     }
 
     // 6. Delete user's trial applications
@@ -579,7 +587,7 @@ class Database {
         .where('playerId', isEqualTo: uid)
         .get();
     for (final doc in appsSnap.docs) {
-      batch.delete(doc.reference);
+      refs.add(doc.reference);
     }
 
     // 7. Delete user's openings (coach)
@@ -588,13 +596,47 @@ class Database {
         .where('coachId', isEqualTo: uid)
         .get();
     for (final doc in openingsSnap.docs) {
-      batch.delete(doc.reference);
+      refs.add(doc.reference);
     }
 
-    // 8. Delete user profile doc
-    batch.delete(_db.collection(AppPaths.users).doc(uid));
+    // 8. Delete user's notifications
+    final notifsSnap = await _db
+        .collection('notifications')
+        .where('toUserId', isEqualTo: uid)
+        .get();
+    for (final doc in notifsSnap.docs) {
+      refs.add(doc.reference);
+    }
+    final notifsFromSnap = await _db
+        .collection('notifications')
+        .where('fromUserId', isEqualTo: uid)
+        .get();
+    for (final doc in notifsFromSnap.docs) {
+      refs.add(doc.reference);
+    }
 
-    await batch.commit();
+    // 9. Delete user's conversations (where user is a participant)
+    final convsSnap = await _db
+        .collection(AppPaths.conversations)
+        .where('participantIds', arrayContains: uid)
+        .get();
+    for (final doc in convsSnap.docs) {
+      refs.add(doc.reference);
+    }
+
+    // 10. Delete user profile doc
+    refs.add(_db.collection(AppPaths.users).doc(uid));
+
+    // Firestore batches are capped at 500 writes — commit in safe chunks so
+    // deletion never aborts for users with lots of data.
+    const chunkSize = 400;
+    for (var i = 0; i < refs.length; i += chunkSize) {
+      final batch = _db.batch();
+      for (final ref in refs.skip(i).take(chunkSize)) {
+        batch.delete(ref);
+      }
+      await batch.commit();
+    }
   }
 
   // -------------------------------------------------------------------------
@@ -831,6 +873,7 @@ class ChatMessage {
   final String? clipTitle;
   final String? clipVideoUrl;
   final DateTime createdAt;
+  final List<String>? reactions; // List of emoji reactions (e.g., ['👍', '❤️', '🎥'])
 
   const ChatMessage({
     required this.id,
@@ -841,10 +884,11 @@ class ChatMessage {
     this.clipTitle,
     this.clipVideoUrl,
     required this.createdAt,
+    this.reactions,
   });
 
   Map<String, dynamic> toMap() {
-    return {
+    final map = {
       'senderId': senderId,
       'senderName': senderName,
       'text': text,
@@ -853,6 +897,10 @@ class ChatMessage {
       'clipVideoUrl': clipVideoUrl,
       'createdAt': createdAt,
     };
+    if (reactions != null && reactions!.isNotEmpty) {
+      map['reactions'] = reactions;
+    }
+    return map;
   }
 
   factory ChatMessage.fromMap(String id, Map<String, dynamic> map) {
@@ -865,6 +913,7 @@ class ChatMessage {
       clipTitle: map['clipTitle'] as String?,
       clipVideoUrl: map['clipVideoUrl'] as String?,
       createdAt: _toDateTime(map['createdAt']) ?? DateTime.now(),
+      reactions: (map['reactions'] as List<dynamic>? ?? []).cast<String>(),
     );
   }
 

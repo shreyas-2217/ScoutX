@@ -43,7 +43,7 @@ class DistanceFilter extends StatelessWidget {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: distances.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (context, index) {
                 final d = distances[index];
                 final isSelected = selectedDistance == d['value'];
@@ -51,16 +51,16 @@ class DistanceFilter extends StatelessWidget {
                   label: Text(d['label']),
                   selected: isSelected,
                   onSelected: (_) => onDistanceChanged(d['value']),
-                  selectedColor: DSColors.volt.withValues(alpha: 0.2),
-                  checkmarkColor: DSColors.volt,
+                  selectedColor: DSColors.onSurface.withValues(alpha: 0.15),
+                  checkmarkColor: DSColors.onSurface,
                   backgroundColor: DSColors.surfaceContainerHigh,
                   labelStyle: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: isSelected ? DSColors.volt : null,
+                    color: isSelected ? DSColors.onSurface : null,
                   ),
                   side: BorderSide(
-                    color: isSelected ? DSColors.volt : DSColors.outlineVariant,
+                    color: isSelected ? DSColors.onSurface : DSColors.outlineVariant,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -71,6 +71,42 @@ class DistanceFilter extends StatelessWidget {
               },
             ),
           ),
+          if (onSortChanged != null) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 36,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: sortOptions.length,
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
+                itemBuilder: (context, index) {
+                  final option = sortOptions[index];
+                  final isSelected = selectedSort == option;
+                  return ChoiceChip(
+                    label: Text(option),
+                    selected: isSelected,
+                    onSelected: (_) => onSortChanged!(option),
+                    labelStyle: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? DSColors.surface : DSColors.onSurface,
+                    ),
+                    selectedColor: DSColors.onSurface,
+                    backgroundColor: DSColors.surfaceContainerHigh,
+                    side: BorderSide(
+                      color:
+                          isSelected ? DSColors.onSurface : DSColors.outlineVariant,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  );
+                },
+              ),
+            ),
+          ],
         ],
       ),
     );

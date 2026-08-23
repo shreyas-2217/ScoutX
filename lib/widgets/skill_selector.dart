@@ -87,7 +87,9 @@ class _SkillSelectorState extends State<SkillSelector> {
     final trimmed = skill.trim();
     if (trimmed.isEmpty) return;
     if (widget.selectedSkills
-        .any((s) => s.toLowerCase() == trimmed.toLowerCase())) return;
+        .any((s) => s.toLowerCase() == trimmed.toLowerCase())) {
+      return;
+    }
     final updated = List<String>.from(widget.selectedSkills);
     updated.add(trimmed);
     widget.onSkillsChanged(updated);
@@ -101,7 +103,7 @@ class _SkillSelectorState extends State<SkillSelector> {
       return Text(
         'Select a sport first to see available skills.',
         style: TextStyle(
-          color: DSColors.onSurfaceVariant,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
           fontSize: 13,
           fontStyle: FontStyle.italic,
         ),
@@ -137,12 +139,12 @@ class _SkillSelectorState extends State<SkillSelector> {
             runSpacing: 6,
             children: widget.selectedSkills.map((skill) {
               return Chip(
-                label: Text(skill, style: TextStyle(fontSize: 12)),
-                deleteIcon: Icon(Icons.close, size: 16),
+                label: Text(skill, style: const TextStyle(fontSize: 12)),
+                deleteIcon: const Icon(Icons.close, size: 16),
                 onDeleted: () => _toggleSkill(skill),
-                backgroundColor: DSColors.volt.withValues(alpha: 0.15),
-                labelStyle: TextStyle(color: DSColors.volt),
-                side: BorderSide(color: DSColors.volt.withValues(alpha: 0.4)),
+                backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
+                labelStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                side: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.18)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(DSRadius.chip),
                 ),
@@ -164,11 +166,11 @@ class _SkillSelectorState extends State<SkillSelector> {
                 return ListTile(
                   dense: true,
                   leading: Icon(Icons.add_circle_outline,
-                      color: DSColors.volt, size: 20),
+                      color: Theme.of(context).colorScheme.onSurface, size: 20),
                   title: Text(
                     'Add "$customText"',
                     style: TextStyle(
-                      color: DSColors.volt,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -185,15 +187,16 @@ class _SkillSelectorState extends State<SkillSelector> {
                 dense: true,
                 leading: Icon(
                   isSelected ? Icons.check_circle : Icons.add_circle_outline,
-                  color: isSelected ? DSColors.volt : DSColors.onSurfaceVariant,
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.onSurface
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
                   size: 20,
                 ),
                 title: Text(
                   skill,
                   style: TextStyle(
-                    fontWeight:
-                        isSelected ? FontWeight.w600 : FontWeight.w400,
-                    color: isSelected ? DSColors.volt : DSColors.onSurface,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 onTap: () => _toggleSkill(skill),

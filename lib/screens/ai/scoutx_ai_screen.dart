@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:scoutx/design_system.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import '../../providers/ai_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/ai/ai_message_bubble.dart';
@@ -18,8 +20,83 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
   final _scrollController = ScrollController();
   bool _showSuggestions = true;
 
+  // Voice
+  final SpeechToText _speech = SpeechToText();
+  bool _speechEnabled = false;
+  bool _isListening = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initSpeech();
+  }
+
+  Future<void> _initSpeech() async {
+    try {
+      _speechEnabled = await _speech.initialize(
+        onError: (e) => debugPrint('speech error: $e'),
+        onStatus: (s) {
+          debugPrint('speech status: $s');
+          if (s == 'done' || s == 'notListening') {
+            if (mounted && _isListening) setState(() => _isListening = false);
+          }
+        },
+      );
+    } catch (e) {
+      debugPrint('speech init failed: $e');
+      _speechEnabled = false;
+    }
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _toggleListening() async {
+    if (_isListening) {
+      await _speech.stop();
+      if (mounted) setState(() => _isListening = false);
+      return;
+    }
+    // need user gesture — re-init if not enabled
+    if (!_speechEnabled) {
+      try {
+        _speechEnabled = await _speech.initialize();
+      } catch (_) {
+        _speechEnabled = false;
+      }
+      if (!_speechEnabled) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Voice not available on this browser/device')),
+          );
+        }
+        return;
+      }
+    }
+    setState(() => _isListening = true);
+    await _speech.listen(
+      onResult: (r) {
+        if (!mounted) return;
+        setState(() {
+          _controller.text = r.recognizedWords;
+          _controller.selection = TextSelection.fromPosition(
+            TextPosition(offset: _controller.text.length),
+          );
+        });
+      },
+      listenOptions: SpeechListenOptions(
+        listenFor: const Duration(seconds: 30),
+        pauseFor: const Duration(seconds: 3),
+        localeId: 'en_US',
+        cancelOnError: false,
+        partialResults: true,
+      ),
+    );
+  }
+
   @override
   void dispose() {
+    try {
+      _speech.cancel();
+    } catch (_) {}
     _controller.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -67,7 +144,7 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
               height: 32,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [DSColors.voltDark, DSColors.volt],
+                  colors: [DSColors.onSurface, DSColors.volt],
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -126,14 +203,6 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
                     },
                   ),
           ),
-          if (_showSuggestions && ai.messages.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: AISuggestionChips(
-                role: context.read<AuthProvider>().profile?.role ?? 'viewer',
-                onSuggestionTap: _send,
-              ),
-            ),
           _buildInputBar(context),
         ],
       ),
@@ -142,36 +211,40 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
 
   Widget _buildEmptyState(BuildContext context) {
     final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [DSColors.voltDark.withValues(alpha: 0.8), DSColors.volt],
-                ),
-                borderRadius: BorderRadius.circular(24),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [DSColors.onSurface.withValues(alpha: 0.8), DSColors.volt],
               ),
-              child: const Icon(Icons.auto_awesome, color: Colors.white, size: 40),
+              borderRadius: BorderRadius.circular(24),
             ),
-            const SizedBox(height: 20),
-            Text(
-              'ScoutX AI',
-              style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 40),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'ScoutX AI',
+            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Your intelligent scouting assistant.\nAsk about athletes, trials, highlights, and more.',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+          ),
+          const SizedBox(height: 20),
+          if (_showSuggestions)
+            AISuggestionChips(
+              role: context.read<AuthProvider>().profile?.role ?? 'viewer',
+              onSuggestionTap: _send,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Your intelligent scouting assistant.\nAsk about athletes, trials, highlights, and more.',
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -188,46 +261,94 @@ class _ScoutXAIScreenState extends State<ScoutXAIScreen> {
       ),
       child: SafeArea(
         top: false,
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(24),
+            if (_isListening)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(width: 8, height: 8, decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle))
+                        .animate(onPlay: (c) => c.repeat(reverse: true))
+                        .scale(duration: 600.ms, begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2)),
+                    const SizedBox(width: 8),
+                    Text('Listening… speak now', style: theme.textTheme.labelSmall?.copyWith(color: Colors.red, fontWeight: FontWeight.w600)),
+                    const SizedBox(width: 8),
+                    Text('tap mic to stop', style: theme.textTheme.labelSmall?.copyWith(color: Colors.grey)),
+                  ],
                 ),
-                child: TextField(
-                  controller: _controller,
-                  enabled: !ai.isLoading && !ai.isRateLimited,
-                  textCapitalization: TextCapitalization.sentences,
-                  onSubmitted: _send,
-                  decoration: InputDecoration(
-                    hintText: ai.isRateLimited ? 'AI limit reached...' : 'Ask ScoutX AI...',
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                    hintStyle: TextStyle(color: Colors.grey),
+              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: _isListening ? Colors.red.withValues(alpha: 0.06) : theme.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(24),
+                      border: _isListening ? Border.all(color: Colors.red.withValues(alpha: 0.25)) : null,
+                    ),
+                    child: TextField(
+                      controller: _controller,
+                      enabled: !ai.isLoading && !ai.isRateLimited,
+                      textCapitalization: TextCapitalization.sentences,
+                      onSubmitted: _send,
+                      decoration: InputDecoration(
+                        hintText: _isListening
+                            ? 'Listening…'
+                            : ai.isRateLimited
+                                ? 'AI limit reached...'
+                                : 'Ask ScoutX AI...',
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        hintStyle: TextStyle(color: _isListening ? Colors.red.withValues(alpha: 0.6) : Colors.grey),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              decoration: BoxDecoration(
-                color: ai.isLoading || ai.isRateLimited ? Colors.grey : DSColors.volt,
-                shape: BoxShape.circle,
-              ),
-              child: IconButton(
-                icon: ai.isLoading
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Icon(Icons.send, color: Colors.white, size: 20),
-                onPressed: ai.isLoading || ai.isRateLimited
-                    ? null
-                    : () => _send(_controller.text),
-              ),
+                const SizedBox(width: 8),
+                // Mic button
+                GestureDetector(
+                  onTap: ai.isLoading || ai.isRateLimited ? null : _toggleListening,
+                  child: AnimatedContainer(
+                    duration: DSMotion.fast,
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: _isListening ? Colors.red : theme.colorScheme.surfaceContainerHighest,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: _isListening ? Colors.red : theme.colorScheme.outline.withValues(alpha: 0.2)),
+                      boxShadow: _isListening ? [BoxShadow(color: Colors.red.withValues(alpha: 0.35), blurRadius: 12, spreadRadius: 1)] : null,
+                    ),
+                    child: Icon(
+                      _isListening ? Icons.stop_rounded : Icons.mic_rounded,
+                      color: _isListening ? Colors.white : theme.colorScheme.onSurfaceVariant,
+                      size: 22,
+                    ),
+                  )
+                      .animate(target: _isListening ? 1 : 0)
+                      .scale(duration: 200.ms, curve: Curves.easeOut)
+                      .shimmer(duration: 1200.ms, color: Colors.white.withValues(alpha: 0.35)),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: ai.isLoading || ai.isRateLimited ? Colors.grey : DSColors.onSurface,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: ai.isLoading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          )
+                        : const Icon(Icons.send, color: Colors.white, size: 20),
+                    onPressed: ai.isLoading || ai.isRateLimited ? null : () => _send(_controller.text),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

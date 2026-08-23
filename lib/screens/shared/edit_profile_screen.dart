@@ -1,7 +1,5 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +8,6 @@ import '../../models/user_profile.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/cloudinary_service.dart';
 import '../../cloudinary_config.dart';
-import '../../services/database.dart';
 import '../../widgets/location_picker.dart';
 import '../../widgets/sport_icons.dart';
 import 'widgets.dart';
@@ -275,7 +272,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                         SectionHeader(text: 'Sport & Position'),
                         SizedBox(height: DSSpacing.md),
                         DropdownButtonFormField<String>(
-                          value: _sport,
+                          initialValue: _sport,
                           isExpanded: true,
                           decoration: InputDecoration(
                             labelText: 'Sport',
@@ -292,7 +289,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                         if (isPlayer && _sport != null) ...[
                           SizedBox(height: DSSpacing.md),
                           DropdownButtonFormField<String>(
-                            value: _position,
+                            initialValue: _position,
                             isExpanded: true,
                             decoration: InputDecoration(
                               labelText: 'Position',
@@ -306,7 +303,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                         ],
                         SizedBox(height: DSSpacing.md),
                         DropdownButtonFormField<String>(
-                          value: _ageGroup,
+                          initialValue: _ageGroup,
                           isExpanded: true,
                           decoration: InputDecoration(
                             labelText: 'Age Group',
@@ -339,18 +336,18 @@ class _EditProfileScreenState extends State<EditProfileScreen>
                           Container(
                             padding: EdgeInsets.all(DSSpacing.md),
                             decoration: BoxDecoration(
-                              color: DSColors.volt.withValues(alpha: 0.08),
+                              color: DSColors.onSurface.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(DSRadius.md),
-                              border: Border.all(color: DSColors.volt.withValues(alpha: 0.2)),
+                              border: Border.all(color: DSColors.onSurface.withValues(alpha: 0.15)),
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.location_on, color: DSColors.volt, size: 20),
+                                Icon(Icons.location_on, color: DSColors.onSurface, size: 20),
                                 SizedBox(width: DSSpacing.sm),
                                 Expanded(
                                   child: Text(
                                     _city!,
-                                    style: TextStyle(fontWeight: FontWeight.w600, color: DSColors.volt),
+                                    style: TextStyle(fontWeight: FontWeight.w600, color: DSColors.onSurface),
                                   ),
                                 ),
                                 TextButton(
@@ -510,7 +507,7 @@ class _EditProfileScreenState extends State<EditProfileScreen>
               child: Container(
                 padding: EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: DSColors.volt,
+                  color: DSColors.onSurface,
                   shape: BoxShape.circle,
                   boxShadow: DSElevation.cardShadow,
                 ),
@@ -547,7 +544,7 @@ class _LocationButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: DSSpacing.md, vertical: DSSpacing.md),
           child: Row(
             children: [
-              Icon(icon, size: 20, color: DSColors.volt),
+              Icon(icon, size: 20, color: DSColors.onSurface),
               SizedBox(width: DSSpacing.sm),
               Text(label, style: TextStyle(fontWeight: FontWeight.w500)),
               Spacer(),

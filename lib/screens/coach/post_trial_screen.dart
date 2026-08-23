@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
@@ -8,8 +7,7 @@ import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
 import '../../services/location_service.dart';
 import '../../widgets/location_picker.dart';
-import '../shared/widgets.dart'
-    show DSColors, DSSpacing, DSIconSize, DSRadius, DSMotion, DSElevation, DSCard, EmptyState, DSButton, DSButtonVariant, SectionHeader, AnimatedPage;
+import '../shared/widgets.dart';
 
 class PostTrialScreen extends StatefulWidget {
   const PostTrialScreen({super.key});
@@ -204,7 +202,7 @@ class _PostTrialScreenState extends State<PostTrialScreen>
                           isExpanded: true,
                           decoration: InputDecoration(
                             labelText: 'Position wanted',
-                            prefixIcon: Icon(DSIcons.sports_rounded),
+                            prefixIcon: Icon(DSIcons.sportsRounded),
                           ),
                           items: (AppConstants.positionsBySport[_sport] ?? const [])
                               .map((p) => DropdownMenuItem(value: p, child: Text(p)))
@@ -254,14 +252,14 @@ class _PostTrialScreenState extends State<PostTrialScreen>
                                   width: 40,
                                   height: 40,
                                   decoration: BoxDecoration(
-                                    color: DSColors.volt.withValues(alpha: 0.1),
+                                    color: DSColors.onSurface.withValues(alpha: 0.08),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Icon(
                                     _trialCoordinates != null
                                         ? Icons.check_circle
                                         : Icons.location_on_outlined,
-                                    color: DSColors.volt,
+                                    color: DSColors.onSurface,
                                     size: 20,
                                   ),
                                 ),
@@ -278,7 +276,7 @@ class _PostTrialScreenState extends State<PostTrialScreen>
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
                                           color: _trialCoordinates != null
-                                              ? DSColors.volt
+                                              ? DSColors.onSurface
                                               : Theme.of(context).colorScheme.onSurface,
                                         ),
                                       ),
@@ -310,17 +308,17 @@ class _PostTrialScreenState extends State<PostTrialScreen>
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: DSColors.volt.withValues(alpha: 0.06),
+                            color: DSColors.onSurface.withValues(alpha: 0.06),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.location_on, size: 16, color: DSColors.volt),
+                              Icon(Icons.location_on, size: 16, color: DSColors.onSurface),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   '${_trialCoordinates!.latitude.toStringAsFixed(4)}°N, ${_trialCoordinates!.longitude.toStringAsFixed(4)}°E',
-                                  style: TextStyle(fontSize: 12, color: DSColors.volt),
+                                  style: TextStyle(fontSize: 12, color: DSColors.onSurface),
                                 ),
                               ),
                               TextButton(

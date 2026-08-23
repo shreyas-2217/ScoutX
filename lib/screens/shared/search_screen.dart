@@ -2,10 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../constants.dart';
-import '../../design_system.dart';
 import '../../models/clip.dart' as models;
-import '../../models/user_profile.dart';
+import '../../services/cloudinary_service.dart';
 import '../../services/database.dart';
 import '../../services/search_parser.dart';
 import '../../services/search_service.dart';
@@ -240,7 +238,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildResults() {
     if (_isSearching) {
-      return Center(child: CircularProgressIndicator(color: DSColors.volt));
+      return Center(child: CircularProgressIndicator(color: DSColors.onSurface));
     }
 
     final hasClips = _clipResults.isNotEmpty;
@@ -348,17 +346,43 @@ class _ClipTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clip = result.clip;
+    final thumbnail = CloudinaryService.videoThumbnail(
+      clip.videoUrl,
+      width: 112,
+      height: 112,
+    );
     return ListTile(
-      leading: Container(
-        width: 56,
-        height: 56,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [DSColors.volt.withValues(alpha: 0.3), DSColors.cyan.withValues(alpha: 0.3)],
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(DSRadius.card),
+        child: SizedBox(
+          width: 56,
+          height: 56,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      DSColors.onSurface.withValues(alpha: 0.3),
+                      DSColors.cyan.withValues(alpha: 0.3),
+                    ],
+                  ),
+                ),
+              ),
+              if (thumbnail != null)
+                Image.network(
+                  thumbnail,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                ),
+              const Center(
+                child: Icon(Icons.play_arrow_rounded,
+                    size: 22, color: Colors.white),
+              ),
+            ],
           ),
-          borderRadius: BorderRadius.circular(DSRadius.card),
         ),
-        child: Icon(Icons.play_arrow_rounded, color: DSColors.onSurface),
       ),
       title: Text(
         clip.title.isNotEmpty ? clip.title : clip.playerName,
@@ -381,7 +405,7 @@ class _ClipTile extends StatelessWidget {
               result.matchReasons.take(3).join(' · '),
               style: TextStyle(
                 fontSize: 11,
-                color: DSColors.volt,
+                color: DSColors.onSurface,
                 fontWeight: FontWeight.w500,
               ),
               maxLines: 1,

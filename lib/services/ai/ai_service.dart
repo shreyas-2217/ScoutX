@@ -20,28 +20,50 @@ class ScoutXAIResponse {
 
 /// Core ScoutX AI Service using Google Gemini 3.5 Flash with function calling
 class AIService {
-  late final GenerativeModel _model;
   ChatSession? _chat;
   final List<Content> _history = [];
+  int _keyIndex = 0;
 
-  AIService() {
-    _model = GenerativeModel(
-      model: AIConfig.modelName,
-      apiKey: AIConfig.geminiApiKey,
-      tools: [
-        Tool(functionDeclarations: [
-          _searchAthletesTool,
-          _searchCoachesTool,
-          _searchTrialsTool,
-          _searchHighlightsTool,
-          _getMyApplicationsTool,
-          _getPopularHighlightsTool,
-        ]),
-      ],
-      systemInstruction: Content.system(_systemPrompt),
-    );
-    _chat = _model.startChat(history: _history);
+  AIService();
+
+  GenerativeModel _buildModel(int keyIndex) => GenerativeModel(
+        model: AIConfig.modelName,
+        apiKey: AIConfig.geminiApiKeys[keyIndex],
+        tools: [
+          Tool(functionDeclarations: [
+            _searchAthletesTool,
+            _searchCoachesTool,
+            _searchTrialsTool,
+            _searchHighlightsTool,
+            _getMyApplicationsTool,
+            _getPopularHighlightsTool,
+          ]),
+        ],
+        systemInstruction: Content.system(_systemPrompt),
+      );
+
+  void _ensureChat() {
+    _chat ??= _buildModel(_keyIndex).startChat(history: _history);
   }
+
+  static bool _isQuotaError(String s) =>
+      s.contains('429') ||
+      s.contains('RESOURCE_EXHAUSTED') ||
+      s.contains('quota');
+
+  /// Switches to the next available key, or returns false when all are dry.
+  bool _rotateKey() {
+    final next = AIConfig.nextIndex(_keyIndex);
+    if (next == -1) return false;
+    _keyIndex = next;
+    _chat = null;
+    return true;
+  }
+
+  /// Control chunk yielded before a mid-stream retry. AIProvider clears its
+  /// buffered text on receiving it, so the retried answer doesn't get
+  /// appended to the partial one.
+  static const String retryResetSignal = '\x00SCOUTX_RETRY\x00';
 
   static const String _systemPrompt = '''
 You are ScoutX AI, an intelligent sports scouting assistant built into the ScoutX platform.
@@ -180,8 +202,9 @@ IMPORTANT RULES:
     String? userName,
     String? userSport,
     String? userPosition,
+    void Function(List<AICardData> cards)? onCards,
   }) async* {
-    if (AIConfig.geminiApiKey == 'AIzaSyDemoKeyReplaceMe' || AIConfig.geminiApiKey.isEmpty) {
+    if (!AIConfig.hasAnyKey) {
       yield '🤖 I\'m ScoutX AI! To enable me, add a real Gemini API key:\n\n'
           '1. Get a key at aistudio.google.com\n'
           '2. Run with: flutter run -d chrome --dart-define=GEMINI_API_KEY=your_key\n\n'
@@ -195,44 +218,79 @@ IMPORTANT RULES:
     if (userPosition != null && userPosition.isNotEmpty) roleContext.write(', Position: $userPosition');
     roleContext.write(').');
 
-    final fullMessage = '${roleContext}\n\nUser message: $message';
+    final fullMessage = '$roleContext\n\nUser message: $message';
 
-    try {
-      final response = _chat!.sendMessageStream(Content.text(fullMessage));
-      String accumulatedText = '';
-      bool hasFunctionCalls = false;
+    // Cap retries at the number of configured keys so a cyclic key rotation
+    // can never loop forever.
+    final maxAttempts =
+        AIConfig.geminiApiKeys.where((k) => k.isNotEmpty).length;
+    var attempts = 0;
 
-      await for (final chunk in response) {
-        if (chunk.functionCalls.isNotEmpty) {
-          hasFunctionCalls = true;
-          for (final call in chunk.functionCalls) {
-            final toolResult = await _executeTool(call.name, call.args as Map<String, dynamic>, userId);
-            yield* toolResult;
+    while (true) {
+      var yieldedAnything = false;
+      try {
+        _ensureChat();
+        final response = _chat!.sendMessageStream(Content.text(fullMessage));
+        String accumulatedText = '';
+        bool hasFunctionCalls = false;
+
+        await for (final chunk in response) {
+          if (chunk.functionCalls.isNotEmpty) {
+            hasFunctionCalls = true;
+            for (final call in chunk.functionCalls) {
+              final toolResult = _executeTool(
+                call.name,
+                call.args as Map<String, dynamic>,
+                userId,
+                onCards,
+              );
+              yield* toolResult;
+              yieldedAnything = true;
+            }
+          }
+          if (chunk.text != null) {
+            accumulatedText += chunk.text!;
+            yield chunk.text!;
+            yieldedAnything = true;
           }
         }
-        if (chunk.text != null) {
-          accumulatedText += chunk.text!;
-          yield chunk.text!;
-        }
-      }
 
-      if (accumulatedText.isEmpty && !hasFunctionCalls) {
-        yield "I'm not sure how to help with that. Could you rephrase your question?";
-      }
-    } catch (e) {
-      final errorStr = e.toString();
-      if (errorStr.contains('429') || errorStr.contains('RESOURCE_EXHAUSTED') || errorStr.contains('quota')) {
-        yield '☕ I\'ve reached the current AI usage limit.\n\nYou can continue using ScoutX normally. AI chat will become available again when the limit resets.';
-      } else if (errorStr.contains('404') || errorStr.contains('NOT_FOUND')) {
-        yield '⚠️ The AI model is currently unavailable. Please try again later.';
-      } else {
-        yield '⚠️ Something went wrong. Please try again in a moment.';
+        if (accumulatedText.isEmpty && !hasFunctionCalls) {
+          yield "I'm not sure how to help with that. Could you rephrase your question?";
+        }
+        return;
+      } catch (e) {
+        final errorStr = e.toString();
+        if (_isQuotaError(errorStr)) {
+          attempts++;
+          if (attempts < maxAttempts && _rotateKey()) {
+            // Fail over to the next key and retry from scratch. If part of
+            // the answer was already streamed, tell the provider to clear
+            // its buffer first so text doesn't get duplicated.
+            if (yieldedAnything) yield retryResetSignal;
+            continue;
+          }
+          // Every key is exhausted — surface the limit message.
+          yield '☕ I\'ve reached the current AI usage limit.\n\nYou can continue using ScoutX normally. AI chat will become available again when the limit resets.';
+          return;
+        } else if (errorStr.contains('404') || errorStr.contains('NOT_FOUND')) {
+          yield '⚠️ The AI model is currently unavailable. Please try again later.';
+          return;
+        } else {
+          yield '⚠️ Something went wrong. Please try again in a moment.';
+          return;
+        }
       }
     }
   }
 
   /// Execute a tool and format results directly (no second Gemini call)
-  Stream<String> _executeTool(String functionName, Map<String, dynamic> args, String userId) async* {
+  Stream<String> _executeTool(
+    String functionName,
+    Map<String, dynamic> args,
+    String userId,
+    void Function(List<AICardData> cards)? onCards,
+  ) async* {
     List<Map<String, dynamic>> results = [];
     String toolLabel = '';
 
@@ -287,8 +345,123 @@ IMPORTANT RULES:
         return;
     }
 
+    final cards = _cardsForResults(functionName, results);
+    if (cards.isNotEmpty) onCards?.call(cards);
+
     // Always yield a response - either results or a "no results" message
     yield _formatResults(functionName, toolLabel, results);
+  }
+
+  /// Maps raw tool results into tappable UI cards for the chat stream.
+  List<AICardData> _cardsForResults(
+    String functionName,
+    List<Map<String, dynamic>> results,
+  ) {
+    switch (functionName) {
+      case 'searchAthletes':
+        return results.map((r) {
+          final subtitle = [r['sport'], r['position']]
+              .where((e) => e != null && e.toString().isNotEmpty)
+              .join(' • ');
+          return AICardData(
+            type: AICardType.athlete,
+            id: r['uid']?.toString() ?? '',
+            title: r['name']?.toString() ?? 'Unknown',
+            subtitle: subtitle.isEmpty ? 'Athlete' : subtitle,
+            detail: r['bio']?.toString(),
+            metadata: _stringMetadata({
+              'City': r['city'],
+              'Clips': r['clipCount'],
+              'Followers': r['followerCount'],
+            }),
+          );
+        }).toList();
+
+      case 'searchCoaches':
+        return results.map((r) {
+          return AICardData(
+            type: AICardType.profile,
+            id: r['uid']?.toString() ?? '',
+            title: r['name']?.toString() ?? 'Unknown',
+            subtitle: r['sport']?.toString().isEmpty == false
+                ? 'Coach • ${r['sport']}'
+                : 'Coach',
+            detail: r['bio']?.toString(),
+            metadata: _stringMetadata({
+              'Team': r['teamName'],
+              'City': r['city'],
+              'Followers': r['followerCount'],
+            }),
+          );
+        }).toList();
+
+      case 'searchTrials':
+        return results.map((r) {
+          final subtitle = [
+            r['sport'],
+            r['position'],
+          ].where((e) => e != null && e.toString().isNotEmpty).join(' • ');
+          return AICardData(
+            type: AICardType.trial,
+            id: r['id']?.toString() ?? '',
+            title: r['title']?.toString().isEmpty == true
+                ? 'Open Trial'
+                : r['title'].toString(),
+            subtitle: subtitle.isEmpty
+                ? (r['coachName']?.toString() ?? 'Trial')
+                : '$subtitle • ${r['coachName'] ?? ''}',
+            detail: r['description']?.toString(),
+            metadata: _stringMetadata({
+              'Location': r['location'],
+              'Date': r['date'],
+              'Level': r['skillLevel'],
+              'Sport': r['sport'],
+              'Position': r['position'],
+              'Coach': r['coachName'],
+              'Team': r['teamName'],
+            }),
+          );
+        }).toList();
+
+      case 'searchHighlights':
+      case 'getPopularHighlights':
+        return results.map((r) {
+          final by = r['playerName']?.toString() ?? '';
+          final sport = r['sport']?.toString() ?? '';
+          final subtitle = [
+            if (by.isNotEmpty) 'by $by',
+            if (sport.isNotEmpty) sport,
+          ].join(' • ');
+          final videoUrl = r['videoUrl']?.toString();
+          return AICardData(
+            type: AICardType.highlight,
+            id: r['id']?.toString() ?? '',
+            title: r['title']?.toString().isEmpty == true
+                ? 'Highlight'
+                : r['title'].toString(),
+            subtitle: subtitle.isEmpty ? 'Highlight' : subtitle,
+            metadata: _stringMetadata({
+              'Views': r['viewCount'],
+              'Likes': r['likeCount'],
+            }),
+            videoUrl: (videoUrl == null || videoUrl.isEmpty) ? null : videoUrl,
+          );
+        }).toList();
+
+      default:
+        return const [];
+    }
+  }
+
+  Map<String, String> _stringMetadata(Map<String, dynamic> raw) {
+    final out = <String, String>{};
+    raw.forEach((key, value) {
+      if (value == null) return;
+      final s = value.toString();
+      if (s.isEmpty || s == 'null') return;
+      out[key] = s;
+    });
+    return out;
   }
 
   /// Format tool results into a user-friendly message
@@ -416,6 +589,6 @@ IMPORTANT RULES:
 
   void clearHistory() {
     _history.clear();
-    _chat = _model.startChat(history: _history);
+    _chat = null;
   }
 }

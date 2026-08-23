@@ -116,7 +116,7 @@ class _VideoCardState extends State<VideoCard> {
               width: _isHovered ? 52 : 48,
               height: _isHovered ? 52 : 48,
               decoration: BoxDecoration(
-                color: DSColors.volt.withValues(alpha: 0.9),
+                color: DSColors.onSurface.withValues(alpha: 0.9),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -235,7 +235,7 @@ class _VideoCardState extends State<VideoCard> {
                   style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: DSColors.volt,
+                    color: DSColors.onSurface,
                   ),
                 ),
               ),

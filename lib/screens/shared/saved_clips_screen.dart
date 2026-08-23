@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/saved_clip.dart';
 import '../../providers/auth_provider.dart';
+import '../../services/cloudinary_service.dart';
 import '../../services/database.dart';
 import 'clip_player_screen.dart';
 import 'widgets.dart';
@@ -28,7 +28,7 @@ class SavedClipsScreen extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CircularProgressIndicator(color: DSColors.volt),
+                          CircularProgressIndicator(color: DSColors.onSurface),
                           SizedBox(height: DSSpacing.md),
                           Text(
                             'Loading saved clips...',
@@ -81,6 +81,11 @@ class _SavedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final thumbnail = CloudinaryService.videoThumbnail(
+      saved.videoUrl,
+      width: 360,
+      height: 420,
+    );
     return DSCard(
       onTap: () {
         Navigator.of(context).push(
@@ -92,48 +97,69 @@ class _SavedTile extends StatelessWidget {
           ),
         );
       },
-      padding: EdgeInsets.all(DSSpacing.md),
+      padding: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Center(
-              child: Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: DSColors.volt.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Container(color: DSColors.surfaceContainer),
+                if (thumbnail != null)
+                  Image.network(
+                    thumbnail,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                  ),
+                Center(
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.45),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.play_arrow_rounded,
+                      size: 30,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-                child: Icon(
-                  DSIcons.playCircle,
-                  size: 36,
-                  color: DSColors.volt,
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(DSSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  saved.title.isEmpty ? 'Highlight' : saved.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-            ),
-          ),
-          SizedBox(height: DSSpacing.sm),
-          Text(
-            saved.title.isEmpty ? 'Highlight' : saved.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          SizedBox(height: DSSpacing.xs),
-          Text(
-            '${saved.sport} · ${saved.position}',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: DSColors.onSurfaceVariant,
-            ),
-          ),
-          SizedBox(height: 2),
-          Text(
-            saved.playerName,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: DSColors.onSurfaceDisabled,
+                SizedBox(height: DSSpacing.xs),
+                Text(
+                  '${saved.sport} · ${saved.position}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: DSColors.onSurfaceVariant,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  saved.playerName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: DSColors.onSurfaceDisabled,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

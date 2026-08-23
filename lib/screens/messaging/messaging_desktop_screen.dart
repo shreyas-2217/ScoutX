@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:scoutx/design_system.dart';
 import '../../models/conversation.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/database.dart';
@@ -96,7 +95,7 @@ class _ConversationList extends StatelessWidget {
       stream: db.streamConversations(uid),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: DSColors.volt));
+          return const Center(child: CircularProgressIndicator(color: DSColors.onSurface));
         }
         final conversations = snapshot.data ?? [];
         if (conversations.isEmpty) {
@@ -124,7 +123,7 @@ class _ConversationList extends StatelessWidget {
 
             return ListTile(
               selected: isSelected,
-              selectedTileColor: DSColors.volt.withValues(alpha: 0.08),
+              selectedTileColor: DSColors.onSurface.withValues(alpha: 0.08),
               leading: InitialsAvatar(name: otherName, radius: 22),
               title: Text(otherName, style: const TextStyle(fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis),
               subtitle: Text(
@@ -137,7 +136,7 @@ class _ConversationList extends StatelessWidget {
                   ? Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: DSColors.volt,
+                        color: DSColors.onSurface,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text('$myUnread', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),

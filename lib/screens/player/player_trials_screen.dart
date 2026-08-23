@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scoutx/design_system.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
@@ -26,6 +26,7 @@ class _PlayerTrialsScreenState extends State<PlayerTrialsScreen>
   String? _sportFilter;
   String? _skillFilter;
   double? _distanceFilter;
+  String _sortOption = 'Latest';
 
   @override
   void initState() {
@@ -52,9 +53,9 @@ class _PlayerTrialsScreenState extends State<PlayerTrialsScreen>
             Tab(text: 'Open Trials'),
             Tab(text: 'My Applications'),
           ],
-          labelColor: DSColors.volt,
-          unselectedLabelColor: Theme.of(context).colorScheme.onSurfaceVariant,
-          indicatorColor: DSColors.volt,
+          labelColor: DSColors.onSurface,
+          unselectedLabelColor: DSColors.onSurfaceVariant,
+          indicatorColor: DSColors.onSurface,
           indicatorWeight: 3,
           labelStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
             fontWeight: FontWeight.w700,
@@ -71,9 +72,14 @@ class _PlayerTrialsScreenState extends State<PlayerTrialsScreen>
             sportFilter: _sportFilter,
             skillFilter: _skillFilter,
             distanceFilter: _distanceFilter,
+            sortOption: _sortOption,
             onSportFilterChanged: (s) => setState(() => _sportFilter = s),
             onSkillFilterChanged: (s) => setState(() => _skillFilter = s),
             onDistanceFilterChanged: (d) => setState(() => _distanceFilter = d),
+            onSortChanged: (s) {
+              if (s == null) return;
+              setState(() => _sortOption = s);
+            },
           ),
           if (uid != null) _MyApplicationsTab(uid: uid) else const SizedBox.shrink(),
         ],
@@ -86,17 +92,21 @@ class _OpenTrialsTab extends StatelessWidget {
   final String? sportFilter;
   final String? skillFilter;
   final double? distanceFilter;
+  final String sortOption;
   final ValueChanged<String?> onSportFilterChanged;
   final ValueChanged<String?> onSkillFilterChanged;
   final ValueChanged<double?> onDistanceFilterChanged;
+  final ValueChanged<String?> onSortChanged;
 
   const _OpenTrialsTab({
     this.sportFilter,
     this.skillFilter,
     this.distanceFilter,
+    this.sortOption = 'Latest',
     required this.onSportFilterChanged,
     required this.onSkillFilterChanged,
     required this.onDistanceFilterChanged,
+    required this.onSortChanged,
   });
 
   @override
@@ -109,10 +119,10 @@ class _OpenTrialsTab extends StatelessWidget {
         if (locationProvider.hasLocation)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            color: DSColors.volt.withValues(alpha: 0.06),
+            color: DSColors.onSurface.withValues(alpha: 0.06),
             child: Row(
               children: [
-                Icon(Icons.location_on, size: 16, color: DSColors.volt),
+                Icon(Icons.location_on, size: 16, color: DSColors.onSurface),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -120,7 +130,7 @@ class _OpenTrialsTab extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: DSColors.volt,
+                      color: DSColors.onSurface,
                     ),
                   ),
                 ),
@@ -133,6 +143,8 @@ class _OpenTrialsTab extends StatelessWidget {
           DistanceFilter(
             selectedDistance: distanceFilter,
             onDistanceChanged: onDistanceFilterChanged,
+            selectedSort: sortOption,
+            onSortChanged: onSortChanged,
           ),
 
         // Filter chips
@@ -164,7 +176,7 @@ class _OpenTrialsTab extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
-                  child: CircularProgressIndicator(color: DSColors.volt),
+                  child: CircularProgressIndicator(color: DSColors.onSurface),
                 );
               }
               var trials = snapshot.data ?? [];
@@ -187,13 +199,51 @@ class _OpenTrialsTab extends StatelessWidget {
                   if (dist == null) return false;
                   return dist <= distanceFilter!;
                 }).toList();
+              }
 
-                // Sort by distance
-                open.sort((a, b) {
-                  final distA = locationProvider.distanceTo(a.latitude!, a.longitude!) ?? 9999;
-                  final distB = locationProvider.distanceTo(b.latitude!, b.longitude!) ?? 9999;
-                  return distA.compareTo(distB);
-                });
+              // Apply sorting
+              switch (sortOption) {
+                case 'Nearest':
+                  double distOf(Trial t) {
+                    if (!locationProvider.hasLocation ||
+                        t.latitude == null ||
+                        t.longitude == null) {
+                      return double.infinity;
+                    }
+                    return locationProvider
+                            .distanceTo(t.latitude!, t.longitude!) ??
+                        double.infinity;
+                  }
+
+                  open.sort((a, b) => distOf(a).compareTo(distOf(b)));
+                  break;
+                case 'Closing Soon':
+                  DateTime? dateOf(Trial t) {
+                    final raw = t.date?.trim();
+                    if (raw == null || raw.isEmpty) return null;
+                    try {
+                      return DateFormat('d MMM yyyy').parse(raw);
+                    } catch (_) {}
+                    return DateTime.tryParse(raw);
+                  }
+
+                  int rankOf(Trial t) {
+                    final d = dateOf(t);
+                    if (d == null) return 2;
+                    return d.isBefore(DateTime.now()) ? 1 : 0;
+                  }
+
+                  open.sort((a, b) {
+                    final rank = rankOf(a).compareTo(rankOf(b));
+                    if (rank != 0) return rank;
+                    return (dateOf(a) ?? DateTime(9999))
+                        .compareTo(dateOf(b) ?? DateTime(9999));
+                  });
+                  break;
+                case 'Latest':
+                default:
+                  open.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+                  break;
               }
 
               if (open.isEmpty) {
@@ -263,10 +313,10 @@ class _OpenTrialsTab extends StatelessWidget {
                             onSportFilterChanged(selected ? s : null);
                             Navigator.pop(ctx);
                           },
-                          selectedColor: DSColors.volt.withValues(alpha: 0.2),
-                          checkmarkColor: DSColors.volt,
+                          selectedColor: DSColors.onSurface.withValues(alpha: 0.08),
+                          checkmarkColor: DSColors.onSurface,
                           side: BorderSide(
-                            color: sportFilter == s ? DSColors.volt : Theme.of(context).colorScheme.outlineVariant,
+                            color: sportFilter == s ? DSColors.onSurface : Theme.of(context).colorScheme.outlineVariant,
                           ),
                       ))
                     .toList(),
@@ -307,10 +357,10 @@ class _OpenTrialsTab extends StatelessWidget {
                             onSkillFilterChanged(selected ? s : null);
                             Navigator.pop(ctx);
                           },
-                          selectedColor: DSColors.volt.withValues(alpha: 0.2),
-                          checkmarkColor: DSColors.volt,
+                          selectedColor: DSColors.onSurface.withValues(alpha: 0.08),
+                          checkmarkColor: DSColors.onSurface,
                           side: BorderSide(
-                            color: skillFilter == s ? DSColors.volt : Theme.of(context).colorScheme.outlineVariant,
+                            color: skillFilter == s ? DSColors.onSurface : Theme.of(context).colorScheme.outlineVariant,
                           ),
                         ))
                     .toList(),
@@ -344,11 +394,11 @@ class _FilterChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? DSColors.volt.withValues(alpha: 0.1)
+              ? DSColors.onSurface.withValues(alpha: 0.08)
               : Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? DSColors.volt : Theme.of(context).colorScheme.outlineVariant,
+            color: isSelected ? DSColors.onSurface : Theme.of(context).colorScheme.outlineVariant,
           ),
         ),
         child: Row(
@@ -358,14 +408,14 @@ class _FilterChip extends StatelessWidget {
               label,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: isSelected ? DSColors.volt : null,
+                color: isSelected ? DSColors.onSurface : null,
               ),
             ),
             if (onClear != null) ...[
               const SizedBox(width: 4),
               GestureDetector(
                 onTap: onClear,
-                child: Icon(Icons.close, size: 14, color: isSelected ? DSColors.volt : null),
+                child: Icon(Icons.close, size: 14, color: isSelected ? DSColors.onSurface : null),
               ),
             ] else ...[
               const SizedBox(width: 4),
@@ -423,14 +473,14 @@ class _PremiumTrialCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: DSColors.volt.withValues(alpha: 0.1),
+                    color: DSColors.onSurface.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     trial.skillLevel,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: DSColors.volt,
+                      color: DSColors.onSurface,
                     ),
                   ),
                 ),
@@ -452,7 +502,7 @@ class _PremiumTrialCard extends StatelessWidget {
               spacing: 8,
               runSpacing: 6,
               children: [
-                _Tag(text: trial.sport, color: DSColors.volt),
+                _Tag(text: trial.sport, color: DSColors.onSurface),
                 _Tag(text: trial.position, color: DSColors.cyan),
               ],
             ),
@@ -487,7 +537,7 @@ class _PremiumTrialCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: DSColors.volt.withValues(alpha: 0.1),
+                      color: DSColors.onSurface.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -495,7 +545,7 @@ class _PremiumTrialCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: DSColors.volt,
+                        color: DSColors.onSurface,
                       ),
                     ),
                   ),
@@ -515,7 +565,7 @@ class _PremiumTrialCard extends StatelessWidget {
                 },
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  backgroundColor: DSColors.volt,
+                  backgroundColor: DSColors.onSurface,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -568,7 +618,7 @@ class _MyApplicationsTab extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
-            child: CircularProgressIndicator(color: DSColors.volt),
+            child: CircularProgressIndicator(color: DSColors.onSurface),
           );
         }
         final apps = snapshot.data ?? [];

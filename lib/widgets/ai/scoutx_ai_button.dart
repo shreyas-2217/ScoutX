@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:scoutx/design_system.dart';
 import '../../providers/ai_provider.dart';
 
 class ScoutXAIFloatingButton extends StatefulWidget {
@@ -37,6 +36,11 @@ class _ScoutXAIFloatingButtonState extends State<ScoutXAIFloatingButton>
   @override
   Widget build(BuildContext context) {
     final ai = context.watch<AIProvider>();
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Use inverseSurface so button contrasts with background in both modes
+    final btnColor = isDark ? scheme.inverseSurface : scheme.onSurface;
+    final iconColor = isDark ? scheme.onInverseSurface : scheme.surface;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -53,14 +57,15 @@ class _ScoutXAIFloatingButtonState extends State<ScoutXAIFloatingButton>
                 height: 56,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [DSColors.volt, DSColors.volt.withValues(alpha: 0.8)],
+                    colors: [btnColor, btnColor.withValues(alpha: 0.85)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white.withValues(alpha: isDark ? 0.14 : 0.0), width: 1),
                   boxShadow: [
                     BoxShadow(
-                      color: DSColors.volt.withValues(alpha: ai.isOpen ? 0.4 : 0.25),
+                      color: btnColor.withValues(alpha: ai.isOpen ? 0.35 : 0.22),
                       blurRadius: ai.isOpen ? 20 : 12,
                       spreadRadius: ai.isOpen ? 4 : 2,
                     ),
@@ -68,7 +73,7 @@ class _ScoutXAIFloatingButtonState extends State<ScoutXAIFloatingButton>
                 ),
                 child: Icon(
                   ai.isOpen ? Icons.close : Icons.auto_awesome,
-                  color: DSColors.voltDark,
+                  color: iconColor,
                   size: 24,
                 ),
               ),

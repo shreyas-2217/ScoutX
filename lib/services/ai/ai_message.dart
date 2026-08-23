@@ -87,6 +87,7 @@ class AICardData {
   final Map<String, String> metadata;
   final String? actionLabel;
   final String? actionRoute;
+  final String? videoUrl;
 
   const AICardData({
     required this.type,
@@ -98,5 +99,6 @@ class AICardData {
     this.metadata = const {},
     this.actionLabel,
     this.actionRoute,
+    this.videoUrl,
   });
 }
